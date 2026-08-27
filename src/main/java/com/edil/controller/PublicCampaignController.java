@@ -1,0 +1,30 @@
+package com.edil.controller;
+
+import com.edil.dto.response.CampaignDetailResponse;
+import com.edil.dto.response.CampaignResponse;
+import com.edil.service.CampaignService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
+
+@RestController
+@RequestMapping("/api/campaigns")
+@RequiredArgsConstructor
+public class PublicCampaignController {
+
+    private final CampaignService campaignService;
+
+    @GetMapping
+    public ResponseEntity<Page<CampaignResponse>> getPublicCampaigns(Pageable pageable) {
+        return ResponseEntity.ok(campaignService.getPublicCampaigns(pageable));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<CampaignDetailResponse> getCampaignDetail(@PathVariable UUID id) {
+        return ResponseEntity.ok(campaignService.getCampaignDetail(id));
+    }
+}

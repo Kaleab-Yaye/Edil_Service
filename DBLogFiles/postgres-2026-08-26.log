@@ -1,0 +1,57 @@
+2026-08-26 08:39:34.096 UTC [41] LOG:  starting PostgreSQL 15.15 on x86_64-pc-linux-musl, compiled by gcc (Alpine 14.2.0) 14.2.0, 64-bit
+2026-08-26 08:39:34.102 UTC [41] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+2026-08-26 08:39:34.117 UTC [45] LOG:  database system was shut down at 2026-08-26 08:39:33 UTC
+2026-08-26 08:39:34.132 UTC [41] LOG:  database system is ready to accept connections
+2026-08-26 08:39:34.318 UTC [41] LOG:  received fast shutdown request
+2026-08-26 08:39:34.322 UTC [41] LOG:  aborting any active transactions
+2026-08-26 08:39:34.326 UTC [41] LOG:  background worker "logical replication launcher" (PID 48) exited with exit code 1
+2026-08-26 08:39:34.327 UTC [43] LOG:  shutting down
+2026-08-26 08:39:34.331 UTC [43] LOG:  checkpoint starting: shutdown immediate
+2026-08-26 08:39:34.573 UTC [43] LOG:  checkpoint complete: wrote 921 buffers (5.6%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.049 s, sync=0.182 s, total=0.246 s; sync files=301, longest=0.006 s, average=0.001 s; distance=4238 kB, estimate=4238 kB
+2026-08-26 08:39:34.596 UTC [41] LOG:  database system is shut down
+2026-08-26 08:39:34.677 UTC [1] LOG:  starting PostgreSQL 15.15 on x86_64-pc-linux-musl, compiled by gcc (Alpine 14.2.0) 14.2.0, 64-bit
+2026-08-26 08:39:34.677 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+2026-08-26 08:39:34.678 UTC [1] LOG:  listening on IPv6 address "::", port 5432
+2026-08-26 08:39:34.686 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+2026-08-26 08:39:34.697 UTC [59] LOG:  database system was shut down at 2026-08-26 08:39:34 UTC
+2026-08-26 08:39:34.710 UTC [1] LOG:  database system is ready to accept connections
+2026-08-26 08:44:54.628 UTC [57] LOG:  checkpoint starting: time
+2026-08-26 08:44:54.802 UTC [57] LOG:  checkpoint complete: wrote 4 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.108 s, sync=0.008 s, total=0.175 s; sync files=3, longest=0.004 s, average=0.003 s; distance=0 kB, estimate=0 kB
+2026-08-26 09:06:30.341 UTC [57] LOG:  checkpoint starting: time
+2026-08-26 09:06:41.575 UTC [57] LOG:  checkpoint complete: wrote 89 buffers (0.5%); 0 WAL file(s) added, 0 removed, 0 recycled; write=11.169 s, sync=0.042 s, total=11.235 s; sync files=67, longest=0.005 s, average=0.001 s; distance=305 kB, estimate=305 kB
+2026-08-26 09:35:34.881 UTC [239] FATAL:  role "devuser" does not exist
+2026-08-26 09:36:16.465 UTC [242] ERROR:  syntax error at or near "/" at character 1
+2026-08-26 09:36:16.465 UTC [242] STATEMENT:  /d
+	;
+2026-08-26 09:36:24.364 UTC [242] ERROR:  syntax error at or near "/" at character 1
+2026-08-26 09:36:24.364 UTC [242] STATEMENT:  /dt
+	;
+2026-08-26 09:36:32.896 UTC [242] ERROR:  relation "users" does not exist at character 15
+2026-08-26 09:36:32.896 UTC [242] STATEMENT:  SELECT * FROM users;
+2026-08-26 09:49:50.126 UTC [242] ERROR:  syntax error at or near "accounts" at character 8
+2026-08-26 09:49:50.126 UTC [242] STATEMENT:  DELETE accounts WHERE id = "a0000000-0000-0000-0000-000000000001";
+2026-08-26 09:49:58.192 UTC [242] ERROR:  syntax error at or near "accounts" at character 8
+2026-08-26 09:49:58.192 UTC [242] STATEMENT:  DELETE accounts WHERE id = 'a0000000-0000-0000-0000-000000000001';
+2026-08-26 09:50:03.884 UTC [57] LOG:  checkpoint starting: time
+2026-08-26 09:50:05.859 UTC [57] LOG:  checkpoint complete: wrote 20 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=1.939 s, sync=0.017 s, total=1.975 s; sync files=17, longest=0.008 s, average=0.001 s; distance=2 kB, estimate=275 kB
+2026-08-26 09:50:22.710 UTC [242] ERROR:  syntax error at or near "DELET" at character 1
+2026-08-26 09:50:22.710 UTC [242] STATEMENT:  DELET accounts WHERE id = 'a0000000-0000-0000-0000-000000000001';
+2026-08-26 09:51:07.268 UTC [242] ERROR:  syntax error at or near "DELET" at character 1
+2026-08-26 09:51:07.268 UTC [242] STATEMENT:  DELET from  accounts WHERE id = 'a0000000-0000-0000-0000-000000000001';
+2026-08-26 09:55:04.231 UTC [300] ERROR:  relation "account" does not exist at character 8
+2026-08-26 09:55:04.231 UTC [300] STATEMENT:  uPDATE account SET id = 'a0000000-0000-0000-0000-000000000001', role = 'ROOT_ADMIN'  WHERE id = 'b00a2f63-a0a2-4c21-9228-e889e634b0da';
+2026-08-26 09:55:14.728 UTC [300] ERROR:  update or delete on table "accounts" violates foreign key constraint "user_profiles_account_id_fkey" on table "user_profiles"
+2026-08-26 09:55:14.728 UTC [300] DETAIL:  Key (id)=(b00a2f63-a0a2-4c21-9228-e889e634b0da) is still referenced from table "user_profiles".
+2026-08-26 09:55:14.728 UTC [300] STATEMENT:  uPDATE accounts SET id = 'a0000000-0000-0000-0000-000000000001', role = 'ROOT_ADMIN'  WHERE id = 'b00a2f63-a0a2-4c21-9228-e889e634b0da';
+2026-08-26 09:55:36.242 UTC [57] LOG:  checkpoint starting: time
+2026-08-26 09:55:37.085 UTC [57] LOG:  checkpoint complete: wrote 9 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.812 s, sync=0.013 s, total=0.845 s; sync files=9, longest=0.007 s, average=0.002 s; distance=2 kB, estimate=248 kB
+2026-08-26 09:58:49.308 UTC [300] ERROR:  invalid input syntax for type uuid: "a0000000-0000-003u-0000-000000000001" at character 65
+2026-08-26 09:58:49.308 UTC [300] STATEMENT:  INSERT INTO admin_profiles (id, account_id, full_name) 
+	VALUES ('a0000000-0000-003u-0000-000000000001', 'a0000000-0000-0000-0000-000000000001', 'kaleab tesfaye');
+2026-08-26 09:58:52.116 UTC [300] ERROR:  invalid input syntax for type uuid: "a0000000-0000-003u-0000-000000000001" at character 65
+2026-08-26 09:58:52.116 UTC [300] STATEMENT:  INSERT INTO admin_profiles (id, account_id, full_name) 
+	VALUES ('a0000000-0000-003u-0000-000000000001', 'a0000000-0000-0000-0000-000000000001', 'kaleab tesfaye');
+2026-08-26 10:00:05.731 UTC [300] ERROR:  relation "admin_profile" does not exist at character 15
+2026-08-26 10:00:05.731 UTC [300] STATEMENT:  SELECT * FROM admin_profile;
+2026-08-26 10:01:08.531 UTC [57] LOG:  checkpoint starting: time
+2026-08-26 10:01:09.679 UTC [57] LOG:  checkpoint complete: wrote 12 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=1.117 s, sync=0.012 s, total=1.148 s; sync files=12, longest=0.005 s, average=0.001 s; distance=2 kB, estimate=223 kB
