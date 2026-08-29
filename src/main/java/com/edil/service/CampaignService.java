@@ -14,6 +14,7 @@ import com.edil.repository.ActiveCampaignPrizeRepository;
 import com.edil.repository.ArchivedCampaignPrizeRepository;
 import com.edil.repository.CampaignRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,10 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import com.edil.domain.enums.OnboardingStatus;
+import com.edil.exception.AccountNotFoundException;
+
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CampaignService {
@@ -32,18 +37,18 @@ public class CampaignService {
     private final CampaignRepository campaignRepository;
     private final ActiveCampaignPrizeRepository activeCampaignPrizeRepository;
     private final ArchivedCampaignPrizeRepository archivedCampaignPrizeRepository;
-    private final AccountRepository accountRepository; // Needs to be present in project
+    private final AccountRepository accountRepository;
     private final UploadService uploadService;
 
     @Transactional
-    public void createCampaign(String creatorEmail, CreateCampaignRequest request) {
+    public CampaignResponse createCampaign(String creatorEmail, CreateCampaignRequest request) {
+        log.info("createCampaign service hit for email: {}", creatorEmail);
         Account creator = accountRepository.findByEmail(creatorEmail)
-                .orElseThrow(() -> new RuntimeException("Creator not found"));
+                .orElseThrow(() -> new AccountNotFoundException("Creator account not found"));
         
-        // Assuming Account has onboardingStatus mapped as String or Enum.
-        // if (!"ONBOARDED".equals(creator.getOnboardingStatus())) {
-        //     throw new RuntimeException("Creator must be ONBOARDED");
-        // }
+        if (creator.getCreatorProfile() == null || creator.getCreatorProfile().getOnboardingStatus() != OnboardingStatus.ONBOARDED) {
+            throw new IllegalStateException("Creator must be ONBOARDED before creating campaigns");
+        }
 
         if (request.getEndDate().isBefore(request.getStartDate())) {
             throw new IllegalArgumentException("End date must be after start date");
@@ -61,9 +66,8 @@ public class CampaignService {
                 .build();
 
         List<ActiveCampaignPrize> activePrizes = request.getPrizes().stream().map(p -> {
-            // Verify upload is confirmed
             if (!uploadService.isUploadConfirmed(p.getImageFileId())) {
-                throw new RuntimeException("Image upload not confirmed for file: " + p.getImageFileId());
+                throw new IllegalStateException("Image upload not confirmed for file: " + p.getImageFileId());
             }
             
             ActiveCampaignPrize prize = ActiveCampaignPrize.builder()
@@ -79,7 +83,8 @@ public class CampaignService {
         }).collect(Collectors.toList());
 
         campaign.setActivePrizes(activePrizes);
-        campaignRepository.save(campaign);
+        Campaign savedCampaign = campaignRepository.save(campaign);
+        return mapToCampaignResponse(savedCampaign);
     }
 
     @Transactional(readOnly = true)
