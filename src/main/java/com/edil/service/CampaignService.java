@@ -139,7 +139,15 @@ public class CampaignService {
                             .build()).collect(Collectors.toList());
         }
 
-        // Assuming Account has getFullName, getChannelLink, getAbout
+        String creatorName = null;
+        String creatorChannelLink = null;
+        String creatorAbout = null;
+        if (campaign.getCreator() != null && campaign.getCreator().getCreatorProfile() != null) {
+            creatorName = campaign.getCreator().getCreatorProfile().getFullName();
+            creatorChannelLink = campaign.getCreator().getCreatorProfile().getChannelLink();
+            creatorAbout = campaign.getCreator().getCreatorProfile().getAboutSection();
+        }
+
         return CampaignDetailResponse.builder()
                 .id(campaign.getId())
                 .title(campaign.getTitle())
@@ -150,9 +158,9 @@ public class CampaignService {
                 .status(campaign.getStatus().name())
                 .startDate(campaign.getStartDate())
                 .endDate(campaign.getEndDate())
-                // .creatorName(campaign.getCreator().getFullName())
-                // .creatorChannelLink(campaign.getCreator().getChannelLink())
-                // .creatorAbout(campaign.getCreator().getAbout())
+                .creatorName(creatorName)
+                .creatorChannelLink(creatorChannelLink)
+                .creatorAbout(creatorAbout)
                 .prizes(prizeResponses)
                 .build();
     }
@@ -160,7 +168,7 @@ public class CampaignService {
     @Transactional
     public void approveCampaign(UUID campaignId) {
         Campaign campaign = campaignRepository.findById(campaignId)
-                .orElseThrow(() -> new RuntimeException("Campaign not found"));
+                .orElseThrow(() -> new AccountNotFoundException("Campaign not found"));
         campaign.setStatus(CampaignStatus.APPROVED);
         campaignRepository.save(campaign);
     }
@@ -168,7 +176,7 @@ public class CampaignService {
     @Transactional
     public void rejectCampaign(UUID campaignId) {
         Campaign campaign = campaignRepository.findById(campaignId)
-                .orElseThrow(() -> new RuntimeException("Campaign not found"));
+                .orElseThrow(() -> new AccountNotFoundException("Campaign not found"));
         campaign.setStatus(CampaignStatus.REJECTED);
         campaignRepository.save(campaign);
     }
@@ -208,6 +216,11 @@ public class CampaignService {
              if (!activePrizes.isEmpty()) firstPrizeImageUrl = activePrizes.get(0).getImageUrl();
         }
 
+        String creatorName = null;
+        if (campaign.getCreator() != null && campaign.getCreator().getCreatorProfile() != null) {
+            creatorName = campaign.getCreator().getCreatorProfile().getFullName();
+        }
+
         return CampaignResponse.builder()
                 .id(campaign.getId())
                 .title(campaign.getTitle())
@@ -217,7 +230,7 @@ public class CampaignService {
                 .status(campaign.getStatus().name())
                 .startDate(campaign.getStartDate())
                 .endDate(campaign.getEndDate())
-                // .creatorName(campaign.getCreator().getFullName())
+                .creatorName(creatorName)
                 .firstPrizeImageUrl(firstPrizeImageUrl)
                 .build();
     }

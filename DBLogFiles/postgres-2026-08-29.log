@@ -20,3 +20,21 @@
 2026-08-29 08:56:40.179 UTC [28] LOG:  checkpoint complete: wrote 10 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.915 s, sync=0.012 s, total=0.949 s; sync files=10, longest=0.005 s, average=0.002 s; distance=4 kB, estimate=4 kB
 2026-08-29 09:01:54.914 UTC [28] LOG:  checkpoint starting: time
 2026-08-29 09:01:55.858 UTC [28] LOG:  checkpoint complete: wrote 10 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.910 s, sync=0.014 s, total=0.945 s; sync files=10, longest=0.008 s, average=0.002 s; distance=4 kB, estimate=4 kB
+2026-08-29 09:12:16.742 UTC [1] LOG:  received fast shutdown request
+2026-08-29 09:12:16.746 UTC [1] LOG:  aborting any active transactions
+2026-08-29 09:12:16.748 UTC [129] FATAL:  terminating connection due to administrator command
+2026-08-29 09:12:16.748 UTC [124] FATAL:  terminating connection due to administrator command
+2026-08-29 09:12:16.748 UTC [79] FATAL:  terminating connection due to administrator command
+2026-08-29 09:12:16.748 UTC [127] FATAL:  terminating connection due to administrator command
+2026-08-29 09:12:16.748 UTC [128] FATAL:  terminating connection due to administrator command
+2026-08-29 09:12:16.749 UTC [123] FATAL:  terminating connection due to administrator command
+2026-08-29 09:12:16.750 UTC [131] FATAL:  terminating connection due to administrator command
+2026-08-29 09:12:16.752 UTC [122] FATAL:  terminating connection due to administrator command
+2026-08-29 09:12:16.752 UTC [132] FATAL:  terminating connection due to administrator command
+2026-08-29 09:12:16.753 UTC [126] FATAL:  terminating connection due to administrator command
+2026-08-29 09:12:16.755 UTC [125] FATAL:  terminating connection due to administrator command
+2026-08-29 09:12:16.759 UTC [1] LOG:  background worker "logical replication launcher" (PID 33) exited with exit code 1
+2026-08-29 09:12:16.767 UTC [28] LOG:  shutting down
+2026-08-29 09:12:16.772 UTC [28] LOG:  checkpoint starting: shutdown immediate
+2026-08-29 09:12:16.807 UTC [28] LOG:  checkpoint complete: wrote 9 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.010 s, sync=0.009 s, total=0.040 s; sync files=9, longest=0.004 s, average=0.001 s; distance=2 kB, estimate=4 kB
+2026-08-29 09:12:16.827 UTC [1] LOG:  database system is shut down
