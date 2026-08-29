@@ -10,3 +10,13 @@
 2026-08-29 08:04:16.580 UTC [28] LOG:  checkpoint starting: end-of-recovery immediate wait
 2026-08-29 08:04:16.603 UTC [28] LOG:  checkpoint complete: wrote 3 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.007 s, sync=0.003 s, total=0.027 s; sync files=2, longest=0.002 s, average=0.002 s; distance=0 kB, estimate=0 kB
 2026-08-29 08:04:16.622 UTC [1] LOG:  database system is ready to accept connections
+2026-08-29 08:09:28.331 UTC [28] LOG:  checkpoint starting: time
+2026-08-29 08:09:29.270 UTC [28] LOG:  checkpoint complete: wrote 10 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.908 s, sync=0.014 s, total=0.940 s; sync files=10, longest=0.006 s, average=0.002 s; distance=3 kB, estimate=3 kB
+2026-08-29 08:33:59.958 UTC [79] ERROR:  relation "campains" does not exist at character 15
+2026-08-29 08:33:59.958 UTC [79] STATEMENT:  SELECT * FROM campains;
+2026-08-29 08:35:38.305 UTC [28] LOG:  checkpoint starting: time
+2026-08-29 08:35:39.469 UTC [28] LOG:  checkpoint complete: wrote 12 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=1.132 s, sync=0.011 s, total=1.165 s; sync files=12, longest=0.004 s, average=0.001 s; distance=3 kB, estimate=3 kB
+2026-08-29 08:56:39.231 UTC [28] LOG:  checkpoint starting: time
+2026-08-29 08:56:40.179 UTC [28] LOG:  checkpoint complete: wrote 10 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.915 s, sync=0.012 s, total=0.949 s; sync files=10, longest=0.005 s, average=0.002 s; distance=4 kB, estimate=4 kB
+2026-08-29 09:01:54.914 UTC [28] LOG:  checkpoint starting: time
+2026-08-29 09:01:55.858 UTC [28] LOG:  checkpoint complete: wrote 10 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.910 s, sync=0.014 s, total=0.945 s; sync files=10, longest=0.008 s, average=0.002 s; distance=4 kB, estimate=4 kB

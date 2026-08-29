@@ -50,6 +50,11 @@ public class CampaignService {
             throw new IllegalStateException("Creator must be ONBOARDED before creating campaigns");
         }
 
+        List<CampaignStatus> activeStatuses = List.of(CampaignStatus.PENDING, CampaignStatus.APPROVED);
+        if (campaignRepository.existsByCreatorIdAndStatusIn(creator.getId(), activeStatuses)) {
+            throw new IllegalStateException("Creator already has an active or pending campaign. Complete or wait for the existing campaign to end before creating a new one.");
+        }
+
         if (request.getEndDate().isBefore(request.getStartDate())) {
             throw new IllegalArgumentException("End date must be after start date");
         }
