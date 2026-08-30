@@ -38,3 +38,17 @@
 2026-08-29 09:12:16.772 UTC [28] LOG:  checkpoint starting: shutdown immediate
 2026-08-29 09:12:16.807 UTC [28] LOG:  checkpoint complete: wrote 9 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.010 s, sync=0.009 s, total=0.040 s; sync files=9, longest=0.004 s, average=0.001 s; distance=2 kB, estimate=4 kB
 2026-08-29 09:12:16.827 UTC [1] LOG:  database system is shut down
+2026-08-29 09:12:44.617 UTC [1] LOG:  starting PostgreSQL 15.15 on x86_64-pc-linux-musl, compiled by gcc (Alpine 14.2.0) 14.2.0, 64-bit
+2026-08-29 09:12:44.618 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+2026-08-29 09:12:44.618 UTC [1] LOG:  listening on IPv6 address "::", port 5432
+2026-08-29 09:12:44.628 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+2026-08-29 09:12:44.644 UTC [30] LOG:  database system was shut down at 2026-08-29 09:12:16 UTC
+2026-08-29 09:12:44.667 UTC [1] LOG:  database system is ready to accept connections
+2026-08-29 09:14:38.916 UTC [52] ERROR:  syntax error at or near "DELTE" at character 1
+2026-08-29 09:14:38.916 UTC [52] STATEMENT:  DELTE FROM active_campaign_prizes;
+2026-08-29 09:14:47.793 UTC [52] ERROR:  syntax error at or near "fromm" at character 8
+2026-08-29 09:14:47.793 UTC [52] STATEMENT:  delete fromm active_campaign_prizes;
+2026-08-29 09:18:01.114 UTC [28] LOG:  checkpoint starting: time
+2026-08-29 09:18:03.984 UTC [28] LOG:  checkpoint complete: wrote 31 buffers (0.2%); 0 WAL file(s) added, 0 removed, 0 recycled; write=2.825 s, sync=0.030 s, total=2.872 s; sync files=29, longest=0.009 s, average=0.002 s; distance=76 kB, estimate=76 kB
+2026-08-29 09:55:02.346 UTC [28] LOG:  checkpoint starting: time
+2026-08-29 09:55:03.123 UTC [28] LOG:  checkpoint complete: wrote 8 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.730 s, sync=0.020 s, total=0.781 s; sync files=8, longest=0.014 s, average=0.003 s; distance=2 kB, estimate=69 kB

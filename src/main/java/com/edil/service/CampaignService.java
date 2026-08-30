@@ -218,7 +218,9 @@ public class CampaignService {
 
         String creatorName = null;
         if (campaign.getCreator() != null && campaign.getCreator().getCreatorProfile() != null) {
+
             creatorName = campaign.getCreator().getCreatorProfile().getFullName();
+            log.info("logging the creator  name and it is {}", creatorName);
         }
 
         return CampaignResponse.builder()
