@@ -6,3 +6,5 @@ CREATE TABLE user_profiles (
     address VARCHAR(255),
     refund_bank_account VARCHAR(50) NOT NULL
 );
+
+

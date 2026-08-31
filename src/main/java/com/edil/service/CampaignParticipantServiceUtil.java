@@ -46,7 +46,7 @@ public class CampaignParticipantServiceUtil {
         String requestTobeMadeLink = cbeJasonPayloadEndPoint + uniqueIdOnLink;
 
 
-        return restClient.get()
+         CbePayload rawCbePayload = restClient.get()
                 .uri(requestTobeMadeLink)
                 .accept(MediaType.APPLICATION_JSON)// Tells server we want JSON
                 .header("x-app-version", x_app_version)
@@ -57,6 +57,10 @@ public class CampaignParticipantServiceUtil {
                 .header("Referer", Referer)
                 .retrieve()
                 .body(CbePayload.class);
+
+         return  rawCbePayload.withv2Key(uniqueIdOnLink);
+
+
 
     }
 

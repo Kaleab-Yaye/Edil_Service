@@ -60,4 +60,9 @@ public class UserService {
 
         return builder.build();
     }
+
+    public Account getUserByEmail(String email) {
+       return accountRepository.findByEmail(email)
+                .orElseThrow(() -> new AccountNotFoundException("Account not found"));
+    }
 }

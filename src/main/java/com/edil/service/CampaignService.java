@@ -236,4 +236,10 @@ public class CampaignService {
                 .firstPrizeImageUrl(firstPrizeImageUrl)
                 .build();
     }
+
+    // i think the logic that desides if the user can decide should be here or what?
+
+    public Campaign getCampaignById(UUID campaignId){
+        return  campaignRepository.getReferenceById(campaignId);
+    }
 }

@@ -1,7 +1,7 @@
 package com.edil.controller;
 
 
-import com.edil.dto.request.AddParticipantToCampaign;
+import com.edil.dto.request.AddParticipantToCampaignRequest;
 import com.edil.dto.response.AddParticipantToCampaignResponse;
 import com.edil.service.CampaignParticipantService;
 import org.springframework.http.ResponseEntity;
@@ -23,9 +23,9 @@ public class CampaignParticipantController {
 
 
     @PostMapping("/add/participant")
-    public ResponseEntity<AddParticipantToCampaignResponse> handelAddParticipantToCampaign(@RequestBody AddParticipantToCampaign addParticipantToCampaign){
+    public ResponseEntity<AddParticipantToCampaignResponse> handelAddParticipantToCampaign(@RequestBody AddParticipantToCampaignRequest addParticipantToCampaignRequest){
 
-        return  campaignParticipantService.TestAddCampaignParticipant(addParticipantToCampaign);
+        return  campaignParticipantService.TestAddCampaignParticipant(addParticipantToCampaignRequest);
 
     }
 }
