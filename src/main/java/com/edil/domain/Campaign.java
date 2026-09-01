@@ -2,10 +2,7 @@ package com.edil.domain;
 
 import com.edil.domain.enums.CampaignStatus;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -70,4 +67,6 @@ public class Campaign {
 
     @OneToMany(mappedBy = "campaign", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ActiveCampaignPrize> activePrizes;
+
+    @Version @Getter Integer version;
 }
