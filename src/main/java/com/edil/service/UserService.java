@@ -12,8 +12,13 @@ import com.edil.repository.AdminProfileRepository;
 import com.edil.repository.CreatorProfileRepository;
 import com.edil.repository.UserProfileRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -64,5 +69,13 @@ public class UserService {
     public Account getUserByEmail(String email) {
        return accountRepository.findByEmail(email)
                 .orElseThrow(() -> new AccountNotFoundException("Account not found"));
+    }
+
+
+    @Cacheable(value = "user_email_to_UUID", key ="#email")
+
+    public UUID getUserUUIDByEmail(String email){
+        log.info("cache missed for Email to UUID methode");
+        return accountRepository.findByEmail(email).orElseThrow(()->new AccountNotFoundException("the account with the email "+email+ " is not found")).getId();
     }
 }

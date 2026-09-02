@@ -2,17 +2,25 @@ package com.edil.service;
 
 
 
-import com.edil.domain.Account;
-import com.edil.domain.Campaign;
-import com.edil.domain.Receipt;
+import com.edil.config.util.StoreCampaignToSlotHashMap;
+import com.edil.domain.*;
 import com.edil.domain.enums.CampaignStatus;
 import com.edil.dto.internal.CbePayload;
 import com.edil.dto.request.AddParticipantToCampaignRequest;
+import com.edil.dto.request.CanParticipantJoinCampaignRequest;
+import com.edil.dto.request.CreateCampaignSlotForUserRequest;
 import com.edil.dto.response.AddParticipantToCampaignResponse;
+import com.edil.dto.response.CanParticipantJoinCampaignResponse;
+import com.edil.dto.response.CreateCampaignSlotForUserResponse;
 import com.edil.dto.response.UserMeResponse;
 import com.edil.repository.CampaignParticipantsRepository;
 import com.edil.repository.ReceiptRepository;
+import com.edil.repository.SlotRepository;
+import com.github.benmanes.caffeine.cache.Cache;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.aspectj.weaver.patterns.ConcreteCflowPointcut;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -24,60 +32,59 @@ import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class CampaignParticipantService {
 
-    private  final  CampaignParticipantServiceUtil campaignParticipantServiceUtil;
-    private  final UserService userService;
-    private  final CampaignParticipantsRepository campaignParticipantsRepository;
-    private  final  CampaignService campaignService;
-    private  final ReceiptRepository receiptRepository;
-
-    CampaignParticipantService(CampaignParticipantServiceUtil campaignParticipantServiceUtil, UserService userService, CampaignParticipantsRepository campaignParticipantsRepository, CampaignService campaignService,
-                               ReceiptRepository receiptRepository){
-        this.campaignParticipantServiceUtil = campaignParticipantServiceUtil;
-        this.userService = userService;
-        this.campaignParticipantsRepository = campaignParticipantsRepository;
-        this.campaignService = campaignService;
-        this.receiptRepository = receiptRepository;
-    }
-
+    private final CampaignParticipantServiceUtil campaignParticipantServiceUtil;
+    private final UserService userService;
+    private final CampaignParticipantsRepository campaignParticipantsRepository;
+    private final CampaignService campaignService;
+    private final ReceiptRepository receiptRepository;
+    private final SlotRepository slotRepository;
+    private  final Cache<UUID, UUID> slotKeyToCampaignIdCache;
 
 
 
 
 
     @Transactional
-    public ResponseEntity<AddParticipantToCampaignResponse> AddCampaignParticipant(AddParticipantToCampaignRequest addParticipantToCampaignRequest, String userEmail){
+    public ResponseEntity<AddParticipantToCampaignResponse> AddCampaignParticipant(AddParticipantToCampaignRequest addParticipantToCampaignRequest, String userEmail) {
         // lets first make sure the user is active and make sure is not part of the campain already.
 
         Account biengAddedUserAccount = userService.getUserByEmail(userEmail);
-        if(!biengAddedUserAccount.getIsActive()){
+        if (!biengAddedUserAccount.getIsActive()) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new AddParticipantToCampaignResponse("user is banned"));
         }
 
-        if(campaignParticipantsRepository.existsByAccountIdAndCampaignId(biengAddedUserAccount.getId(), addParticipantToCampaignRequest.campaignId())){
+        if (campaignParticipantsRepository.existsByAccountIdAndCampaignId(biengAddedUserAccount.getId(), addParticipantToCampaignRequest.campaignId())) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new AddParticipantToCampaignResponse("user already joined campaign"));
+        }
+
+        if(slotKeyToCampaignIdCache.asMap().get(addParticipantToCampaignRequest.slotKey()) != addParticipantToCampaignRequest.campaignId()){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new AddParticipantToCampaignResponse("slot key has expired or is not valid"));
         }
 
         Campaign campaign = campaignService.getCampaignById(addParticipantToCampaignRequest.campaignId());
 
         // now the logic starts here
-        if(!campaign.getStatus().equals(CampaignStatus.APPROVED)){
+        if (!campaign.getStatus().equals(CampaignStatus.APPROVED)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new AddParticipantToCampaignResponse("campaign is over/or doesn't exist anymore"));
         }
 
         CbePayload cbePayload = campaignParticipantServiceUtil.fetchCbePayload(addParticipantToCampaignRequest.fullPaymentLink());
 
-        if (cbePayload == null){
+        if (cbePayload == null) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new AddParticipantToCampaignResponse("The link provided does't match with the registered CBE API"));
         }
 
-        if (!cbePayload.status().equals("COMPLETED")){
+        if (!cbePayload.status().equals("COMPLETED")) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new AddParticipantToCampaignResponse("The link provided is invalid, input a correct one"));
         }
 
@@ -87,7 +94,7 @@ public class CampaignParticipantService {
         LocalDateTime campaignStratDate = campaign.getStartDate();
         int targetEntries = campaign.getTargetEntries();
         int currentEntries = campaign.getJoinedUsers();
-        BigDecimal ticketPrice  = campaign.getTicketPrice();
+        BigDecimal ticketPrice = campaign.getTicketPrice();
         String receiverAccountNumber = campaign.getCreator().getCreatorProfile().getPayoutBankAccount();
         String receiverAccountName = campaign.getCreator().getCreatorProfile().getFullName();
 
@@ -100,7 +107,7 @@ public class CampaignParticipantService {
         BigDecimal receivedAmountFromRecept = BigDecimal.valueOf(Integer.valueOf(cbePayload.debitAmount()).doubleValue()); // YEAH keep an eye on this mess
         LocalDateTime transactionMadelocalDateTime = LocalDateTime.ofInstant(cbePayload.dateTimes(), ZoneId.systemDefault()); // the instant mapping might have failed so check that as well
 
-        Pattern extractTheLastFourNumbersFromTheAccountNumber  = Pattern.compile("(.{4})$");
+        Pattern extractTheLastFourNumbersFromTheAccountNumber = Pattern.compile("(.{4})$");
         Matcher matcherForAccountNumber = extractTheLastFourNumbersFromTheAccountNumber.matcher(receiverAccountNumber);
         Matcher matcherForReceiptAccountNumber = extractTheLastFourNumbersFromTheAccountNumber.matcher(receiverAccountNumberFromReceipt);
         String extractedFourLastDigitsFromAccountNumber = matcherForAccountNumber.group(1);
@@ -108,84 +115,116 @@ public class CampaignParticipantService {
 
         // edn cbe payload
 
-        if(receiptRepository.existsReceiptById(cbePayload.v2Key())){
+        if (receiptRepository.existsReceiptById(cbePayload.v2Key())) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new AddParticipantToCampaignResponse("this link is already registered/used"));
 
         }
 
 
-
-        if (!extractedFouLastDigitsFromReceiptAccountNumber.equals(extractedFourLastDigitsFromAccountNumber ) || !receiverAccountName.equals(receiverAccountNameFromReceipt)){
+        if (!extractedFouLastDigitsFromReceiptAccountNumber.equals(extractedFourLastDigitsFromAccountNumber) || !receiverAccountName.equals(receiverAccountNameFromReceipt)) {
 
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new AddParticipantToCampaignResponse("the account you made payment information to does't match the provided account's information"));
 
 
         }
 
-        if(transactionMadelocalDateTime.isAfter(campaignEndDate) || transactionMadelocalDateTime.isBefore(campaignStratDate)){
+        if (transactionMadelocalDateTime.isAfter(campaignEndDate) || transactionMadelocalDateTime.isBefore(campaignStratDate)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new AddParticipantToCampaignResponse("the date on the receipt is not valid"));
         }
 
         // well after this we have asert that the payment is made lets update it well let me do it tommorow i guess.
 
+        CampaignParticipants campaignParticipants = new CampaignParticipants();
+        campaignParticipants.setCampaign(campaign);
+        campaignParticipants.setAccount(biengAddedUserAccount);
+        campaignParticipants.setReceiptHash(cbePayload.v2Key());
+        campaignParticipantsRepository.save(campaignParticipants);
 
+        // now update the add player count, and mark the campaign as over if it goes above the limit
 
+        campaignService.updateUserCount(campaign);
 
+        // update the the receipt table
 
+        Receipt receipt = new Receipt();
+        receipt.setId(cbePayload.v2Key());
+        receipt.setReferenceNumber(cbePayload.id());
 
+        receiptRepository.save(receipt);
 
+        // had to invalidate the cache
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        log.info("succsessfully fetched recipt");
-        log.info("to maeke sure i got it {}", cbePayload.debitAccountHolder());
-        log.info("{}", cbePayload);
-
+        slotKeyToCampaignIdCache.invalidate(addParticipantToCampaignRequest.slotKey());
 
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
 
 
+    public ResponseEntity<CanParticipantJoinCampaignResponse> canParticipantJoinCampaign(CanParticipantJoinCampaignRequest request, String email){
 
-    public ResponseEntity<AddParticipantToCampaignResponse> TestAddCampaignParticipant(AddParticipantToCampaignRequest addParticipantToCampaignRequest){
+        UUID userUUId   = userService.getUserUUIDByEmail(email);
 
-        CbePayload cbePayload = campaignParticipantServiceUtil.fetchCbePayload(addParticipantToCampaignRequest.fullPaymentLink());
-
-        if (cbePayload == null){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new AddParticipantToCampaignResponse("The link provided does't match with the registered CBE API"));
+        if (campaignParticipantsRepository.existsByAccountIdAndCampaignId(userUUId, request.campaignId())){
+            return  ResponseEntity.status(HttpStatus.CONFLICT).body(new CanParticipantJoinCampaignResponse(false));
         }
 
-        if (!cbePayload.status().equals("COMPLETED")){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new AddParticipantToCampaignResponse("The link provided is invalid, input a correct one"));
-        }
-
-        log.info("succsessfully fetched recipt");
-        log.info("to maeke sure i got it {}", cbePayload.debitAccountHolder());
-        log.info("{}", cbePayload);
-
-
-        return ResponseEntity.status(HttpStatus.OK).build();
+        return ResponseEntity.status(HttpStatus.OK).body(new CanParticipantJoinCampaignResponse(true));
     }
 
+    public boolean canParticipantJoinCampaign(UUID campaignId, String email){
+
+        UUID userUUId   = userService.getUserUUIDByEmail(email);
+
+        if (campaignParticipantsRepository.existsByAccountIdAndCampaignId(userUUId, campaignId)){
+            return  false;
+        }
+
+        return true;
+    }
+
+
+    public ResponseEntity<CreateCampaignSlotForUserResponse> createCampaignSlotForUser(CreateCampaignSlotForUserRequest request, String userEmail){
+
+        Campaign campaign = campaignService.getCampaignById(request.campaignId());
+        UUID userId = userService.getUserUUIDByEmail(userEmail);
+
+        if(campaign.getStatus()!=CampaignStatus.APPROVED ||  !canParticipantJoinCampaign(request.campaignId(), userEmail) ){
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
+        }
+
+        // has to write concurent safe excution for this
+
+
+        while(true) {
+
+            int expectedValue =StoreCampaignToSlotHashMap.campaignToSlotStore.get(request.campaignId()).intValue();
+
+            if ( expectedValue<= 0) {
+
+                return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(new CreateCampaignSlotForUserResponse(null, false));
+
+            }
+
+            if ( StoreCampaignToSlotHashMap.campaignToSlotStore.get(request.campaignId()).compareAndSet(expectedValue, expectedValue-1)){
+                break;
+            }
+
+
+            // now one slot is internally reserved, but is not a thing yet on db
+
+
+
+        }
+
+        Slot slot = new Slot();
+        slot.setCampaignId(request.campaignId());
+        slotRepository.save(slot);
+
+        slotKeyToCampaignIdCache.put(slot.getId(), request.campaignId());
+
+
+        return ResponseEntity.status(HttpStatus.OK).body(new CreateCampaignSlotForUserResponse(slot.getId(), true));
+
+    }
 }

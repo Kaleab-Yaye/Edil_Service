@@ -12,6 +12,13 @@ spring:
     locations: classpath:db/migration
     baseline-on-migrate: true
 
+  cache:
+    type: caffeine
+    cache-names:
+      - user_email_to_UUID
+    caffeine:
+      spec: expireAfterWrite=60m
+
 jwt:
   secret: edil-secret-key-change-this-in-production-must-be-at-least-256-bits-long-for-hs256 #have to move to be a real key and move to the enviomenr variable assap
   expiration: 86400000

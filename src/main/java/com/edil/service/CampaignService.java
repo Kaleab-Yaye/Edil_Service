@@ -39,6 +39,7 @@ public class CampaignService {
     private final ArchivedCampaignPrizeRepository archivedCampaignPrizeRepository;
     private final AccountRepository accountRepository;
     private final UploadService uploadService;
+    private final CampaignServiceUtil campaignServiceUtil;
 
     @Transactional
     public CampaignResponse createCampaign(String creatorEmail, CreateCampaignRequest request) {
@@ -171,6 +172,8 @@ public class CampaignService {
                 .orElseThrow(() -> new AccountNotFoundException("Campaign not found"));
         campaign.setStatus(CampaignStatus.APPROVED);
         campaignRepository.save(campaign);
+        // async methode
+        campaignServiceUtil.addCampaignToCampaignToAvailableSlotMap(campaign);
     }
 
     @Transactional
@@ -241,5 +244,45 @@ public class CampaignService {
 
     public Campaign getCampaignById(UUID campaignId){
         return  campaignRepository.getReferenceById(campaignId);
+    }
+
+    public void updateUserCount( UUID campaignId){
+        Campaign campaign = campaignRepository.getReferenceById(campaignId);
+        campaign.setJoinedUsers(campaign.getJoinedUsers()+1); // well even the limit is hit some how adding one user won't hurt that much
+
+        if(campaign.getJoinedUsers()>=campaign.getTargetEntries()){
+            campaign.setTargetReachedAt(LocalDateTime.now());
+            campaign.setStatus(CampaignStatus.ENDED);// logic need updated later, becouse the creator could want to gather as much as users even after the target was hit
+        }
+
+        campaignRepository.save(campaign);
+
+
+
+    }
+
+    public void updateUserCount(Campaign campaign){
+
+        campaign.setJoinedUsers(campaign.getJoinedUsers()+1); // well even the limit is hit some how adding one user won't hurt that much
+
+        if(campaign.getJoinedUsers()>=campaign.getTargetEntries()){
+            campaign.setTargetReachedAt(LocalDateTime.now());
+            campaign.setStatus(CampaignStatus.ENDED);// logic need updated later, becouse the creator could want to gather as much as users even after the target was hit
+            // this should start an async cron job after a certain wait say mabe 5 minute.
+            // the problem is that how would we stop user buying an old ticket fromm it
+        }
+
+
+
+        campaignRepository.save(campaign);
+
+
+
+    }
+
+    public List<Campaign> getAllRunningCampaigns(){
+
+        return  campaignRepository.findByStatus(CampaignStatus.APPROVED);
+
     }
 }
