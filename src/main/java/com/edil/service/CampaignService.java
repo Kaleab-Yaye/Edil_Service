@@ -41,6 +41,7 @@ public class CampaignService {
     private final AccountRepository accountRepository;
     private final UploadService uploadService;
     private final CampaignServiceUtil campaignServiceUtil;
+    private final CampaignParticipantServiceUtil campaignParticipantServiceUtil;
 
     @Transactional
     public CampaignResponse createCampaign(String creatorEmail, CreateCampaignRequest request) {
@@ -204,6 +205,11 @@ public class CampaignService {
                         .build();
                 archivedPrizes.add(archivedPrize);
             }
+
+            campaignParticipantServiceUtil.archiveParticipantsOfAnEndedCampaign2(campaign);
+
+
+
 
             archivedCampaignPrizeRepository.saveAll(archivedPrizes);
             activeCampaignPrizeRepository.deleteByCampaignId(campaign.getId());

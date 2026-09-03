@@ -91,9 +91,16 @@ public class CampaignParticipantServiceUtil {
         }
 
 
+    }
 
 
 
+    public void archiveParticipantsOfAnEndedCampaign2(Campaign campaign){ // to be used from the cron scheduler is non async
+
+        for(CampaignParticipants campaignParticipant : campaignParticipantsRepository.findCampaignParticipantsByCampaign(campaign)){
+            archivedCampaignParticipantsRepository.save(ArchivedCampaignParticipants.archivedCampaignParticipantFromCampaignParticipant(campaignParticipant));
+            campaignParticipantsRepository.delete(campaignParticipant);
+        }
 
     }
 
