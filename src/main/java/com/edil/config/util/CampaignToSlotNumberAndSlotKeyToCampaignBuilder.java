@@ -36,6 +36,7 @@ public class CampaignToSlotNumberAndSlotKeyToCampaignBuilder implements CommandL
 
         for(Slot slot : slotRepository.findAll()){
             slotToCampaignIdCache.put(slot.getId(), slot.getCampaignId());
+            StoreCampaignToSlotHashMap.campaignToSlotStore.get(slot.getCampaignId()).set(StoreCampaignToSlotHashMap.campaignToSlotStore.get(slot.getCampaignId()).intValue()-1);
         }
 
     }

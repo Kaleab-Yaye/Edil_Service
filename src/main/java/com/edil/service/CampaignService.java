@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,7 +47,7 @@ public class CampaignService {
         log.info("createCampaign service hit for email: {}", creatorEmail);
         Account creator = accountRepository.findByEmail(creatorEmail)
                 .orElseThrow(() -> new AccountNotFoundException("Creator account not found"));
-        
+
         if (creator.getCreatorProfile() == null || creator.getCreatorProfile().getOnboardingStatus() != OnboardingStatus.ONBOARDED) {
             throw new IllegalStateException("Creator must be ONBOARDED before creating campaigns");
         }
@@ -75,7 +76,7 @@ public class CampaignService {
             if (!uploadService.isUploadConfirmed(p.getImageFileId())) {
                 throw new IllegalStateException("Image upload not confirmed for file: " + p.getImageFileId());
             }
-            
+
             ActiveCampaignPrize prize = ActiveCampaignPrize.builder()
                     .campaign(campaign)
                     .title(p.getTitle())
@@ -83,7 +84,7 @@ public class CampaignService {
                     .prizeOrder(p.getPrizeOrder())
                     .imageUrl("http://localhost:8081/static/" + p.getImageFileId())
                     .build();
-            
+
             uploadService.invalidateTicket(p.getImageFileId());
             return prize;
         }).collect(Collectors.toList());
@@ -118,7 +119,7 @@ public class CampaignService {
     public CampaignDetailResponse getCampaignDetail(UUID id) {
         Campaign campaign = campaignRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Campaign not found"));
-        
+
         List<PrizeResponse> prizeResponses;
         if (campaign.getStatus() == CampaignStatus.ENDED) {
             prizeResponses = archivedCampaignPrizeRepository.findByCampaignIdOrderByPrizeOrderAsc(campaign.getId())
@@ -130,7 +131,7 @@ public class CampaignService {
                             .imageUrl(p.getImageUrl())
                             .build()).collect(Collectors.toList());
         } else {
-             prizeResponses = activeCampaignPrizeRepository.findByCampaignIdOrderByPrizeOrderAsc(campaign.getId())
+            prizeResponses = activeCampaignPrizeRepository.findByCampaignIdOrderByPrizeOrderAsc(campaign.getId())
                     .stream().map(p -> PrizeResponse.builder()
                             .id(p.getId())
                             .title(p.getTitle())
@@ -189,10 +190,10 @@ public class CampaignService {
         List<Campaign> expiredCampaigns = campaignRepository.findByStatusAndEndDateLessThanEqual(CampaignStatus.APPROVED, LocalDateTime.now());
         for (Campaign campaign : expiredCampaigns) {
             campaign.setStatus(CampaignStatus.ENDED);
-            
+
             List<ActiveCampaignPrize> activePrizes = activeCampaignPrizeRepository.findByCampaignIdOrderByPrizeOrderAsc(campaign.getId());
             List<ArchivedCampaignPrize> archivedPrizes = new ArrayList<>();
-            
+
             for (ActiveCampaignPrize activePrize : activePrizes) {
                 ArchivedCampaignPrize archivedPrize = ArchivedCampaignPrize.builder()
                         .campaign(campaign)
@@ -203,7 +204,7 @@ public class CampaignService {
                         .build();
                 archivedPrizes.add(archivedPrize);
             }
-            
+
             archivedCampaignPrizeRepository.saveAll(archivedPrizes);
             activeCampaignPrizeRepository.deleteByCampaignId(campaign.getId());
         }
@@ -215,8 +216,8 @@ public class CampaignService {
         if (campaign.getActivePrizes() != null && !campaign.getActivePrizes().isEmpty()) {
             firstPrizeImageUrl = campaign.getActivePrizes().get(0).getImageUrl();
         } else {
-             List<ActiveCampaignPrize> activePrizes = activeCampaignPrizeRepository.findByCampaignIdOrderByPrizeOrderAsc(campaign.getId());
-             if (!activePrizes.isEmpty()) firstPrizeImageUrl = activePrizes.get(0).getImageUrl();
+            List<ActiveCampaignPrize> activePrizes = activeCampaignPrizeRepository.findByCampaignIdOrderByPrizeOrderAsc(campaign.getId());
+            if (!activePrizes.isEmpty()) firstPrizeImageUrl = activePrizes.get(0).getImageUrl();
         }
 
         String creatorName = null;
@@ -242,39 +243,81 @@ public class CampaignService {
 
     // i think the logic that desides if the user can decide should be here or what?
 
-    public Campaign getCampaignById(UUID campaignId){
-        return  campaignRepository.getReferenceById(campaignId);
+    public Campaign getCampaignById(UUID campaignId) {
+        return campaignRepository.getReferenceById(campaignId);
     }
 
-    public void updateUserCount( UUID campaignId){
+    public void updateUserCount(UUID campaignId) {
         Campaign campaign = campaignRepository.getReferenceById(campaignId);
-        campaign.setJoinedUsers(campaign.getJoinedUsers()+1); // well even the limit is hit some how adding one user won't hurt that much
+        campaign.setJoinedUsers(campaign.getJoinedUsers() + 1); // well even the limit is hit some how adding one user won't hurt that much
 
-        if(campaign.getJoinedUsers()>=campaign.getTargetEntries()){
+        if (campaign.getJoinedUsers() >= campaign.getTargetEntries()) {
             campaign.setTargetReachedAt(LocalDateTime.now());
-            campaign.setStatus(CampaignStatus.ENDED);// logic need updated later, becouse the creator could want to gather as much as users even after the target was hit
+            campaign.setStatus(CampaignStatus.ENDED);
+
+
+            // logic need updated later, becouse the creator could want to gather as much as users even after the target was hit
         }
 
         campaignRepository.save(campaign);
-
 
 
     }
 
-    public void updateUserCount(Campaign campaign){
+
+
+    @Async
+    public void archivePrizesForAnEndedCampaign(Campaign campaign) {
+
+
+        List<ActiveCampaignPrize> activePrizes = activeCampaignPrizeRepository.findByCampaignIdOrderByPrizeOrderAsc(campaign.getId());
+        List<ArchivedCampaignPrize> archivedPrizes = new ArrayList<>();
+
+        for (ActiveCampaignPrize activePrize : activePrizes) {
+            ArchivedCampaignPrize archivedPrize = ArchivedCampaignPrize.builder()
+                    .campaign(campaign)
+                    .title(activePrize.getTitle())
+                    .description(activePrize.getDescription())
+                    .prizeOrder(activePrize.getPrizeOrder())
+                    .imageUrl(activePrize.getImageUrl())
+                    .build();
+            archivedPrizes.add(archivedPrize);
+        }
+
+        archivedCampaignPrizeRepository.saveAll(archivedPrizes);
+        activeCampaignPrizeRepository.deleteByCampaignId(campaign.getId());
+    }
+
+
+
+
+
+    public boolean updateUserCount(Campaign campaign){
 
         campaign.setJoinedUsers(campaign.getJoinedUsers()+1); // well even the limit is hit some how adding one user won't hurt that much
 
         if(campaign.getJoinedUsers()>=campaign.getTargetEntries()){
             campaign.setTargetReachedAt(LocalDateTime.now());
-            campaign.setStatus(CampaignStatus.ENDED);// logic need updated later, becouse the creator could want to gather as much as users even after the target was hit
-            // this should start an async cron job after a certain wait say mabe 5 minute.
-            // the problem is that how would we stop user buying an old ticket fromm it
+            campaign.setStatus(CampaignStatus.ENDED);
+            campaignRepository.save(campaign);
+
+            // async methode
+            archivePrizesForAnEndedCampaign(campaign);
+
+
+            return true;
+
+
         }
 
-
-
         campaignRepository.save(campaign);
+        return  false;
+
+
+
+
+
+
 
 
 

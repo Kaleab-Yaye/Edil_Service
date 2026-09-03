@@ -1,8 +1,17 @@
 package com.edil.service;
 
 
+import com.edil.domain.ArchivedCampaignParticipants;
+import com.edil.domain.Campaign;
+import com.edil.domain.CampaignParticipants;
+import com.edil.domain.enums.CampaignStatus;
 import com.edil.dto.internal.CbePayload;
+import com.edil.repository.ArchivedCampaignParticipantsRepository;
+import com.edil.repository.CampaignParticipantsRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
@@ -10,14 +19,17 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
+
+@Slf4j
 @Service
+@RequiredArgsConstructor
 public class CampaignParticipantServiceUtil {
 
     private final RestClient restClient;
+    private  final CampaignParticipantsRepository campaignParticipantsRepository;
+    private  final ArchivedCampaignParticipantsRepository archivedCampaignParticipantsRepository;
 
-    CampaignParticipantServiceUtil(RestClient restClient){
-        this.restClient = restClient;
-    }
+
 
 
     public CbePayload fetchCbePayload(String rawUri) {
@@ -63,6 +75,30 @@ public class CampaignParticipantServiceUtil {
 
 
     }
+
+
+    @Async
+    public void archiveParticipantsOfAnEndedCampaign(Campaign campaign){
+        if(!campaign.getStatus().equals(CampaignStatus.ENDED)){
+            log.info("tryied to remove a campaign that is not ove  yet {}", campaign.getId());
+            return;
+
+        }
+
+        for(CampaignParticipants campaignParticipant : campaignParticipantsRepository.findCampaignParticipantsByCampaign(campaign)){
+            archivedCampaignParticipantsRepository.save(ArchivedCampaignParticipants.archivedCampaignParticipantFromCampaignParticipant(campaignParticipant));
+            campaignParticipantsRepository.delete(campaignParticipant);
+        }
+
+
+
+
+
+
+    }
+
+
+
 
 
 

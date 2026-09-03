@@ -13,6 +13,7 @@ import com.edil.dto.response.AddParticipantToCampaignResponse;
 import com.edil.dto.response.CanParticipantJoinCampaignResponse;
 import com.edil.dto.response.CreateCampaignSlotForUserResponse;
 import com.edil.dto.response.UserMeResponse;
+import com.edil.repository.ArchivedCampaignParticipantsRepository;
 import com.edil.repository.CampaignParticipantsRepository;
 import com.edil.repository.ReceiptRepository;
 import com.edil.repository.SlotRepository;
@@ -49,6 +50,8 @@ public class CampaignParticipantService {
     private final ReceiptRepository receiptRepository;
     private final SlotRepository slotRepository;
     private  final Cache<UUID, UUID> slotKeyToCampaignIdCache;
+
+    private final ArchivedCampaignParticipantsRepository archivedCampaignParticipantsRepository;
 
 
 
@@ -142,7 +145,11 @@ public class CampaignParticipantService {
 
         // now update the add player count, and mark the campaign as over if it goes above the limit
 
-        campaignService.updateUserCount(campaign);
+        if(campaignService.updateUserCount(campaign)){
+
+            campaignParticipantServiceUtil.archiveParticipantsOfAnEndedCampaign(campaign);
+
+        }
 
         // update the the receipt table
 
@@ -209,11 +216,6 @@ public class CampaignParticipantService {
             if ( StoreCampaignToSlotHashMap.campaignToSlotStore.get(request.campaignId()).compareAndSet(expectedValue, expectedValue-1)){
                 break;
             }
-
-
-            // now one slot is internally reserved, but is not a thing yet on db
-
-
 
         }
 
