@@ -18,10 +18,18 @@ public class PublicCampaignController {
 
     private final CampaignService campaignService;
 
-    @GetMapping
+    @GetMapping("/ongoing")
     public ResponseEntity<Page<CampaignResponse>> getPublicCampaigns(Pageable pageable) {
         return ResponseEntity.ok(campaignService.getPublicCampaigns(pageable));
     }
+
+    @GetMapping("/ended")
+        public ResponseEntity<Page<CampaignResponse>> getEndedPublicCampaigns(Pageable pageable) {
+            return ResponseEntity.ok(campaignService.getPublicCampaignsEnded(pageable));
+        }
+
+
+
 
     @GetMapping("/{id}")
     public ResponseEntity<CampaignDetailResponse> getCampaignDetail(@PathVariable UUID id) {

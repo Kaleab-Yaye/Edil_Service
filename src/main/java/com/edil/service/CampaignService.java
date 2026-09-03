@@ -101,6 +101,15 @@ public class CampaignService {
                 .map(this::mapToCampaignResponse);
     }
 
+
+    public Page<CampaignResponse> getPublicCampaignsEnded(Pageable pageable){
+
+        return campaignRepository.findByStatus(CampaignStatus.ENDED, pageable)
+                .map(this::mapToEndedCampaignResponse);
+
+
+    }
+
     @Transactional(readOnly = true)
     public List<CampaignResponse> getPendingCampaigns() {
         return campaignRepository.findByStatus(CampaignStatus.PENDING, Pageable.unpaged())
@@ -247,7 +256,42 @@ public class CampaignService {
                 .build();
     }
 
+
+    // am let the AI ts shit it is broing asf
+
+    private CampaignResponse mapToEndedCampaignResponse(Campaign campaign) {
+        String firstPrizeImageUrl = null;
+        if (campaign.getArchivedCampaignPrizes() != null && !campaign.getArchivedCampaignPrizes().isEmpty()) {
+            firstPrizeImageUrl = campaign.getArchivedCampaignPrizes().get(0).getImageUrl();
+        } else {
+            List<ArchivedCampaignPrize> archivedPrizes = archivedCampaignPrizeRepository.findByCampaignIdOrderByPrizeOrderAsc(campaign.getId());
+            if (!archivedPrizes.isEmpty()) firstPrizeImageUrl = archivedPrizes.get(0).getImageUrl();
+        }
+
+        String creatorName = null;
+        if (campaign.getCreator() != null && campaign.getCreator().getCreatorProfile() != null) {
+
+            creatorName = campaign.getCreator().getCreatorProfile().getFullName();
+            log.info("logging the creator  name and it is {}", creatorName);
+        }
+
+        return CampaignResponse.builder()
+                .id(campaign.getId())
+                .title(campaign.getTitle())
+                .ticketPrice(campaign.getTicketPrice())
+                .targetEntries(campaign.getTargetEntries())
+                .joinedUsers(campaign.getJoinedUsers())
+                .status(campaign.getStatus().name())
+                .startDate(campaign.getStartDate())
+                .endDate(campaign.getEndDate())
+                .creatorName(creatorName)
+                .firstPrizeImageUrl(firstPrizeImageUrl)
+                .build();
+    }
+
     // i think the logic that desides if the user can decide should be here or what?
+
+
 
     public Campaign getCampaignById(UUID campaignId) {
         return campaignRepository.getReferenceById(campaignId);

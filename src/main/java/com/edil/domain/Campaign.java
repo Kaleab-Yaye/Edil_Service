@@ -68,5 +68,8 @@ public class Campaign {
     @OneToMany(mappedBy = "campaign", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ActiveCampaignPrize> activePrizes;
 
+    @OneToMany(mappedBy = "campaign")
+    private List<ArchivedCampaignPrize> archivedCampaignPrizes;
+
     @Version @Getter Integer version;
 }
