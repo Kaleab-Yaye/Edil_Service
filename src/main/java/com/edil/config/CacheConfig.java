@@ -2,6 +2,7 @@ package com.edil.config;
 
 
 import com.edil.config.util.StoreCampaignToSlotHashMap;
+import com.edil.repository.SlotRepository;
 import com.edil.service.CampaignParticipantServiceUtil;
 import com.edil.service.CampaignService;
 import com.github.benmanes.caffeine.cache.Cache;
@@ -22,6 +23,7 @@ public class CacheConfig {
 
     private final CampaignService campaignService;
     private final CampaignParticipantServiceUtil campaignParticipantServiceUtil;
+    private final SlotRepository slotRepository;
 
 
 
@@ -60,6 +62,12 @@ public class CacheConfig {
             campaignParticipantServiceUtil.archiveParticipantsOfAnEndedCampaign(campaignId);
 
         };
+
+
+        // now remove the slot from the db, as it rebuilding the whole thing from the found u
+
+        slotRepository.deleteById(slotKey);
+
 
         }
 
