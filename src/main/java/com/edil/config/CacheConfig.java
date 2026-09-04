@@ -2,6 +2,7 @@ package com.edil.config;
 
 
 import com.edil.config.util.StoreCampaignToSlotHashMap;
+import com.edil.service.CampaignParticipantServiceUtil;
 import com.edil.service.CampaignService;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
@@ -20,6 +21,7 @@ import java.util.UUID;
 public class CacheConfig {
 
     private final CampaignService campaignService;
+    private final CampaignParticipantServiceUtil campaignParticipantServiceUtil;
 
 
 
@@ -53,7 +55,11 @@ public class CacheConfig {
         }
 
         // if is removed manually it means a payment was made in that slot interval, so no need to updated the map
-        campaignService.updateUserCount(campaignId);
+        if(campaignService.updateUserCount(campaignId)){
+
+            campaignParticipantServiceUtil.archiveParticipantsOfAnEndedCampaign(campaignId);
+
+        };
 
         }
 

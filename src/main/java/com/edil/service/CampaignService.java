@@ -304,22 +304,33 @@ public class CampaignService {
         return campaignRepository.getReferenceById(campaignId);
     }
 
-    public void updateUserCount(UUID campaignId) {
+
+    @Transactional
+    public boolean updateUserCount(UUID campaignId) {
         Campaign campaign = campaignRepository.getReferenceById(campaignId);
+
+        log.info("this is to be printed first jsut to check ");
 
         log.info("the number of already joinged users is {}", campaign.getJoinedUsers());
 
-        campaign.setJoinedUsers(campaign.getJoinedUsers() + 1); // well even the limit is hit some how adding one user won't hurt that much
+        campaign.setJoinedUsers(campaign.getJoinedUsers() + 1);
 
         if (campaign.getJoinedUsers() >= campaign.getTargetEntries()) {
             campaign.setTargetReachedAt(LocalDateTime.now());
             campaign.setStatus(CampaignStatus.ENDED);
+            campaignRepository.save(campaign);
+
+            // async methode
+            archivePrizesForAnEndedCampaign(campaign);
 
 
-            // logic need updated later, becouse the creator could want to gather as much as users even after the target was hit
+            return true;
+
+
         }
 
         campaignRepository.save(campaign);
+        return false;
 
 
     }

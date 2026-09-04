@@ -188,11 +188,7 @@ public class CampaignParticipantService {
 
         // now update the add player count, and mark the campaign as over if it goes above the limit
 
-        if(campaignService.updateUserCount(campaign)){
 
-            campaignParticipantServiceUtil.archiveParticipantsOfAnEndedCampaign(campaign);
-
-        }
 
         // update the the receipt table
 

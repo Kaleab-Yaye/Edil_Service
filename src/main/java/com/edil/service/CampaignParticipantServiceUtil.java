@@ -8,13 +8,16 @@ import com.edil.domain.enums.CampaignStatus;
 import com.edil.dto.internal.CbePayload;
 import com.edil.repository.ArchivedCampaignParticipantsRepository;
 import com.edil.repository.CampaignParticipantsRepository;
+import com.edil.repository.CampaignRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClient;
 
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -28,6 +31,7 @@ public class CampaignParticipantServiceUtil {
     private final RestClient restClient;
     private  final CampaignParticipantsRepository campaignParticipantsRepository;
     private  final ArchivedCampaignParticipantsRepository archivedCampaignParticipantsRepository;
+    private final CampaignRepository campaignRepository;
 
 
 
@@ -79,6 +83,23 @@ public class CampaignParticipantServiceUtil {
 
     @Async
     public void archiveParticipantsOfAnEndedCampaign(Campaign campaign){
+        if(!campaign.getStatus().equals(CampaignStatus.ENDED)){
+            log.info("tryied to remove a campaign that is not ove  yet {}", campaign.getId());
+            return;
+
+        }
+
+        for(CampaignParticipants campaignParticipant : campaignParticipantsRepository.findCampaignParticipantsByCampaign(campaign)){
+            archivedCampaignParticipantsRepository.save(ArchivedCampaignParticipants.archivedCampaignParticipantFromCampaignParticipant(campaignParticipant));
+            campaignParticipantsRepository.delete(campaignParticipant);
+        }
+
+
+    }
+
+    @Transactional
+    public void archiveParticipantsOfAnEndedCampaign(UUID campaignId){
+        Campaign campaign = campaignRepository.findById(campaignId).orElseThrow();
         if(!campaign.getStatus().equals(CampaignStatus.ENDED)){
             log.info("tryied to remove a campaign that is not ove  yet {}", campaign.getId());
             return;
