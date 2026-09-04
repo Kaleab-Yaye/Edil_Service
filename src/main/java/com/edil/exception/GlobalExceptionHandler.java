@@ -7,12 +7,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.time.LocalDateTime;
 
 @Slf4j
 @RestControllerAdvice
-public class GlobalExceptionHandler {
+public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(EmailAlreadyExistsException.class)
     public ResponseEntity<ErrorResponse> handleEmailAlreadyExistsException(EmailAlreadyExistsException ex) {
@@ -74,23 +75,7 @@ public class GlobalExceptionHandler {
         );
     }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> handleValidationException(MethodArgumentNotValidException ex) {
-        String message = ex.getBindingResult().getFieldErrors().stream()
-                .findFirst()
-                .map(err -> err.getField() + " " + err.getDefaultMessage())
-                .orElse("Validation error");
-        
-        log.warn("Validation error: {}", message);
 
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
-                ErrorResponse.builder()
-                        .errorCode("VALIDATION_ERROR")
-                        .timestamp(LocalDateTime.now())
-                        .message(message)
-                        .build()
-        );
-    }
 
     @ExceptionHandler(Throwable.class)
     public ResponseEntity<ErrorResponse> handleGenericException(Throwable ex) {

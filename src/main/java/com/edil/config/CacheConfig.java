@@ -55,9 +55,6 @@ public class CacheConfig {
         // if is removed manually it means a payment was made in that slot interval, so no need to updated the map
         campaignService.updateUserCount(campaignId);
 
-
-
-
         }
 
 

@@ -14,10 +14,10 @@ public class BinConfig {
         return RestClient.create();
     }
 
-    @Bean
-    public ObjectMapper retObjectMapper() {
-        return new ObjectMapper();
-    }
+//    @Bean
+//    public ObjectMapper retObjectMapper() {
+//        return new ObjectMapper();
+//    }
 
 
 }

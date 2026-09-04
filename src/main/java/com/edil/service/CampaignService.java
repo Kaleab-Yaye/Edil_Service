@@ -1,5 +1,7 @@
 package com.edil.service;
 
+import com.edil.config.util.CampaignToSlotNumberAndSlotKeyToCampaignBuilder;
+import com.edil.config.util.StoreCampaignToSlotHashMap;
 import com.edil.domain.Account;
 import com.edil.domain.ActiveCampaignPrize;
 import com.edil.domain.ArchivedCampaignPrize;
@@ -42,6 +44,7 @@ public class CampaignService {
     private final UploadService uploadService;
     private final CampaignServiceUtil campaignServiceUtil;
     private final CampaignParticipantServiceUtil campaignParticipantServiceUtil;
+    private final StoreCampaignToSlotHashMap campaignToSlotHashMap;
 
     @Transactional
     public CampaignResponse createCampaign(String creatorEmail, CreateCampaignRequest request) {
@@ -160,6 +163,8 @@ public class CampaignService {
             creatorAbout = campaign.getCreator().getCreatorProfile().getAboutSection();
         }
 
+
+
         return CampaignDetailResponse.builder()
                 .id(campaign.getId())
                 .title(campaign.getTitle())
@@ -174,6 +179,7 @@ public class CampaignService {
                 .creatorChannelLink(creatorChannelLink)
                 .creatorAbout(creatorAbout)
                 .prizes(prizeResponses)
+                .availableSlots(StoreCampaignToSlotHashMap.campaignToSlotStore.get(campaign.getId()).intValue())
                 .build();
     }
 
@@ -342,11 +348,11 @@ public class CampaignService {
 
 
 
-    public boolean updateUserCount(Campaign campaign){
+    public boolean updateUserCount(Campaign campaign) {
 
-        campaign.setJoinedUsers(campaign.getJoinedUsers()+1); // well even the limit is hit some how adding one user won't hurt that much
+        campaign.setJoinedUsers(campaign.getJoinedUsers() + 1); // well even the limit is hit some how adding one user won't hurt that much
 
-        if(campaign.getJoinedUsers()>=campaign.getTargetEntries()){
+        if (campaign.getJoinedUsers() >= campaign.getTargetEntries()) {
             campaign.setTargetReachedAt(LocalDateTime.now());
             campaign.setStatus(CampaignStatus.ENDED);
             campaignRepository.save(campaign);
@@ -361,21 +367,14 @@ public class CampaignService {
         }
 
         campaignRepository.save(campaign);
-        return  false;
-
-
-
-
-
-
-
+        return false;
 
 
     }
 
-    public List<Campaign> getAllRunningCampaigns(){
+   public List<Campaign> getAllRunningCampaigns(){
 
         return  campaignRepository.findByStatus(CampaignStatus.APPROVED);
 
-    }
+   }
 }

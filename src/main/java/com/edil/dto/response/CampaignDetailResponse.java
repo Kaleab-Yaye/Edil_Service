@@ -27,5 +27,6 @@ public class CampaignDetailResponse {
     private String creatorName;
     private String creatorChannelLink;
     private String creatorAbout;
+    private int availableSlots;
     private List<PrizeResponse> prizes;
 }

@@ -70,7 +70,8 @@ public class CampaignParticipantService {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new AddParticipantToCampaignResponse("user already joined campaign"));
         }
 
-        if(slotKeyToCampaignIdCache.asMap().get(addParticipantToCampaignRequest.slotKey()) != addParticipantToCampaignRequest.campaignId()){
+        if(!slotKeyToCampaignIdCache.asMap().get(addParticipantToCampaignRequest.slotKey()).equals(addParticipantToCampaignRequest.campaignId())){
+            log.info("the value in the map for the key {} is {} and the campaign id that came ver the reqeust is {}",addParticipantToCampaignRequest.slotKey(), slotKeyToCampaignIdCache.asMap().get(addParticipantToCampaignRequest.slotKey()), addParticipantToCampaignRequest.campaignId() );
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new AddParticipantToCampaignResponse("slot key has expired or is not valid"));
         }
 
@@ -93,28 +94,49 @@ public class CampaignParticipantService {
 
         // Campaign data
 
-        LocalDateTime campaignEndDate = campaign.getEndDate();
-        LocalDateTime campaignStratDate = campaign.getStartDate();
-        int targetEntries = campaign.getTargetEntries();
-        int currentEntries = campaign.getJoinedUsers();
-        BigDecimal ticketPrice = campaign.getTicketPrice();
-        String receiverAccountNumber = campaign.getCreator().getCreatorProfile().getPayoutBankAccount();
-        String receiverAccountName = campaign.getCreator().getCreatorProfile().getFullName();
+            LocalDateTime campaignEndDate = campaign.getEndDate();
+            LocalDateTime campaignStratDate = campaign.getStartDate();
+            int targetEntries = campaign.getTargetEntries();
+            int currentEntries = campaign.getJoinedUsers();
+            BigDecimal ticketPrice = campaign.getTicketPrice();
+            String receiverAccountNumber = campaign.getCreator().getCreatorProfile().getPayoutBankAccount();
+            String receiverAccountName = campaign.getCreator().getCreatorProfile().getFullName();
 
 
-        // Data Extracted from CBE payload
+            // Data Extracted from CBE payload
 
-        String receiverAccountNumberFromReceipt = cbePayload.creditAccountNo();
-        String receiverAccountNameFromReceipt = cbePayload.creditAccountHolder();
+            String receiverAccountNumberFromReceipt = cbePayload.creditAccountNo();
+            String receiverAccountNameFromReceipt = cbePayload.creditAccountHolder();
 
-        BigDecimal receivedAmountFromRecept = BigDecimal.valueOf(Integer.valueOf(cbePayload.debitAmount()).doubleValue()); // YEAH keep an eye on this mess
-        LocalDateTime transactionMadelocalDateTime = LocalDateTime.ofInstant(cbePayload.dateTimes(), ZoneId.systemDefault()); // the instant mapping might have failed so check that as well
+            BigDecimal receivedAmountFromRecept = cbePayload.debitAmount(); // YEAH keep an eye on this mess
+            LocalDateTime transactionMadelocalDateTime = LocalDateTime.ofInstant(cbePayload.dateTimes()[0], ZoneId.systemDefault()); // the instant mapping might have failed so check that as well
 
-        Pattern extractTheLastFourNumbersFromTheAccountNumber = Pattern.compile("(.{4})$");
-        Matcher matcherForAccountNumber = extractTheLastFourNumbersFromTheAccountNumber.matcher(receiverAccountNumber);
-        Matcher matcherForReceiptAccountNumber = extractTheLastFourNumbersFromTheAccountNumber.matcher(receiverAccountNumberFromReceipt);
-        String extractedFourLastDigitsFromAccountNumber = matcherForAccountNumber.group(1);
-        String extractedFouLastDigitsFromReceiptAccountNumber = matcherForReceiptAccountNumber.group(1);
+            Pattern extractTheLastFourNumbersFromTheAccountNumber = Pattern.compile("^.*(.{4})$");
+            log.info("the account number from campaign is {}",receiverAccountNumber);
+            log.info("the account number from receipt is {}", receiverAccountNumberFromReceipt);
+
+
+            Matcher matcherForAccountNumber = extractTheLastFourNumbersFromTheAccountNumber.matcher(receiverAccountNumber);
+            Matcher matcherForReceiptAccountNumber = extractTheLastFourNumbersFromTheAccountNumber.matcher(receiverAccountNumberFromReceipt);
+            String extractedFourLastDigitsFromAccountNumber ="";
+            String extractedFouLastDigitsFromReceiptAccountNumber="";
+
+            if(matcherForAccountNumber.matches()){
+                extractedFourLastDigitsFromAccountNumber = matcherForAccountNumber.group(1);
+
+            }
+
+            if(matcherForReceiptAccountNumber.matches()){
+
+                extractedFouLastDigitsFromReceiptAccountNumber = matcherForReceiptAccountNumber.group(1);
+
+            }
+
+
+
+
+
+
 
         // edn cbe payload
 
@@ -133,6 +155,11 @@ public class CampaignParticipantService {
 
         if (transactionMadelocalDateTime.isAfter(campaignEndDate) || transactionMadelocalDateTime.isBefore(campaignStratDate)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new AddParticipantToCampaignResponse("the date on the receipt is not valid"));
+        }
+
+        if(receivedAmountFromRecept.compareTo(campaign.getTicketPrice())<0){
+
+            return  ResponseEntity.status(HttpStatus.FORBIDDEN).body(new AddParticipantToCampaignResponse(" the amount payed is less than the ticket price"));
         }
 
         // well after this we have asert that the payment is made lets update it well let me do it tommorow i guess.
@@ -209,7 +236,7 @@ public class CampaignParticipantService {
 
             if ( expectedValue<= 0) {
 
-                return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(new CreateCampaignSlotForUserResponse(null, false));
+                return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(new CreateCampaignSlotForUserResponse(null, false, null, null, null));
 
             }
 
@@ -223,10 +250,17 @@ public class CampaignParticipantService {
         slot.setCampaignId(request.campaignId());
         slotRepository.save(slot);
 
+
+        log.info("putting the slot key in cache {}", slot.getId());
+
         slotKeyToCampaignIdCache.put(slot.getId(), request.campaignId());
 
+        log.info("accessinng put slot for the key {} from the cache and the contains request is this {}", slot.getId(), slotKeyToCampaignIdCache.asMap().containsKey(slot.getId()));
 
-        return ResponseEntity.status(HttpStatus.OK).body(new CreateCampaignSlotForUserResponse(slot.getId(), true));
+
+        CreatorProfile accountHolder = campaign.getCreator().getCreatorProfile();
+
+        return ResponseEntity.status(HttpStatus.OK).body(new CreateCampaignSlotForUserResponse(slot.getId(), true, accountHolder.getPayoutBankAccount(),campaign.getTicketPrice(), accountHolder.getFullName()));
 
     }
 }

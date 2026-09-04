@@ -1,1 +1,1 @@
-Alter table campaign ADD COLUMN version INT;
+Alter table campaigns ADD COLUMN version INT;

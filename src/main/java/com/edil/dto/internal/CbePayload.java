@@ -1,18 +1,19 @@
 package com.edil.dto.internal;
 
 
+import java.math.BigDecimal;
 import java.time.Instant;
 
 // if the mapping doens happen we ahve to add the ignore parremter here
 public record CbePayload(
         String id,
         String debitAccountNo,
-        String debitAmount,
+        BigDecimal debitAmount,
         String debitValueDate,
         String creditAccountNo,
         String creditAccountHolder,
         String debitAccountHolder,
-        Instant dateTimes,
+        Instant[] dateTimes,
         String status,
         String v2Key
 

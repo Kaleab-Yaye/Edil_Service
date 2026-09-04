@@ -8,6 +8,7 @@ import lombok.Setter;
 import java.util.UUID;
 
 @Entity
+@Table(name = "slots")
 public class Slot {
     @Id
 
@@ -21,9 +22,6 @@ public class Slot {
     @Setter
     @Getter
     private UUID  campaignId;
-
-
-
 
 
 

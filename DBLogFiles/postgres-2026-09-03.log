@@ -1,0 +1,18 @@
+2026-09-03 12:32:47.532 UTC [1] LOG:  starting PostgreSQL 15.15 on x86_64-pc-linux-musl, compiled by gcc (Alpine 14.2.0) 14.2.0, 64-bit
+2026-09-03 12:32:47.538 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+2026-09-03 12:32:47.538 UTC [1] LOG:  listening on IPv6 address "::", port 5432
+2026-09-03 12:32:47.901 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+2026-09-03 12:32:48.116 UTC [36] LOG:  database system was shut down at 2026-08-31 13:24:52 UTC
+2026-09-03 12:32:48.300 UTC [1] LOG:  database system is ready to accept connections
+2026-09-03 12:36:07.574 UTC [44] ERROR:  relation "campaign" does not exist
+2026-09-03 12:36:07.574 UTC [44] STATEMENT:  Alter table campaign ADD COLUMN version INT
+2026-09-03 12:37:24.653 UTC [53] ERROR:  relation "slot" does not exist at character 38
+2026-09-03 12:37:24.653 UTC [53] STATEMENT:  select s1_0.id,s1_0.campaign_id from slot s1_0
+2026-09-03 12:38:07.401 UTC [34] LOG:  checkpoint starting: time
+2026-09-03 12:38:11.835 UTC [34] LOG:  checkpoint complete: wrote 46 buffers (0.3%); 0 WAL file(s) added, 0 removed, 0 recycled; write=4.383 s, sync=0.032 s, total=4.474 s; sync files=39, longest=0.010 s, average=0.001 s; distance=211 kB, estimate=211 kB
+2026-09-03 19:55:09.728 UTC [34] LOG:  checkpoint starting: time
+2026-09-03 19:55:11.011 UTC [34] LOG:  checkpoint complete: wrote 11 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=1.216 s, sync=0.030 s, total=1.285 s; sync files=10, longest=0.024 s, average=0.003 s; distance=1 kB, estimate=190 kB
+2026-09-03 20:05:10.173 UTC [34] LOG:  checkpoint starting: time
+2026-09-03 20:05:10.552 UTC [34] LOG:  checkpoint complete: wrote 4 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.308 s, sync=0.009 s, total=0.379 s; sync files=4, longest=0.006 s, average=0.003 s; distance=1 kB, estimate=171 kB
+2026-09-03 21:25:39.888 UTC [34] LOG:  checkpoint starting: time
+2026-09-03 21:25:40.268 UTC [34] LOG:  checkpoint complete: wrote 4 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.342 s, sync=0.007 s, total=0.383 s; sync files=4, longest=0.004 s, average=0.002 s; distance=1 kB, estimate=154 kB
