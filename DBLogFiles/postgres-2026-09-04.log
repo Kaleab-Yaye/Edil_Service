@@ -10,3 +10,11 @@
 2026-09-04 07:45:37.341 UTC [28] LOG:  checkpoint starting: end-of-recovery immediate wait
 2026-09-04 07:45:37.360 UTC [28] LOG:  checkpoint complete: wrote 3 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.006 s, sync=0.003 s, total=0.022 s; sync files=2, longest=0.002 s, average=0.002 s; distance=0 kB, estimate=0 kB
 2026-09-04 07:45:37.373 UTC [1] LOG:  database system is ready to accept connections
+2026-09-04 07:50:58.061 UTC [28] LOG:  checkpoint starting: time
+2026-09-04 07:50:58.393 UTC [28] LOG:  checkpoint complete: wrote 4 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.305 s, sync=0.011 s, total=0.333 s; sync files=4, longest=0.009 s, average=0.003 s; distance=2 kB, estimate=2 kB
+2026-09-04 07:56:18.200 UTC [28] LOG:  checkpoint starting: time
+2026-09-04 07:56:18.557 UTC [28] LOG:  checkpoint complete: wrote 4 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.321 s, sync=0.008 s, total=0.357 s; sync files=4, longest=0.005 s, average=0.002 s; distance=2 kB, estimate=2 kB
+2026-09-04 08:07:00.375 UTC [28] LOG:  checkpoint starting: time
+2026-09-04 08:07:00.723 UTC [28] LOG:  checkpoint complete: wrote 4 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.308 s, sync=0.017 s, total=0.349 s; sync files=4, longest=0.011 s, average=0.005 s; distance=2 kB, estimate=2 kB
+2026-09-04 09:00:55.134 UTC [28] LOG:  checkpoint starting: time
+2026-09-04 09:00:55.703 UTC [28] LOG:  checkpoint complete: wrote 6 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.538 s, sync=0.009 s, total=0.570 s; sync files=6, longest=0.005 s, average=0.002 s; distance=2 kB, estimate=2 kB

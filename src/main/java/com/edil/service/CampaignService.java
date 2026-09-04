@@ -188,6 +188,7 @@ public class CampaignService {
         Campaign campaign = campaignRepository.findById(campaignId)
                 .orElseThrow(() -> new AccountNotFoundException("Campaign not found"));
         campaign.setStatus(CampaignStatus.APPROVED);
+
         campaignRepository.save(campaign);
         // async methode
         campaignServiceUtil.addCampaignToCampaignToAvailableSlotMap(campaign);
@@ -305,6 +306,9 @@ public class CampaignService {
 
     public void updateUserCount(UUID campaignId) {
         Campaign campaign = campaignRepository.getReferenceById(campaignId);
+
+        log.info("the number of already joinged users is {}", campaign.getJoinedUsers());
+
         campaign.setJoinedUsers(campaign.getJoinedUsers() + 1); // well even the limit is hit some how adding one user won't hurt that much
 
         if (campaign.getJoinedUsers() >= campaign.getTargetEntries()) {

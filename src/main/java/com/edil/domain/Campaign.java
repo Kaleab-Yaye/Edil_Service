@@ -71,5 +71,5 @@ public class Campaign {
     @OneToMany(mappedBy = "campaign")
     private List<ArchivedCampaignPrize> archivedCampaignPrizes;
 
-    @Version @Getter Integer version;
+    @Version @Getter @Setter Integer version;
 }

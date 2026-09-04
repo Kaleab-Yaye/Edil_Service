@@ -70,6 +70,19 @@ public class CampaignParticipantService {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new AddParticipantToCampaignResponse("user already joined campaign"));
         }
 
+
+
+
+
+
+
+        if(!slotKeyToCampaignIdCache.asMap().containsKey(addParticipantToCampaignRequest.slotKey())){
+
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new AddParticipantToCampaignResponse("slot key has expired or is not valid"));
+
+        }
+
+
         if(!slotKeyToCampaignIdCache.asMap().get(addParticipantToCampaignRequest.slotKey()).equals(addParticipantToCampaignRequest.campaignId())){
             log.info("the value in the map for the key {} is {} and the campaign id that came ver the reqeust is {}",addParticipantToCampaignRequest.slotKey(), slotKeyToCampaignIdCache.asMap().get(addParticipantToCampaignRequest.slotKey()), addParticipantToCampaignRequest.campaignId() );
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new AddParticipantToCampaignResponse("slot key has expired or is not valid"));
@@ -156,6 +169,9 @@ public class CampaignParticipantService {
         if (transactionMadelocalDateTime.isAfter(campaignEndDate) || transactionMadelocalDateTime.isBefore(campaignStratDate)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new AddParticipantToCampaignResponse("the date on the receipt is not valid"));
         }
+
+        log.info("the rpice from the campaign listing is {}", ticketPrice );
+        log.info("the price from the receipt is {}", receivedAmountFromRecept);
 
         if(receivedAmountFromRecept.compareTo(campaign.getTicketPrice())<0){
 
