@@ -2,6 +2,7 @@ package com.edil.config;
 
 
 import com.edil.config.util.StoreCampaignToSlotHashMap;
+import com.edil.exception.AccountNotFoundException;
 import com.edil.repository.SlotRepository;
 import com.edil.service.CampaignParticipantServiceUtil;
 import com.edil.service.CampaignService;
@@ -66,7 +67,7 @@ public class CacheConfig {
 
         // now remove the slot from the db, as it rebuilding the whole thing from the found u
 
-        slotRepository.deleteById(slotKey);
+        slotRepository.delete(slotRepository.findById(slotKey).orElseThrow(()->new AccountNotFoundException("well not account not find exception but the slot wtih the follwoing id doesn exist "+ slotKey)));
 
 
         }
