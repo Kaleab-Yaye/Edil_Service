@@ -6,9 +6,11 @@ import com.edil.config.util.StoreCampaignToSlotHashMap;
 import com.edil.domain.*;
 import com.edil.domain.enums.CampaignStatus;
 import com.edil.dto.internal.CbePayload;
+import com.edil.dto.internal.SlotKeyToCampaignAndUserIdDto;
 import com.edil.dto.request.AddParticipantToCampaignRequest;
 import com.edil.dto.request.CanParticipantJoinCampaignRequest;
 import com.edil.dto.request.CreateCampaignSlotForUserRequest;
+import com.edil.dto.request.FetchOnGoingSlotInformationForUserResponse;
 import com.edil.dto.response.AddParticipantToCampaignResponse;
 import com.edil.dto.response.CanParticipantJoinCampaignResponse;
 import com.edil.dto.response.CreateCampaignSlotForUserResponse;
@@ -22,17 +24,20 @@ import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.weaver.patterns.ConcreteCflowPointcut;
+import org.hibernate.persister.entity.AbstractEntityPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.swing.text.StyledEditorKit;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
@@ -49,7 +54,8 @@ public class CampaignParticipantService {
     private final CampaignService campaignService;
     private final ReceiptRepository receiptRepository;
     private final SlotRepository slotRepository;
-    private  final Cache<UUID, UUID> slotKeyToCampaignIdCache;
+    private  final Cache<UUID, SlotKeyToCampaignAndUserIdDto> slotKeyToCampaignIdCache;
+    private final Cache<String, UUID> userEmailToSlotAvailableCheckCache;
 
     private final ArchivedCampaignParticipantsRepository archivedCampaignParticipantsRepository;
 
@@ -72,18 +78,18 @@ public class CampaignParticipantService {
 
 
 
-
-
-
-
         if(!slotKeyToCampaignIdCache.asMap().containsKey(addParticipantToCampaignRequest.slotKey())){
 
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new AddParticipantToCampaignResponse("slot key has expired or is not valid"));
 
         }
 
+        if(!slotKeyToCampaignIdCache.asMap().get(addParticipantToCampaignRequest.slotKey()).userEmail().equals(userEmail)){
+            return  ResponseEntity.status(HttpStatus.FORBIDDEN).body(new AddParticipantToCampaignResponse("using an invalid slot id"));
+        }
 
-        if(!slotKeyToCampaignIdCache.asMap().get(addParticipantToCampaignRequest.slotKey()).equals(addParticipantToCampaignRequest.campaignId())){
+
+        if(!slotKeyToCampaignIdCache.asMap().get(addParticipantToCampaignRequest.slotKey()).campaignId().equals(addParticipantToCampaignRequest.campaignId())){ // has to be fixed assap
             log.info("the value in the map for the key {} is {} and the campaign id that came ver the reqeust is {}",addParticipantToCampaignRequest.slotKey(), slotKeyToCampaignIdCache.asMap().get(addParticipantToCampaignRequest.slotKey()), addParticipantToCampaignRequest.campaignId() );
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new AddParticipantToCampaignResponse("slot key has expired or is not valid"));
         }
@@ -212,10 +218,24 @@ public class CampaignParticipantService {
         UUID userUUId   = userService.getUserUUIDByEmail(email);
 
         if (campaignParticipantsRepository.existsByAccountIdAndCampaignId(userUUId, request.campaignId())){
-            return  ResponseEntity.status(HttpStatus.CONFLICT).body(new CanParticipantJoinCampaignResponse(false));
+            return  ResponseEntity.status(HttpStatus.CONFLICT).body(new CanParticipantJoinCampaignResponse(false, false, null, null));
         }
 
-        return ResponseEntity.status(HttpStatus.OK).body(new CanParticipantJoinCampaignResponse(true));
+        UUID  slotKeyFromEmailToBooleanCache = userEmailToSlotAvailableCheckCache.getIfPresent(email);
+
+        if(slotKeyFromEmailToBooleanCache != null){
+         SlotKeyToCampaignAndUserIdDto  slotKeyToCampaignAndUserIdDto =  slotKeyToCampaignIdCache.getIfPresent(slotKeyFromEmailToBooleanCache);
+
+         if(slotKeyToCampaignAndUserIdDto == null){
+             log.warn("has the user resvered a slot check returend ture but can get the key");
+             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+
+         }
+            return  ResponseEntity.status(HttpStatus.CONFLICT).body(new CanParticipantJoinCampaignResponse(false, true, slotKeyToCampaignAndUserIdDto.campaignId(), slotKeyFromEmailToBooleanCache ));
+        }
+
+
+        return ResponseEntity.status(HttpStatus.OK).body(new CanParticipantJoinCampaignResponse(true, false, null, null));
     }
 
     public boolean canParticipantJoinCampaign(UUID campaignId, String email){
@@ -260,19 +280,53 @@ public class CampaignParticipantService {
 
         Slot slot = new Slot();
         slot.setCampaignId(request.campaignId());
+        slot.setUserEmail(userEmail);
         slotRepository.save(slot);
 
 
         log.info("putting the slot key in cache {}", slot.getId());
 
-        slotKeyToCampaignIdCache.put(slot.getId(), request.campaignId());
+        slotKeyToCampaignIdCache.put(slot.getId(), SlotKeyToCampaignAndUserIdDto.returnSlotKeyToCampaignAndUserIdDtoWithTime( request.campaignId(), userEmail));
+        userEmailToSlotAvailableCheckCache.put(userEmail, slot.getId());
 
         log.info("accessinng put slot for the key {} from the cache and the contains request is this {}", slot.getId(), slotKeyToCampaignIdCache.asMap().containsKey(slot.getId()));
+
+
 
 
         CreatorProfile accountHolder = campaign.getCreator().getCreatorProfile();
 
         return ResponseEntity.status(HttpStatus.OK).body(new CreateCampaignSlotForUserResponse(slot.getId(), true, accountHolder.getPayoutBankAccount(),campaign.getTicketPrice(), accountHolder.getFullName()));
 
+    }
+
+    public ResponseEntity<FetchOnGoingSlotInformationForUserResponse> fetchOngoingUserSlotInfo(String email){
+
+        UUID slotKeyFromEmailToSlotKeyCache = userEmailToSlotAvailableCheckCache.getIfPresent(email);
+
+        if(slotKeyFromEmailToSlotKeyCache==null){
+
+
+
+            return ResponseEntity.status(HttpStatus.OK).body(
+
+
+                    new FetchOnGoingSlotInformationForUserResponse(false , null, null, null , null, null, null)
+            );
+        }
+
+        SlotKeyToCampaignAndUserIdDto slotKeyToCampaignAndUserIdDto  = slotKeyToCampaignIdCache.getIfPresent(slotKeyFromEmailToSlotKeyCache);
+        if(slotKeyToCampaignAndUserIdDto==null){
+            log.warn("user with the email adress {} a slot but can't find  the slot key stored", email);
+            return  ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+
+        long timeLeft = ChronoUnit.SECONDS.between(slotKeyToCampaignAndUserIdDto.cachePutAt(), LocalDateTime.now());
+        Campaign campaign = campaignService.getCampaignById(slotKeyToCampaignAndUserIdDto.campaignId());
+
+        return ResponseEntity.status(HttpStatus.OK).body(
+
+                new FetchOnGoingSlotInformationForUserResponse(true, timeLeft, slotKeyFromEmailToSlotKeyCache, slotKeyToCampaignAndUserIdDto.campaignId(), campaign.getCreator().getCreatorProfile().getPayoutBankAccount(), campaign.getTicketPrice(), campaign.getCreator().getCreatorProfile().getFullName())
+        );
     }
 }

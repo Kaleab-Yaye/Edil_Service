@@ -2,6 +2,7 @@ package com.edil.config;
 
 
 import com.edil.config.util.StoreCampaignToSlotHashMap;
+import com.edil.dto.internal.SlotKeyToCampaignAndUserIdDto;
 import com.edil.exception.AccountNotFoundException;
 import com.edil.repository.SlotRepository;
 import com.edil.service.CampaignParticipantServiceUtil;
@@ -28,7 +29,7 @@ public class CacheConfig {
 
 
     @Bean
-    Cache<UUID, UUID> slotKeyTOCampaignCache() {
+    Cache<UUID, SlotKeyToCampaignAndUserIdDto> slotKeyTOCampaignCache() {
         return Caffeine.newBuilder()
                 .expireAfterWrite(Duration.ofMinutes(5))
                 .scheduler(Scheduler.systemScheduler())
@@ -37,10 +38,12 @@ public class CacheConfig {
     }
 
 
-    private void removeListenerForSlotKeyToCampaignCache(UUID slotKey, UUID campaignId, RemovalCause cause) {
+    private void removeListenerForSlotKeyToCampaignCache(UUID slotKey, SlotKeyToCampaignAndUserIdDto slotKeyToCampaignAndUserIdDto, RemovalCause cause) {
+        UUID campaignId = slotKeyToCampaignAndUserIdDto.campaignId();
+        // we removed it here (now lets see how the rebuilding phase happens
+        // we should go to the method  that cbuilds the cache
+        userIdTOExistingSlotPresentCheck().invalidate(slotKeyToCampaignAndUserIdDto.userEmail());
 
-
-        // this shit also had concurency issue lol
 
         if(cause.wasEvicted()){
             while(true){
@@ -74,18 +77,12 @@ public class CacheConfig {
 
 
     @Bean
-    Cache<String, Boolean> userIdTOExistingSlotPresentCheck() {
+    Cache<String, UUID> userIdTOExistingSlotPresentCheck() { //USER EMAIL , SLOTKEY
         return Caffeine.newBuilder()
                 .expireAfterWrite(Duration.ofMinutes(5))
                 .scheduler(Scheduler.systemScheduler())
                 .build();
     }
-
-
-
-
-
-
 
 
 

@@ -4,6 +4,7 @@ package com.edil.controller;
 import com.edil.dto.request.AddParticipantToCampaignRequest;
 import com.edil.dto.request.CanParticipantJoinCampaignRequest;
 import com.edil.dto.request.CreateCampaignSlotForUserRequest;
+import com.edil.dto.request.FetchOnGoingSlotInformationForUserResponse;
 import com.edil.dto.response.AddParticipantToCampaignResponse;
 import com.edil.dto.response.CanParticipantJoinCampaignResponse;
 import com.edil.dto.response.CreateCampaignSlotForUserResponse;
@@ -32,6 +33,12 @@ public class CampaignParticipantController {
 
     }
 
+    @GetMapping ("/ongoing/payment")
+
+    public ResponseEntity<FetchOnGoingSlotInformationForUserResponse> handleOnGoingSlotReservation(@AuthenticationPrincipal String userEmail){
+        return campaignParticipantService.fetchOngoingUserSlotInfo(userEmail);
+    }
+
     @PostMapping("/reserve/slot")
     public  ResponseEntity<CreateCampaignSlotForUserResponse>  creatCampaignSlotHandler(@RequestBody CreateCampaignSlotForUserRequest createCampaignSlotForUserRequest, @AuthenticationPrincipal String userEmail){
         return campaignParticipantService.createCampaignSlotForUser(createCampaignSlotForUserRequest, userEmail);
@@ -48,10 +55,3 @@ public class CampaignParticipantController {
 
 
 
-//    @PostMapping("/add/participant")
-//    public ResponseEntity<AddParticipantToCampaignResponse> handelAddParticipantToCampaign(@RequestBody AddParticipantToCampaignRequest addParticipantToCampaignRequest){
-//
-//        return  campaignParticipantService.TestAddCampaignParticipant(addParticipantToCampaignRequest);
-//
-//    }
-}

@@ -10,3 +10,5 @@
 2026-09-05 12:12:03.947 UTC [28] LOG:  checkpoint starting: end-of-recovery immediate wait
 2026-09-05 12:12:03.997 UTC [28] LOG:  checkpoint complete: wrote 2 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.023 s, sync=0.004 s, total=0.061 s; sync files=2, longest=0.003 s, average=0.002 s; distance=0 kB, estimate=0 kB
 2026-09-05 12:12:04.014 UTC [1] LOG:  database system is ready to accept connections
+2026-09-05 12:12:22.224 UTC [41] ERROR:  syntax error at or near "SLECT" at character 1
+2026-09-05 12:12:22.224 UTC [41] STATEMENT:  SLECT * FROM slots;
