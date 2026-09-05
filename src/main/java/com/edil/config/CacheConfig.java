@@ -15,7 +15,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.time.Duration;
-import java.util.Optional;
 import java.util.UUID;
 
 @Configuration
@@ -33,12 +32,12 @@ public class CacheConfig {
         return Caffeine.newBuilder()
                 .expireAfterWrite(Duration.ofMinutes(5))
                 .scheduler(Scheduler.systemScheduler())
-                .removalListener(this::removeListener)
+                .removalListener(this::removeListenerForSlotKeyToCampaignCache)
                 .build();
     }
 
 
-    private void removeListener(UUID slotKey, UUID campaignId, RemovalCause cause) {
+    private void removeListenerForSlotKeyToCampaignCache(UUID slotKey, UUID campaignId, RemovalCause cause) {
 
 
         // this shit also had concurency issue lol
@@ -71,6 +70,22 @@ public class CacheConfig {
 
 
         }
+
+
+
+    @Bean
+    Cache<String, Boolean> userIdTOExistingSlotPresentCheck() {
+        return Caffeine.newBuilder()
+                .expireAfterWrite(Duration.ofMinutes(5))
+                .scheduler(Scheduler.systemScheduler())
+                .build();
+    }
+
+
+
+
+
+
 
 
 

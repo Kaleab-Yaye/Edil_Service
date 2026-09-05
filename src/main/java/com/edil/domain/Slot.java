@@ -2,6 +2,7 @@ package com.edil.domain;
 
 
 import jakarta.persistence.*;
+import lombok.Cleanup;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,6 +23,12 @@ public class Slot {
     @Setter
     @Getter
     private UUID  campaignId;
+
+
+    @Column(name = "user_email")
+    @Setter
+    @Getter
+    private String userEmail;
 
 
 

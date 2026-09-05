@@ -18,3 +18,23 @@
 2026-09-04 08:07:00.723 UTC [28] LOG:  checkpoint complete: wrote 4 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.308 s, sync=0.017 s, total=0.349 s; sync files=4, longest=0.011 s, average=0.005 s; distance=2 kB, estimate=2 kB
 2026-09-04 09:00:55.134 UTC [28] LOG:  checkpoint starting: time
 2026-09-04 09:00:55.703 UTC [28] LOG:  checkpoint complete: wrote 6 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.538 s, sync=0.009 s, total=0.570 s; sync files=6, longest=0.005 s, average=0.002 s; distance=2 kB, estimate=2 kB
+2026-09-04 10:00:26.736 UTC [28] LOG:  checkpoint starting: time
+2026-09-04 10:00:28.813 UTC [28] LOG:  checkpoint complete: wrote 21 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=2.040 s, sync=0.013 s, total=2.078 s; sync files=14, longest=0.005 s, average=0.001 s; distance=4 kB, estimate=4 kB
+2026-09-04 10:16:43.578 UTC [28] LOG:  checkpoint starting: time
+2026-09-04 10:16:44.726 UTC [28] LOG:  checkpoint complete: wrote 12 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=1.114 s, sync=0.012 s, total=1.149 s; sync files=12, longest=0.004 s, average=0.001 s; distance=5 kB, estimate=5 kB
+2026-09-04 10:54:49.836 UTC [28] LOG:  checkpoint starting: time
+2026-09-04 10:54:50.195 UTC [28] LOG:  checkpoint complete: wrote 4 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.327 s, sync=0.009 s, total=0.359 s; sync files=4, longest=0.005 s, average=0.003 s; distance=0 kB, estimate=4 kB
+2026-09-04 11:01:24.054 UTC [358] ERROR:  syntax error at or near "DELTE" at character 1
+2026-09-04 11:01:24.054 UTC [358] STATEMENT:  DELTE FROM Receipts;
+2026-09-04 11:02:05.811 UTC [358] ERROR:  syntax error at or near "db" at character 1
+2026-09-04 11:02:05.811 UTC [358] STATEMENT:  db
+	;
+2026-09-04 11:02:10.907 UTC [358] ERROR:  syntax error at or near "dt" at character 1
+2026-09-04 11:02:10.907 UTC [358] STATEMENT:  dt db
+	;
+2026-09-04 11:05:42.824 UTC [28] LOG:  checkpoint starting: time
+2026-09-04 11:05:43.978 UTC [28] LOG:  checkpoint complete: wrote 14 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=1.119 s, sync=0.014 s, total=1.154 s; sync files=14, longest=0.005 s, average=0.001 s; distance=6 kB, estimate=6 kB
+2026-09-04 11:11:09.813 UTC [28] LOG:  checkpoint starting: time
+2026-09-04 11:11:10.456 UTC [28] LOG:  checkpoint complete: wrote 7 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.613 s, sync=0.009 s, total=0.644 s; sync files=7, longest=0.005 s, average=0.002 s; distance=4 kB, estimate=6 kB
+2026-09-04 11:17:22.677 UTC [28] LOG:  checkpoint starting: time
+2026-09-04 11:17:23.943 UTC [28] LOG:  checkpoint complete: wrote 13 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=1.208 s, sync=0.044 s, total=1.267 s; sync files=13, longest=0.036 s, average=0.004 s; distance=7 kB, estimate=7 kB
