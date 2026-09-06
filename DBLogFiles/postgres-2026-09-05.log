@@ -12,3 +12,36 @@
 2026-09-05 12:12:04.014 UTC [1] LOG:  database system is ready to accept connections
 2026-09-05 12:12:22.224 UTC [41] ERROR:  syntax error at or near "SLECT" at character 1
 2026-09-05 12:12:22.224 UTC [41] STATEMENT:  SLECT * FROM slots;
+2026-09-05 14:32:39.805 UTC [41] ERROR:  syntax error at or near "*" at character 8
+2026-09-05 14:32:39.805 UTC [41] STATEMENT:  DELETE * FROM campaign_participants;
+2026-09-05 14:37:34.323 UTC [28] LOG:  checkpoint starting: time
+2026-09-05 14:37:38.386 UTC [28] LOG:  checkpoint complete: wrote 38 buffers (0.2%); 0 WAL file(s) added, 0 removed, 0 recycled; write=3.931 s, sync=0.044 s, total=4.065 s; sync files=36, longest=0.009 s, average=0.002 s; distance=110 kB, estimate=110 kB
+2026-09-05 19:37:19.830 UTC [1] LOG:  starting PostgreSQL 15.15 on x86_64-pc-linux-musl, compiled by gcc (Alpine 14.2.0) 14.2.0, 64-bit
+2026-09-05 19:37:19.831 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+2026-09-05 19:37:19.831 UTC [1] LOG:  listening on IPv6 address "::", port 5432
+2026-09-05 19:37:19.847 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+2026-09-05 19:37:19.862 UTC [30] LOG:  database system was interrupted; last known up at 2026-09-05 14:37:38 UTC
+2026-09-05 19:37:20.939 UTC [30] LOG:  database system was not properly shut down; automatic recovery in progress
+2026-09-05 19:37:20.951 UTC [30] LOG:  redo starts at 0/1A861D8
+2026-09-05 19:37:20.951 UTC [30] LOG:  invalid record length at 0/1A862C0: wanted 24, got 0
+2026-09-05 19:37:20.951 UTC [30] LOG:  redo done at 0/1A86288 system usage: CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.00 s
+2026-09-05 19:37:20.964 UTC [28] LOG:  checkpoint starting: end-of-recovery immediate wait
+2026-09-05 19:37:20.991 UTC [28] LOG:  checkpoint complete: wrote 2 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.007 s, sync=0.004 s, total=0.032 s; sync files=2, longest=0.002 s, average=0.002 s; distance=0 kB, estimate=0 kB
+2026-09-05 19:37:21.006 UTC [1] LOG:  database system is ready to accept connections
+2026-09-05 19:45:07.601 UTC [1] LOG:  received fast shutdown request
+2026-09-05 19:45:07.605 UTC [1] LOG:  aborting any active transactions
+2026-09-05 19:45:07.606 UTC [49] FATAL:  terminating connection due to administrator command
+2026-09-05 19:45:07.606 UTC [48] FATAL:  terminating connection due to administrator command
+2026-09-05 19:45:07.606 UTC [44] FATAL:  terminating connection due to administrator command
+2026-09-05 19:45:07.606 UTC [46] FATAL:  terminating connection due to administrator command
+2026-09-05 19:45:07.606 UTC [47] FATAL:  terminating connection due to administrator command
+2026-09-05 19:45:07.606 UTC [42] FATAL:  terminating connection due to administrator command
+2026-09-05 19:45:07.606 UTC [45] FATAL:  terminating connection due to administrator command
+2026-09-05 19:45:07.612 UTC [43] FATAL:  terminating connection due to administrator command
+2026-09-05 19:45:07.612 UTC [41] FATAL:  terminating connection due to administrator command
+2026-09-05 19:45:07.612 UTC [40] FATAL:  terminating connection due to administrator command
+2026-09-05 19:45:07.615 UTC [1] LOG:  background worker "logical replication launcher" (PID 39) exited with exit code 1
+2026-09-05 19:45:07.619 UTC [28] LOG:  shutting down
+2026-09-05 19:45:07.623 UTC [28] LOG:  checkpoint starting: shutdown immediate
+2026-09-05 19:45:07.641 UTC [28] LOG:  checkpoint complete: wrote 1 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.002 s, sync=0.004 s, total=0.023 s; sync files=1, longest=0.004 s, average=0.004 s; distance=0 kB, estimate=0 kB
+2026-09-05 19:45:07.653 UTC [1] LOG:  database system is shut down

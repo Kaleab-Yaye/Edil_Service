@@ -50,7 +50,8 @@ public class CacheConfig {
                 int expectedValue = StoreCampaignToSlotHashMap.campaignToSlotStore.get(campaignId).intValue();
 
                 if(StoreCampaignToSlotHashMap.campaignToSlotStore.get(campaignId).compareAndSet(expectedValue, expectedValue+1)){
-                    return;
+                    // this was the isseu why the slot existed long after the cahfe is  exited
+                    break;
                 };
 
 

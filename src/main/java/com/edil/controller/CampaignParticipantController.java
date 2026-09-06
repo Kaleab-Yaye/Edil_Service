@@ -18,37 +18,38 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/participant")
 public class CampaignParticipantController {
-    private  final CampaignParticipantService campaignParticipantService;
+    private final CampaignParticipantService campaignParticipantService;
 
-    CampaignParticipantController(CampaignParticipantService campaignParticipantService){
+    CampaignParticipantController(CampaignParticipantService campaignParticipantService) {
         this.campaignParticipantService = campaignParticipantService;
 
     }
     // /apit/v1/participant/add/participant
 
     @PostMapping("/can/join")
-    public ResponseEntity<CanParticipantJoinCampaignResponse> canUserJoinCampaign(@RequestBody CanParticipantJoinCampaignRequest  canParticipantJoinCampaignRequest, @AuthenticationPrincipal String userEmail){
+    public ResponseEntity<CanParticipantJoinCampaignResponse> canUserJoinCampaign(@RequestBody CanParticipantJoinCampaignRequest canParticipantJoinCampaignRequest, @AuthenticationPrincipal String userEmail) {
         log.info(" the user prinsciaple extracted has the value {}", userEmail);
-        return  campaignParticipantService.canParticipantJoinCampaign(canParticipantJoinCampaignRequest, userEmail);
+        return campaignParticipantService.canParticipantJoinCampaign(canParticipantJoinCampaignRequest, userEmail);
 
     }
 
-    @GetMapping ("/ongoing/payment")
+    @GetMapping("/ongoing/payment")
 
-    public ResponseEntity<FetchOnGoingSlotInformationForUserResponse> handleOnGoingSlotReservation(@AuthenticationPrincipal String userEmail){
+    public ResponseEntity<FetchOnGoingSlotInformationForUserResponse> handleOnGoingSlotReservation(@AuthenticationPrincipal String userEmail) {
         return campaignParticipantService.fetchOngoingUserSlotInfo(userEmail);
     }
 
     @PostMapping("/reserve/slot")
-    public  ResponseEntity<CreateCampaignSlotForUserResponse>  creatCampaignSlotHandler(@RequestBody CreateCampaignSlotForUserRequest createCampaignSlotForUserRequest, @AuthenticationPrincipal String userEmail){
+    public ResponseEntity<CreateCampaignSlotForUserResponse> creatCampaignSlotHandler(@RequestBody CreateCampaignSlotForUserRequest createCampaignSlotForUserRequest, @AuthenticationPrincipal String userEmail) {
         return campaignParticipantService.createCampaignSlotForUser(createCampaignSlotForUserRequest, userEmail);
     }
 
     @PostMapping("/add/participant")
 
-    public ResponseEntity<AddParticipantToCampaignResponse>  addParticipantHandler(@RequestBody AddParticipantToCampaignRequest addParticipantToCampaignRequest, @AuthenticationPrincipal String userEmail){
-        return  campaignParticipantService.AddCampaignParticipant(addParticipantToCampaignRequest, userEmail);
+    public ResponseEntity<AddParticipantToCampaignResponse> addParticipantHandler(@RequestBody AddParticipantToCampaignRequest addParticipantToCampaignRequest, @AuthenticationPrincipal String userEmail) {
+        return campaignParticipantService.AddCampaignParticipant(addParticipantToCampaignRequest, userEmail);
     }
+}
 
 
 

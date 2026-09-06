@@ -363,29 +363,29 @@ public class CampaignService {
 
 
 
-    public boolean updateUserCount(Campaign campaign) {
-
-        campaign.setJoinedUsers(campaign.getJoinedUsers() + 1); // well even the limit is hit some how adding one user won't hurt that much
-
-        if (campaign.getJoinedUsers() >= campaign.getTargetEntries()) {
-            campaign.setTargetReachedAt(LocalDateTime.now());
-            campaign.setStatus(CampaignStatus.ENDED);
-            campaignRepository.save(campaign);
-
-            // async methode
-            archivePrizesForAnEndedCampaign(campaign);
-
-
-            return true;
-
-
-        }
-
-        campaignRepository.save(campaign);
-        return false;
-
-
-    }
+//    public boolean updateUserCount(Campaign campaign) {
+//
+//        campaign.setJoinedUsers(campaign.getJoinedUsers() + 1); // well even the limit is hit some how adding one user won't hurt that much
+//
+//        if (campaign.getJoinedUsers() >= campaign.getTargetEntries()) {
+//            campaign.setTargetReachedAt(LocalDateTime.now());
+//            campaign.setStatus(CampaignStatus.ENDED);
+//            campaignRepository.save(campaign);
+//
+//            // async methode
+//            archivePrizesForAnEndedCampaign(campaign);
+//
+//
+//            return true;
+//
+//
+//        }
+//
+//        campaignRepository.save(campaign);
+//        return false;
+//
+//
+//    }
 
    public List<Campaign> getAllRunningCampaigns(){
 

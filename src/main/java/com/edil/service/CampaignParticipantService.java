@@ -242,11 +242,7 @@ public class CampaignParticipantService {
 
         UUID userUUId   = userService.getUserUUIDByEmail(email);
 
-        if (campaignParticipantsRepository.existsByAccountIdAndCampaignId(userUUId, campaignId)){
-            return  false;
-        }
-
-        return true;
+        return !campaignParticipantsRepository.existsByAccountIdAndCampaignId(userUUId, campaignId);
     }
 
 
@@ -260,6 +256,11 @@ public class CampaignParticipantService {
         }
 
         // has to write concurent safe excution for this
+
+
+        if(userEmailToSlotAvailableCheckCache.asMap().containsKey(userEmail)){
+            return  ResponseEntity.status(HttpStatus.CONFLICT).body(new CreateCampaignSlotForUserResponse(null, false, null, null, null));
+        }
 
 
         while(true) {
