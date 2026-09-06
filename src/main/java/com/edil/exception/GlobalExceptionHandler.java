@@ -53,7 +53,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(AccountNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleAccountNotFoundException(AccountNotFoundException ex) {
-        log.warn("AccountNotFoundException: {}", ex.getMessage());
+        // remove this log  ( as it exposes stack trace just debagging now
+        log.warn("AccountNotFoundException: {} with stack trace of {}", ex.getMessage(), ex.getStackTrace());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
                 ErrorResponse.builder()
                         .errorCode("ACCOUNT_NOT_FOUND")
@@ -65,7 +66,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(AccountDeactivatedException.class)
     public ResponseEntity<ErrorResponse> handleAccountDeactivatedException(AccountDeactivatedException ex) {
-        log.warn("AccountDeactivatedException: {}", ex.getMessage());
+        log.warn("AccountDeactivatedException: {}, {}", ex.getMessage(), ex.getStackTrace());
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(
                 ErrorResponse.builder()
                         .errorCode("ACCOUNT_DEACTIVATED")

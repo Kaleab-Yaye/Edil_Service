@@ -67,6 +67,7 @@ public class UserService {
     }
 
     public Account getUserByEmail(String email) {
+        log.info("the user  email that is being tried ot be fetched is {}", email);
        return accountRepository.findByEmail(email)
                 .orElseThrow(() -> new AccountNotFoundException("Account not found"));
     }

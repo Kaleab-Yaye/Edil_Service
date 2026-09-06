@@ -36,6 +36,7 @@ public class CampaignParticipantController {
     @GetMapping("/ongoing/payment")
 
     public ResponseEntity<FetchOnGoingSlotInformationForUserResponse> handleOnGoingSlotReservation(@AuthenticationPrincipal String userEmail) {
+        log.info("passing the user email of {}", userEmail);
         return campaignParticipantService.fetchOngoingUserSlotInfo(userEmail);
     }
 
@@ -45,8 +46,8 @@ public class CampaignParticipantController {
     }
 
     @PostMapping("/add/participant")
-
     public ResponseEntity<AddParticipantToCampaignResponse> addParticipantHandler(@RequestBody AddParticipantToCampaignRequest addParticipantToCampaignRequest, @AuthenticationPrincipal String userEmail) {
+        log.info("passing user email of {}", userEmail);
         return campaignParticipantService.AddCampaignParticipant(addParticipantToCampaignRequest, userEmail);
     }
 }

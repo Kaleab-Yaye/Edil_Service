@@ -4,3 +4,23 @@
 2026-09-06 07:46:23.773 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
 2026-09-06 07:46:23.793 UTC [30] LOG:  database system was shut down at 2026-09-05 19:45:07 UTC
 2026-09-06 07:46:23.840 UTC [1] LOG:  database system is ready to accept connections
+2026-09-06 07:51:52.443 UTC [28] LOG:  checkpoint starting: time
+2026-09-06 07:51:52.481 UTC [28] LOG:  checkpoint complete: wrote 2 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.008 s, sync=0.003 s, total=0.043 s; sync files=2, longest=0.002 s, average=0.002 s; distance=0 kB, estimate=0 kB
+2026-09-06 08:08:18.216 UTC [28] LOG:  checkpoint starting: time
+2026-09-06 08:08:19.065 UTC [28] LOG:  checkpoint complete: wrote 9 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.812 s, sync=0.016 s, total=0.849 s; sync files=9, longest=0.011 s, average=0.002 s; distance=5 kB, estimate=5 kB
+2026-09-06 08:13:46.650 UTC [28] LOG:  checkpoint starting: time
+2026-09-06 08:13:47.700 UTC [28] LOG:  checkpoint complete: wrote 11 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=1.016 s, sync=0.014 s, total=1.050 s; sync files=11, longest=0.006 s, average=0.002 s; distance=8 kB, estimate=8 kB
+2026-09-06 08:19:17.210 UTC [28] LOG:  checkpoint starting: time
+2026-09-06 08:19:18.266 UTC [28] LOG:  checkpoint complete: wrote 11 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=1.011 s, sync=0.012 s, total=1.056 s; sync files=10, longest=0.007 s, average=0.002 s; distance=6 kB, estimate=8 kB
+2026-09-06 08:28:36.320 UTC [83] ERROR:  duplicate key value violates unique constraint "slots_user_email_key"
+2026-09-06 08:28:36.320 UTC [83] DETAIL:  Key (user_email)=(Barbino@gock.com) already exists.
+2026-09-06 08:28:36.320 UTC [83] STATEMENT:  insert into slots (campaign_id,user_email,id) values ($1,$2,$3)
+2026-09-06 08:30:13.905 UTC [28] LOG:  checkpoint starting: time
+2026-09-06 08:30:14.139 UTC [28] LOG:  checkpoint complete: wrote 3 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.207 s, sync=0.007 s, total=0.235 s; sync files=3, longest=0.004 s, average=0.003 s; distance=1 kB, estimate=7 kB
+2026-09-06 08:33:39.691 UTC [83] ERROR:  duplicate key value violates unique constraint "slots_user_email_key"
+2026-09-06 08:33:39.691 UTC [83] DETAIL:  Key (user_email)=(Barbino@gock.com) already exists.
+2026-09-06 08:33:39.691 UTC [83] STATEMENT:  insert into slots (campaign_id,user_email,id) values ($1,$2,$3)
+2026-09-06 08:35:42.120 UTC [28] LOG:  checkpoint starting: time
+2026-09-06 08:35:42.351 UTC [28] LOG:  checkpoint complete: wrote 3 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.206 s, sync=0.007 s, total=0.231 s; sync files=3, longest=0.005 s, average=0.003 s; distance=1 kB, estimate=7 kB
+2026-09-06 08:41:11.396 UTC [28] LOG:  checkpoint starting: time
+2026-09-06 08:41:11.838 UTC [28] LOG:  checkpoint complete: wrote 5 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.408 s, sync=0.010 s, total=0.443 s; sync files=5, longest=0.007 s, average=0.002 s; distance=5 kB, estimate=7 kB
