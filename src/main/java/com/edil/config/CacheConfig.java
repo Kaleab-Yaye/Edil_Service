@@ -14,6 +14,7 @@ import com.github.benmanes.caffeine.cache.Scheduler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.handler.WebRequestHandlerInterceptorAdapter;
 
 import java.time.Duration;
 import java.util.UUID;
@@ -39,43 +40,40 @@ public class CacheConfig {
 
 
     private void removeListenerForSlotKeyToCampaignCache(UUID slotKey, SlotKeyToCampaignAndUserIdDto slotKeyToCampaignAndUserIdDto, RemovalCause cause) {
+
+        if(slotKeyToCampaignAndUserIdDto.flaggedForCanceledSlot()){
+            return;
+        }
+
+
         UUID campaignId = slotKeyToCampaignAndUserIdDto.campaignId();
-        // we removed it here (now lets see how the rebuilding phase happens
-        // we should go to the method  that cbuilds the cache
         userIdTOExistingSlotPresentCheck().invalidate(slotKeyToCampaignAndUserIdDto.userEmail());
+        slotRepository.delete(slotRepository.findById(slotKey).orElseThrow(() -> new AccountNotFoundException("well not account not find exception but the slot wtih the follwoing id doesn exist " + slotKey)));
 
+        if(cause.equals(RemovalCause.EXPLICIT)){
 
-        if(cause.wasEvicted()){
-            while(true){
-                int expectedValue = StoreCampaignToSlotHashMap.campaignToSlotStore.get(campaignId).intValue();
+            if (campaignService.updateUserCount(campaignId)) {
 
-                if(StoreCampaignToSlotHashMap.campaignToSlotStore.get(campaignId).compareAndSet(expectedValue, expectedValue+1)){
-                    // this was the isseu why the slot existed long after the cahfe is  exited
-                    break;
-                };
-
+                   campaignParticipantServiceUtil.archiveParticipantsOfAnEndedCampaign(campaignId);
 
             }
-
-            // the cache was evivated the catch holder did't make the required opration in time
         }
 
-        // if is removed manually it means a payment was made in that slot interval, so no need to updated the map
-        if(campaignService.updateUserCount(campaignId)){
+        else{
 
-            campaignParticipantServiceUtil.archiveParticipantsOfAnEndedCampaign(campaignId);
+            while (true) {
+                int expectedValue = StoreCampaignToSlotHashMap.campaignToSlotStore.get(campaignId).intValue();
 
-        };
-
-
-        // now remove the slot from the db, as it rebuilding the whole thing from the found u
-
-        slotRepository.delete(slotRepository.findById(slotKey).orElseThrow(()->new AccountNotFoundException("well not account not find exception but the slot wtih the follwoing id doesn exist "+ slotKey)));
-
+                if (StoreCampaignToSlotHashMap.campaignToSlotStore.get(campaignId).compareAndSet(expectedValue, expectedValue + 1)) {
+                    // this was the isseu why the slot existed long after the cahfe is  exited
+                    break;
+                }
+            }
 
         }
 
 
+    }
 
     @Bean
     Cache<String, UUID> userIdTOExistingSlotPresentCheck() { //USER EMAIL , SLOTKEY

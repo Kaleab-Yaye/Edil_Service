@@ -10,9 +10,11 @@ import com.edil.dto.response.CanParticipantJoinCampaignResponse;
 import com.edil.dto.response.CreateCampaignSlotForUserResponse;
 import com.edil.service.CampaignParticipantService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.method.HandlerTypePredicate;
 
 @Slf4j
 @RestController
@@ -49,6 +51,13 @@ public class CampaignParticipantController {
     public ResponseEntity<AddParticipantToCampaignResponse> addParticipantHandler(@RequestBody AddParticipantToCampaignRequest addParticipantToCampaignRequest, @AuthenticationPrincipal String userEmail) {
         log.info("passing user email of {}", userEmail);
         return campaignParticipantService.AddCampaignParticipant(addParticipantToCampaignRequest, userEmail);
+    }
+
+    @GetMapping("/cancel/slot")
+    public ResponseEntity<HttpStatus> cancelOPenSlot(@AuthenticationPrincipal String email){
+
+        return campaignParticipantService.cancelReservedSlot(email);
+
     }
 }
 

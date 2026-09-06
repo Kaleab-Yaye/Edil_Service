@@ -39,6 +39,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
@@ -76,8 +77,14 @@ public class CampaignParticipantService {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new AddParticipantToCampaignResponse("user is banned"));
             }
 
+
             if (campaignParticipantsRepository.existsByAccountIdAndCampaignId(biengAddedUserAccount.getId(), addParticipantToCampaignRequest.campaignId())) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new AddParticipantToCampaignResponse("user already joined campaign"));
+            }
+
+            //protection for evicted email->key mapping
+            if(!userEmailToSlotAvailableCheckCache.asMap().containsKey(userEmail)){
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new AddParticipantToCampaignResponse("user has no slot reserved"));
             }
 
 
@@ -322,12 +329,35 @@ public class CampaignParticipantService {
             return  ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
 
-        long timeLeft = ChronoUnit.MINUTES.between(LocalDateTime.now(), slotKeyToCampaignAndUserIdDto.cacgit hePutAt());
+        long timeLeft = ChronoUnit.SECONDS.between(LocalDateTime.now(), slotKeyToCampaignAndUserIdDto.cachePutAt());
         Campaign campaign = campaignService.getCampaignById(slotKeyToCampaignAndUserIdDto.campaignId());
 
         return ResponseEntity.status(HttpStatus.OK).body(
 
                 new FetchOnGoingSlotInformationForUserResponse(true, timeLeft, slotKeyFromEmailToSlotKeyCache, slotKeyToCampaignAndUserIdDto.campaignId(), campaign.getCreator().getCreatorProfile().getPayoutBankAccount(), campaign.getTicketPrice(), campaign.getCreator().getCreatorProfile().getFullName())
         );
+    }
+
+    public ResponseEntity<HttpStatus> cancelReservedSlot(String email){
+        // so the thing if we invalidate the cache for the key to the sorted Campaign thingy. then it is going to be a mess since forced eviation will triger the payment complied path
+        Map<String,UUID>  userEmailTOSlotKeyMap = userEmailToSlotAvailableCheckCache.asMap();
+        if (!userEmailTOSlotKeyMap.containsKey(email)){
+            return  ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        UUID slotKey = userEmailTOSlotKeyMap.get(email);
+        Map<UUID, SlotKeyToCampaignAndUserIdDto> slotKeyToCampaignAndUserIdDtoMap = slotKeyToCampaignIdCache.asMap();
+        if(!slotKeyToCampaignAndUserIdDtoMap.containsKey(slotKey)){
+            log.warn(" a user was find in the email to key cache but the key was not on the cache email: {} key: {}", email, slotKey);
+            return  ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+        SlotKeyToCampaignAndUserIdDto slotKeyToCampaignAndUserIdDto = slotKeyToCampaignAndUserIdDtoMap.get(slotKey);
+        SlotKeyToCampaignAndUserIdDto slotKeyToCampaignAndUserIdDtoFlaggedAsCancelled = slotKeyToCampaignAndUserIdDto.returnSlotKeyToCampaignAndUserIdDtoFlaggedAsReplaced();
+
+        slotKeyToCampaignIdCache.put(userEmailToSlotAvailableCheckCache.getIfPresent(email), slotKeyToCampaignAndUserIdDtoFlaggedAsCancelled );
+
+        return  ResponseEntity.status(HttpStatus.OK).build();
+
+
+
     }
 }
