@@ -10,6 +10,6 @@ public record SlotKeyToCampaignAndUserIdDto(
 
 ) {
     public  static  SlotKeyToCampaignAndUserIdDto returnSlotKeyToCampaignAndUserIdDtoWithTime(UUID campaignId, String  userEmail){
-        return  new SlotKeyToCampaignAndUserIdDto(campaignId, userEmail, LocalDateTime.now());
+        return  new SlotKeyToCampaignAndUserIdDto(campaignId, userEmail, LocalDateTime.now().plusMinutes(5));
     }
 }

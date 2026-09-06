@@ -26,3 +26,17 @@
 2026-09-06 08:41:11.838 UTC [28] LOG:  checkpoint complete: wrote 5 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.408 s, sync=0.010 s, total=0.443 s; sync files=5, longest=0.007 s, average=0.002 s; distance=5 kB, estimate=7 kB
 2026-09-06 08:57:38.932 UTC [28] LOG:  checkpoint starting: time
 2026-09-06 08:57:39.194 UTC [28] LOG:  checkpoint complete: wrote 3 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.213 s, sync=0.011 s, total=0.263 s; sync files=3, longest=0.009 s, average=0.004 s; distance=4 kB, estimate=6 kB
+2026-09-06 09:08:36.310 UTC [28] LOG:  checkpoint starting: time
+2026-09-06 09:08:36.745 UTC [28] LOG:  checkpoint complete: wrote 5 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.408 s, sync=0.011 s, total=0.436 s; sync files=5, longest=0.009 s, average=0.003 s; distance=5 kB, estimate=6 kB
+2026-09-06 09:14:05.764 UTC [28] LOG:  checkpoint starting: time
+2026-09-06 09:14:06.006 UTC [28] LOG:  checkpoint complete: wrote 3 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.210 s, sync=0.007 s, total=0.243 s; sync files=3, longest=0.004 s, average=0.003 s; distance=4 kB, estimate=6 kB
+2026-09-06 09:35:48.379 UTC [56] ERROR:  relation "slot" does not exist at character 15
+2026-09-06 09:35:48.379 UTC [56] STATEMENT:  SELECT * FROM SLOT;
+2026-09-06 09:36:01.091 UTC [28] LOG:  checkpoint starting: time
+2026-09-06 09:36:02.590 UTC [28] LOG:  checkpoint complete: wrote 15 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=1.450 s, sync=0.018 s, total=1.499 s; sync files=15, longest=0.010 s, average=0.002 s; distance=10 kB, estimate=10 kB
+2026-09-06 09:36:48.217 UTC [56] ERROR:  syntax error at or near "DELTE" at character 1
+2026-09-06 09:36:48.217 UTC [56] STATEMENT:  DELTE FROM cmpaign_parcticipants;
+2026-09-06 09:36:52.272 UTC [56] ERROR:  relation "cmpaign_parcticipants" does not exist at character 13
+2026-09-06 09:36:52.272 UTC [56] STATEMENT:  DELeTE FROM cmpaign_parcticipants;
+2026-09-06 09:36:59.005 UTC [56] ERROR:  relation "cmpaign_participants" does not exist at character 13
+2026-09-06 09:36:59.005 UTC [56] STATEMENT:  DELeTE FROM cmpaign_participants;
