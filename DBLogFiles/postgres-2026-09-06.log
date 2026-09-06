@@ -40,3 +40,5 @@
 2026-09-06 09:36:52.272 UTC [56] STATEMENT:  DELeTE FROM cmpaign_parcticipants;
 2026-09-06 09:36:59.005 UTC [56] ERROR:  relation "cmpaign_participants" does not exist at character 13
 2026-09-06 09:36:59.005 UTC [56] STATEMENT:  DELeTE FROM cmpaign_participants;
+2026-09-06 09:41:30.596 UTC [28] LOG:  checkpoint starting: time
+2026-09-06 09:41:32.055 UTC [28] LOG:  checkpoint complete: wrote 15 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=1.421 s, sync=0.014 s, total=1.460 s; sync files=15, longest=0.005 s, average=0.001 s; distance=11 kB, estimate=11 kB

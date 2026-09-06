@@ -322,7 +322,7 @@ public class CampaignParticipantService {
             return  ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
 
-        long timeLeft = ChronoUnit.MINUTES.between(slotKeyToCampaignAndUserIdDto.cachePutAt(), LocalDateTime.now());
+        long timeLeft = ChronoUnit.MINUTES.between(LocalDateTime.now(), slotKeyToCampaignAndUserIdDto.cacgit hePutAt());
         Campaign campaign = campaignService.getCampaignById(slotKeyToCampaignAndUserIdDto.campaignId());
 
         return ResponseEntity.status(HttpStatus.OK).body(
