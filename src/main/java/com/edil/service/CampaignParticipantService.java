@@ -22,6 +22,7 @@ import com.edil.repository.SlotRepository;
 import com.github.benmanes.caffeine.cache.Cache;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.weaver.patterns.ConcreteCflowPointcut;
 import org.hibernate.persister.entity.AbstractEntityPersister;
@@ -65,53 +66,55 @@ public class CampaignParticipantService {
 
     @Transactional
     public ResponseEntity<AddParticipantToCampaignResponse> AddCampaignParticipant(AddParticipantToCampaignRequest addParticipantToCampaignRequest, String userEmail) {
-        // lets first make sure the user is active and make sure is not part of the campain already.
-
-        Account biengAddedUserAccount = userService.getUserByEmail(userEmail);
-        if (!biengAddedUserAccount.getIsActive()) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new AddParticipantToCampaignResponse("user is banned"));
-        }
-
-        if (campaignParticipantsRepository.existsByAccountIdAndCampaignId(biengAddedUserAccount.getId(), addParticipantToCampaignRequest.campaignId())) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new AddParticipantToCampaignResponse("user already joined campaign"));
-        }
 
 
 
-        if(!slotKeyToCampaignIdCache.asMap().containsKey(addParticipantToCampaignRequest.slotKey())){
+            // lets first make sure the user is active and make sure is not part of the campain already.
 
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new AddParticipantToCampaignResponse("slot key has expired or is not valid"));
+            Account biengAddedUserAccount = userService.getUserByEmail(userEmail);
+            if (!biengAddedUserAccount.getIsActive()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new AddParticipantToCampaignResponse("user is banned"));
+            }
 
-        }
-
-        if(!slotKeyToCampaignIdCache.asMap().get(addParticipantToCampaignRequest.slotKey()).userEmail().equals(userEmail)){
-            return  ResponseEntity.status(HttpStatus.FORBIDDEN).body(new AddParticipantToCampaignResponse("using an invalid slot id"));
-        }
+            if (campaignParticipantsRepository.existsByAccountIdAndCampaignId(biengAddedUserAccount.getId(), addParticipantToCampaignRequest.campaignId())) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new AddParticipantToCampaignResponse("user already joined campaign"));
+            }
 
 
-        if(!slotKeyToCampaignIdCache.asMap().get(addParticipantToCampaignRequest.slotKey()).campaignId().equals(addParticipantToCampaignRequest.campaignId())){ // has to be fixed assap
-            log.info("the value in the map for the key {} is {} and the campaign id that came ver the reqeust is {}",addParticipantToCampaignRequest.slotKey(), slotKeyToCampaignIdCache.asMap().get(addParticipantToCampaignRequest.slotKey()), addParticipantToCampaignRequest.campaignId() );
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new AddParticipantToCampaignResponse("slot key has expired or is not valid"));
-        }
+            if (!slotKeyToCampaignIdCache.asMap().containsKey(addParticipantToCampaignRequest.slotKey())) {
 
-        Campaign campaign = campaignService.getCampaignById(addParticipantToCampaignRequest.campaignId());
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new AddParticipantToCampaignResponse("slot key has expired or is not valid"));
 
-        // now the logic starts here
-        if (!campaign.getStatus().equals(CampaignStatus.APPROVED)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new AddParticipantToCampaignResponse("campaign is over/or doesn't exist anymore"));
-        }
+            }
 
-        CbePayload cbePayload = campaignParticipantServiceUtil.fetchCbePayload(addParticipantToCampaignRequest.fullPaymentLink());
+            if (!slotKeyToCampaignIdCache.asMap().get(addParticipantToCampaignRequest.slotKey()).userEmail().equals(userEmail)) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new AddParticipantToCampaignResponse("using an invalid slot id"));
+            }
 
-        if (cbePayload == null) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new AddParticipantToCampaignResponse("The link provided does't match with the registered CBE API"));
-        }
 
-        if (!cbePayload.status().equals("COMPLETED")) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new AddParticipantToCampaignResponse("The link provided is invalid, input a correct one"));
-        }
+            if (!slotKeyToCampaignIdCache.asMap().get(addParticipantToCampaignRequest.slotKey()).campaignId().equals(addParticipantToCampaignRequest.campaignId())) { // has to be fixed assap
+                log.info("the value in the map for the key {} is {} and the campaign id that came ver the reqeust is {}", addParticipantToCampaignRequest.slotKey(), slotKeyToCampaignIdCache.asMap().get(addParticipantToCampaignRequest.slotKey()), addParticipantToCampaignRequest.campaignId());
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new AddParticipantToCampaignResponse("slot key has expired or is not valid"));
+            }
 
-        // Campaign data
+            Campaign campaign = campaignService.getCampaignById(addParticipantToCampaignRequest.campaignId());
+
+            // now the logic starts here
+            if (!campaign.getStatus().equals(CampaignStatus.APPROVED)) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new AddParticipantToCampaignResponse("campaign is over/or doesn't exist anymore"));
+            }
+
+            CbePayload cbePayload = campaignParticipantServiceUtil.fetchCbePayload(addParticipantToCampaignRequest.fullPaymentLink());
+
+            if (cbePayload == null) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new AddParticipantToCampaignResponse("The link provided does't match with the registered CBE API"));
+            }
+
+            if (!cbePayload.status().equals("COMPLETED")) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new AddParticipantToCampaignResponse("The link provided is invalid, input a correct one"));
+            }
+
+            // Campaign data
 
             LocalDateTime campaignEndDate = campaign.getEndDate();
             LocalDateTime campaignStratDate = campaign.getStartDate();
@@ -131,85 +134,82 @@ public class CampaignParticipantService {
             LocalDateTime transactionMadelocalDateTime = LocalDateTime.ofInstant(cbePayload.dateTimes()[0], ZoneId.systemDefault()); // the instant mapping might have failed so check that as well
 
             Pattern extractTheLastFourNumbersFromTheAccountNumber = Pattern.compile("^.*(.{4})$");
-            log.info("the account number from campaign is {}",receiverAccountNumber);
+            log.info("the account number from campaign is {}", receiverAccountNumber);
             log.info("the account number from receipt is {}", receiverAccountNumberFromReceipt);
 
 
             Matcher matcherForAccountNumber = extractTheLastFourNumbersFromTheAccountNumber.matcher(receiverAccountNumber);
             Matcher matcherForReceiptAccountNumber = extractTheLastFourNumbersFromTheAccountNumber.matcher(receiverAccountNumberFromReceipt);
-            String extractedFourLastDigitsFromAccountNumber ="";
-            String extractedFouLastDigitsFromReceiptAccountNumber="";
+            String extractedFourLastDigitsFromAccountNumber = "";
+            String extractedFouLastDigitsFromReceiptAccountNumber = "";
 
-            if(matcherForAccountNumber.matches()){
+            if (matcherForAccountNumber.matches()) {
                 extractedFourLastDigitsFromAccountNumber = matcherForAccountNumber.group(1);
 
             }
 
-            if(matcherForReceiptAccountNumber.matches()){
+            if (matcherForReceiptAccountNumber.matches()) {
 
                 extractedFouLastDigitsFromReceiptAccountNumber = matcherForReceiptAccountNumber.group(1);
 
             }
 
 
+            // edn cbe payload
+
+            if (receiptRepository.existsReceiptById(cbePayload.v2Key())) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new AddParticipantToCampaignResponse("this link is already registered/used"));
+
+            }
 
 
+            if (!extractedFouLastDigitsFromReceiptAccountNumber.equals(extractedFourLastDigitsFromAccountNumber) || !receiverAccountName.equals(receiverAccountNameFromReceipt)) {
+
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new AddParticipantToCampaignResponse("the account you made payment information to does't match the provided account's information"));
 
 
+            }
 
-        // edn cbe payload
+            if (transactionMadelocalDateTime.isAfter(campaignEndDate) || transactionMadelocalDateTime.isBefore(campaignStratDate)) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new AddParticipantToCampaignResponse("the date on the receipt is not valid"));
+            }
 
-        if (receiptRepository.existsReceiptById(cbePayload.v2Key())) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new AddParticipantToCampaignResponse("this link is already registered/used"));
+            log.info("the rpice from the campaign listing is {}", ticketPrice);
+            log.info("the price from the receipt is {}", receivedAmountFromRecept);
+
+            if (receivedAmountFromRecept.compareTo(campaign.getTicketPrice()) < 0) {
+
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new AddParticipantToCampaignResponse(" the amount payed is less than the ticket price"));
+            }
+
+            // well after this we have asert that the payment is made lets update it well let me do it tommorow i guess.
+
+            CampaignParticipants campaignParticipants = new CampaignParticipants();
+            campaignParticipants.setCampaign(campaign);
+            campaignParticipants.setAccount(biengAddedUserAccount);
+            campaignParticipants.setReceiptHash(cbePayload.v2Key());
+            campaignParticipantsRepository.save(campaignParticipants);
+
+            // now update the add player count, and mark the campaign as over if it goes above the limit
+
+
+            // update the the receipt table
+
+            Receipt receipt = new Receipt();
+            receipt.setId(cbePayload.v2Key());
+            receipt.setReferenceNumber(cbePayload.id());
+
+            receiptRepository.save(receipt);
+
+            // had to invalidate the cache
+
+            slotKeyToCampaignIdCache.invalidate(addParticipantToCampaignRequest.slotKey());
+
+            return ResponseEntity.status(HttpStatus.OK).build();
 
         }
 
 
-        if (!extractedFouLastDigitsFromReceiptAccountNumber.equals(extractedFourLastDigitsFromAccountNumber) || !receiverAccountName.equals(receiverAccountNameFromReceipt)) {
-
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new AddParticipantToCampaignResponse("the account you made payment information to does't match the provided account's information"));
-
-
-        }
-
-        if (transactionMadelocalDateTime.isAfter(campaignEndDate) || transactionMadelocalDateTime.isBefore(campaignStratDate)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new AddParticipantToCampaignResponse("the date on the receipt is not valid"));
-        }
-
-        log.info("the rpice from the campaign listing is {}", ticketPrice );
-        log.info("the price from the receipt is {}", receivedAmountFromRecept);
-
-        if(receivedAmountFromRecept.compareTo(campaign.getTicketPrice())<0){
-
-            return  ResponseEntity.status(HttpStatus.FORBIDDEN).body(new AddParticipantToCampaignResponse(" the amount payed is less than the ticket price"));
-        }
-
-        // well after this we have asert that the payment is made lets update it well let me do it tommorow i guess.
-
-        CampaignParticipants campaignParticipants = new CampaignParticipants();
-        campaignParticipants.setCampaign(campaign);
-        campaignParticipants.setAccount(biengAddedUserAccount);
-        campaignParticipants.setReceiptHash(cbePayload.v2Key());
-        campaignParticipantsRepository.save(campaignParticipants);
-
-        // now update the add player count, and mark the campaign as over if it goes above the limit
-
-
-
-        // update the the receipt table
-
-        Receipt receipt = new Receipt();
-        receipt.setId(cbePayload.v2Key());
-        receipt.setReferenceNumber(cbePayload.id());
-
-        receiptRepository.save(receipt);
-
-        // had to invalidate the cache
-
-        slotKeyToCampaignIdCache.invalidate(addParticipantToCampaignRequest.slotKey());
-
-        return ResponseEntity.status(HttpStatus.OK).build();
-    }
 
 
 
