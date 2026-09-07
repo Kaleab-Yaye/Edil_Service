@@ -19,6 +19,7 @@ spring:
     caffeine:
       spec: expireAfterWrite=60m
 
+
 jwt:
   secret: edil-secret-key-change-this-in-production-must-be-at-least-256-bits-long-for-hs256 #have to move to be a real key and move to the enviomenr variable assap
   expiration: 86400000

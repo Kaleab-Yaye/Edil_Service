@@ -24,3 +24,5 @@
 2026-09-07 07:43:09.477 UTC [1] LOG:  database system is ready to accept connections
 2026-09-07 07:48:25.709 UTC [28] LOG:  checkpoint starting: time
 2026-09-07 07:48:29.064 UTC [28] LOG:  checkpoint complete: wrote 34 buffers (0.2%); 0 WAL file(s) added, 0 removed, 0 recycled; write=3.314 s, sync=0.024 s, total=3.355 s; sync files=31, longest=0.005 s, average=0.001 s; distance=22 kB, estimate=22 kB
+2026-09-07 08:57:22.218 UTC [28] LOG:  checkpoint starting: time
+2026-09-07 08:57:26.719 UTC [28] LOG:  checkpoint complete: wrote 45 buffers (0.3%); 0 WAL file(s) added, 0 removed, 0 recycled; write=4.450 s, sync=0.027 s, total=4.503 s; sync files=40, longest=0.005 s, average=0.001 s; distance=199 kB, estimate=199 kB

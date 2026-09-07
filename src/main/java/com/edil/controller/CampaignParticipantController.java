@@ -1,13 +1,11 @@
 package com.edil.controller;
 
 
-import com.edil.dto.request.AddParticipantToCampaignRequest;
-import com.edil.dto.request.CanParticipantJoinCampaignRequest;
-import com.edil.dto.request.CreateCampaignSlotForUserRequest;
-import com.edil.dto.request.FetchOnGoingSlotInformationForUserResponse;
+import com.edil.dto.request.*;
 import com.edil.dto.response.AddParticipantToCampaignResponse;
 import com.edil.dto.response.CanParticipantJoinCampaignResponse;
 import com.edil.dto.response.CreateCampaignSlotForUserResponse;
+import com.edil.dto.response.CreatePetitionResponse;
 import com.edil.service.CampaignParticipantService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -60,7 +58,10 @@ public class CampaignParticipantController {
 
     }
 
-
+    @PostMapping("/submite/petition")
+    public ResponseEntity<CreatePetitionResponse> createPetitionHandler(@RequestBody CreatePetitionRequest createPetitionRequest, @AuthenticationPrincipal String email){
+        return  campaignParticipantService.submitPetition(createPetitionRequest, email);
+    }
 }
 
 

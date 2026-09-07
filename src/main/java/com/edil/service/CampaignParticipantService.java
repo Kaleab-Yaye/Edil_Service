@@ -5,20 +5,12 @@ package com.edil.service;
 import com.edil.config.util.StoreCampaignToSlotHashMap;
 import com.edil.domain.*;
 import com.edil.domain.enums.CampaignStatus;
+import com.edil.domain.enums.PetitionStatus;
 import com.edil.dto.internal.CbePayload;
 import com.edil.dto.internal.SlotKeyToCampaignAndUserIdDto;
-import com.edil.dto.request.AddParticipantToCampaignRequest;
-import com.edil.dto.request.CanParticipantJoinCampaignRequest;
-import com.edil.dto.request.CreateCampaignSlotForUserRequest;
-import com.edil.dto.request.FetchOnGoingSlotInformationForUserResponse;
-import com.edil.dto.response.AddParticipantToCampaignResponse;
-import com.edil.dto.response.CanParticipantJoinCampaignResponse;
-import com.edil.dto.response.CreateCampaignSlotForUserResponse;
-import com.edil.dto.response.UserMeResponse;
-import com.edil.repository.ArchivedCampaignParticipantsRepository;
-import com.edil.repository.CampaignParticipantsRepository;
-import com.edil.repository.ReceiptRepository;
-import com.edil.repository.SlotRepository;
+import com.edil.dto.request.*;
+import com.edil.dto.response.*;
+import com.edil.repository.*;
 import com.github.benmanes.caffeine.cache.Cache;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -60,6 +52,7 @@ public class CampaignParticipantService {
     private final Cache<String, UUID> userEmailToSlotAvailableCheckCache;
 
     private final ArchivedCampaignParticipantsRepository archivedCampaignParticipantsRepository;
+    private  final PetitionService petitionService;
 
 
 
@@ -356,6 +349,56 @@ public class CampaignParticipantService {
         slotKeyToCampaignIdCache.put(userEmailToSlotAvailableCheckCache.getIfPresent(email), slotKeyToCampaignAndUserIdDtoFlaggedAsCancelled );
 
         return  ResponseEntity.status(HttpStatus.OK).build();
+
+
+
+    }
+
+
+
+    @Transactional
+    public ResponseEntity<CreatePetitionResponse> submitPetition(CreatePetitionRequest createPetitionRequest, String  email){
+        //first check if the user is in memory and has slot to submit so that we evict it.
+        Map<String,UUID>  userEmailTOSlotKeyMap = userEmailToSlotAvailableCheckCache.asMap();
+        UUID slotKey = null;
+        SlotKeyToCampaignAndUserIdDto slotKeyToCampaignAndUserIdDto = null;
+        SlotKeyToCampaignAndUserIdDto slotKeyToCampaignAndUserIdDtoFlaggedAsCancelled = null;
+
+        if (userEmailTOSlotKeyMap.containsKey(email)){
+
+            slotKey = userEmailTOSlotKeyMap.get(email);
+        }
+
+        Map<UUID, SlotKeyToCampaignAndUserIdDto> slotKeyToCampaignAndUserIdDtoMap = slotKeyToCampaignIdCache.asMap();
+        if(slotKeyToCampaignAndUserIdDtoMap.containsKey(slotKey)){
+            log.warn(" a user was find in the email to key cache but the key was not on the cache email: {} key: {}", email, slotKey);
+            slotKeyToCampaignAndUserIdDto = slotKeyToCampaignAndUserIdDtoMap.get(slotKey);
+            slotKeyToCampaignAndUserIdDtoFlaggedAsCancelled = slotKeyToCampaignAndUserIdDto.returnSlotKeyToCampaignAndUserIdDtoFlaggedAsReplaced();
+        }
+
+        // now we start the submiting of petition this should be handled by a peitition service and repo
+
+        Campaign campaign = campaignService.getCampaignById(createPetitionRequest.campaignId());
+        UserProfile userProfile = userService.getUserByEmail(email).getUserProfile();
+
+        ResponseEntity<CreatePetitionResponse> responseResponseEntity = petitionService.submitPetition(createPetitionRequest, userProfile,  campaign);
+
+        // evict if the user had any slot reserved
+        slotKeyToCampaignIdCache.put(userEmailToSlotAvailableCheckCache.getIfPresent(email), slotKeyToCampaignAndUserIdDtoFlaggedAsCancelled );
+
+        return  responseResponseEntity;
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
