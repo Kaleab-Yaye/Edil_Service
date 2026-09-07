@@ -1,5 +1,6 @@
 package com.edil.domain;
 
+import com.edil.domain.enums.PetitionReason;
 import com.edil.domain.enums.PetitionStatus;
 import jakarta.persistence.*;
 import lombok.*;
@@ -32,6 +33,16 @@ public class Petition {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "campaign_id", nullable = false)
     private Campaign campaign;
+
+    @Column(name = "payment_link", nullable = false, length = 500)
+    private String paymentLink;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "reason", nullable = false, length = 50)
+    private PetitionReason reason;
+
+    @Column(name = "statement", nullable = false, columnDefinition = "TEXT")
+    private String statement;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 25)
