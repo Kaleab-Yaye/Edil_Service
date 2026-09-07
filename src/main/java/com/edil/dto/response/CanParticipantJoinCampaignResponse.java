@@ -6,6 +6,7 @@ public record CanParticipantJoinCampaignResponse(
         boolean canJoin,
         boolean hasReservedSlot,
         UUID campaignId,
-        UUID slotKey
+        UUID slotKey,
+        boolean haOnGoingPetition
 ) {
 }

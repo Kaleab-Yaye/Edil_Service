@@ -17,6 +17,8 @@ import org.springframework.security.core.userdetails.ReactiveUserDetailsPassword
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
 public class PetitionService {
@@ -27,7 +29,7 @@ public class PetitionService {
 
 
     @Transactional
-    ResponseEntity<CreatePetitionResponse> submitPetition(CreatePetitionRequest createPetitionRequest, UserProfile userProfile, Campaign campaign){
+   public ResponseEntity<CreatePetitionResponse> submitPetition(CreatePetitionRequest createPetitionRequest, UserProfile userProfile, Campaign campaign){
         if(petitionRepository.existsByPetitionerIdAndCampaignIdAndStatus(userProfile.getId(),createPetitionRequest.campaignId(), PetitionStatus.UNRESOLVED)){
             return  ResponseEntity.status(HttpStatus.CONFLICT).body(new CreatePetitionResponse("user already has ongoing petition for this campaign"));
         }
@@ -43,6 +45,11 @@ public class PetitionService {
         return  ResponseEntity.status(HttpStatus.OK).body(new CreatePetitionResponse("Petition Submitted"));
 
 
+    }
+
+    //true if it exists
+    public boolean doesUserHasOngoingPetitionForCampaign(UUID campaignId, UUID  userProfileId ){
+        return petitionRepository.existsByPetitionerIdAndCampaignIdAndStatus(campaignId, userProfileId, PetitionStatus.UNRESOLVED);
     }
 
 }

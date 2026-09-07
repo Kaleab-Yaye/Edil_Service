@@ -216,9 +216,10 @@ public class CampaignParticipantService {
     public ResponseEntity<CanParticipantJoinCampaignResponse> canParticipantJoinCampaign(CanParticipantJoinCampaignRequest request, String email){
 
         UUID userUUId   = userService.getUserUUIDByEmail(email);
+        UserProfile userProfile = userService.getUserByEmail(email).getUserProfile();
 
         if (campaignParticipantsRepository.existsByAccountIdAndCampaignId(userUUId, request.campaignId())){
-            return  ResponseEntity.status(HttpStatus.CONFLICT).body(new CanParticipantJoinCampaignResponse(false, false, null, null));
+            return  ResponseEntity.status(HttpStatus.CONFLICT).body(new CanParticipantJoinCampaignResponse(false, false, null, null, false));
         }
 
         UUID  slotKeyFromEmailToBooleanCache = userEmailToSlotAvailableCheckCache.getIfPresent(email);
@@ -227,15 +228,19 @@ public class CampaignParticipantService {
          SlotKeyToCampaignAndUserIdDto  slotKeyToCampaignAndUserIdDto =  slotKeyToCampaignIdCache.getIfPresent(slotKeyFromEmailToBooleanCache);
 
          if(slotKeyToCampaignAndUserIdDto == null){
-             log.warn("has the user resvered a slot check returend ture but can get the key");
+             log.warn("has the user resvered a slot check returend true but can get the key");
              return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 
          }
-            return  ResponseEntity.status(HttpStatus.CONFLICT).body(new CanParticipantJoinCampaignResponse(false, true, slotKeyToCampaignAndUserIdDto.campaignId(), slotKeyFromEmailToBooleanCache ));
+            return  ResponseEntity.status(HttpStatus.CONFLICT).body(new CanParticipantJoinCampaignResponse(false, true, slotKeyToCampaignAndUserIdDto.campaignId(), slotKeyFromEmailToBooleanCache, false ));
+        }
+
+        if(petitionService.doesUserHasOngoingPetitionForCampaign(request.campaignId(), userProfile.getId())){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(new CanParticipantJoinCampaignResponse(false,false,null,null,true));
         }
 
 
-        return ResponseEntity.status(HttpStatus.OK).body(new CanParticipantJoinCampaignResponse(true, false, null, null));
+        return ResponseEntity.status(HttpStatus.OK).body(new CanParticipantJoinCampaignResponse(true, false, null, null, false));
     }
 
     public boolean canParticipantJoinCampaign(UUID campaignId, String email){
@@ -387,19 +392,6 @@ public class CampaignParticipantService {
         slotKeyToCampaignIdCache.put(userEmailToSlotAvailableCheckCache.getIfPresent(email), slotKeyToCampaignAndUserIdDtoFlaggedAsCancelled );
 
         return  responseResponseEntity;
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     }
