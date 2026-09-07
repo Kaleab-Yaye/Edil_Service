@@ -40,5 +40,11 @@ public class CampaignParticipants {
     @UpdateTimestamp
     private LocalDateTime addedAt;
 
+    @ManyToOne
+    @JoinColumn(name = "adder_admin_id")
+    @Getter
+    @Setter
+    private AdminProfile adminProfile;
+
 
 }

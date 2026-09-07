@@ -59,7 +59,10 @@ public class CampaignParticipantController {
         return campaignParticipantService.cancelReservedSlot(email);
 
     }
+
+
 }
+
 
 
 

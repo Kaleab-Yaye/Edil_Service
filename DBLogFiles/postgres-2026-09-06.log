@@ -42,3 +42,25 @@
 2026-09-06 09:36:59.005 UTC [56] STATEMENT:  DELeTE FROM cmpaign_participants;
 2026-09-06 09:41:30.596 UTC [28] LOG:  checkpoint starting: time
 2026-09-06 09:41:32.055 UTC [28] LOG:  checkpoint complete: wrote 15 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=1.421 s, sync=0.014 s, total=1.460 s; sync files=15, longest=0.005 s, average=0.001 s; distance=11 kB, estimate=11 kB
+2026-09-06 09:52:17.686 UTC [28] LOG:  checkpoint starting: time
+2026-09-06 09:52:18.461 UTC [28] LOG:  checkpoint complete: wrote 7 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.661 s, sync=0.016 s, total=0.775 s; sync files=7, longest=0.008 s, average=0.003 s; distance=7 kB, estimate=10 kB
+2026-09-06 10:03:08.214 UTC [28] LOG:  checkpoint starting: time
+2026-09-06 10:03:08.651 UTC [28] LOG:  checkpoint complete: wrote 5 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.405 s, sync=0.013 s, total=0.438 s; sync files=5, longest=0.010 s, average=0.003 s; distance=6 kB, estimate=10 kB
+2026-09-06 10:08:28.899 UTC [28] LOG:  checkpoint starting: time
+2026-09-06 10:08:29.133 UTC [28] LOG:  checkpoint complete: wrote 3 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.207 s, sync=0.008 s, total=0.234 s; sync files=3, longest=0.006 s, average=0.003 s; distance=5 kB, estimate=9 kB
+2026-09-06 12:29:18.802 UTC [56] ERROR:  syntax error at or near "DELTE" at character 1
+2026-09-06 12:29:18.802 UTC [56] STATEMENT:  DELTE FROM cmpaign_parcticipants;
+2026-09-06 12:30:40.352 UTC [28] LOG:  checkpoint starting: time
+2026-09-06 12:30:40.832 UTC [28] LOG:  checkpoint complete: wrote 5 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.438 s, sync=0.010 s, total=0.484 s; sync files=5, longest=0.007 s, average=0.002 s; distance=6 kB, estimate=9 kB
+2026-09-06 12:36:09.872 UTC [28] LOG:  checkpoint starting: time
+2026-09-06 12:36:10.008 UTC [28] LOG:  checkpoint complete: wrote 2 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.106 s, sync=0.007 s, total=0.138 s; sync files=2, longest=0.006 s, average=0.004 s; distance=1 kB, estimate=8 kB
+2026-09-06 12:41:38.022 UTC [28] LOG:  checkpoint starting: time
+2026-09-06 12:41:39.470 UTC [28] LOG:  checkpoint complete: wrote 15 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=1.416 s, sync=0.014 s, total=1.448 s; sync files=15, longest=0.006 s, average=0.001 s; distance=12 kB, estimate=12 kB
+2026-09-06 14:20:10.719 UTC [1] LOG:  received fast shutdown request
+2026-09-06 14:20:10.726 UTC [1] LOG:  aborting any active transactions
+2026-09-06 14:20:10.732 UTC [56] FATAL:  terminating connection due to administrator command
+2026-09-06 14:20:10.743 UTC [1] LOG:  background worker "logical replication launcher" (PID 33) exited with exit code 1
+2026-09-06 14:20:10.743 UTC [28] LOG:  shutting down
+2026-09-06 14:20:10.750 UTC [28] LOG:  checkpoint starting: shutdown immediate
+2026-09-06 14:20:10.822 UTC [28] LOG:  checkpoint complete: wrote 0 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.019 s, sync=0.001 s, total=0.078 s; sync files=0, longest=0.000 s, average=0.000 s; distance=0 kB, estimate=11 kB
+2026-09-06 14:20:10.841 UTC [1] LOG:  database system is shut down

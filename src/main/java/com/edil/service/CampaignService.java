@@ -179,7 +179,9 @@ public class CampaignService {
                 .creatorChannelLink(creatorChannelLink)
                 .creatorAbout(creatorAbout)
                 .prizes(prizeResponses)
-                .availableSlots(StoreCampaignToSlotHashMap.campaignToSlotStore.get(campaign.getId()).intValue())
+                .availableSlots(StoreCampaignToSlotHashMap.campaignToSlotStore.get(campaign.getId()) != null 
+                        ? StoreCampaignToSlotHashMap.campaignToSlotStore.get(campaign.getId()).intValue() 
+                        : Math.max(0, campaign.getTargetEntries() - campaign.getJoinedUsers()))
                 .build();
     }
 
