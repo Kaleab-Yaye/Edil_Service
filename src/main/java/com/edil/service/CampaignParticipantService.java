@@ -374,12 +374,11 @@ public class CampaignParticipantService {
             slotKey = userEmailTOSlotKeyMap.get(email);
         }
 
-        Map<UUID, SlotKeyToCampaignAndUserIdDto> slotKeyToCampaignAndUserIdDtoMap = slotKeyToCampaignIdCache.asMap();
-        if(slotKeyToCampaignAndUserIdDtoMap.containsKey(slotKey)){
-            log.warn(" a user was find in the email to key cache but the key was not on the cache email: {} key: {}", email, slotKey);
-            slotKeyToCampaignAndUserIdDto = slotKeyToCampaignAndUserIdDtoMap.get(slotKey);
-            slotKeyToCampaignAndUserIdDtoFlaggedAsCancelled = slotKeyToCampaignAndUserIdDto.returnSlotKeyToCampaignAndUserIdDtoFlaggedAsReplaced();
-        }
+
+
+
+
+
 
         // now we start the submiting of petition this should be handled by a peitition service and repo
 
@@ -389,6 +388,15 @@ public class CampaignParticipantService {
         ResponseEntity<CreatePetitionResponse> responseResponseEntity = petitionService.submitPetition(createPetitionRequest, userProfile,  campaign);
 
         // evict if the user had any slot reserved
+
+
+        Map<UUID, SlotKeyToCampaignAndUserIdDto> slotKeyToCampaignAndUserIdDtoMap = slotKeyToCampaignIdCache.asMap();
+        if(!slotKeyToCampaignAndUserIdDtoMap.containsKey(slotKey)){
+            log.warn(" a user was find in the email to key cache but the key was not on the cache email: {} key: {}", email, slotKey);
+            slotKeyToCampaignAndUserIdDto = slotKeyToCampaignAndUserIdDtoMap.get(slotKey);
+            slotKeyToCampaignAndUserIdDtoFlaggedAsCancelled = slotKeyToCampaignAndUserIdDto.returnSlotKeyToCampaignAndUserIdDtoFlaggedAsReplaced();
+        }
+
         slotKeyToCampaignIdCache.put(userEmailToSlotAvailableCheckCache.getIfPresent(email), slotKeyToCampaignAndUserIdDtoFlaggedAsCancelled );
 
         return  responseResponseEntity;

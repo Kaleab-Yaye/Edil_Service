@@ -24,7 +24,6 @@ import java.util.UUID;
 public class PetitionService {
 
     private final PetitionRepository petitionRepository;
-    private final ReactiveUserDetailsPasswordService reactiveUserDetailsPasswordService;
 
 
 

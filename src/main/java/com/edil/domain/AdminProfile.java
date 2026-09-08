@@ -30,6 +30,7 @@ public class AdminProfile {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id", nullable = false, unique = true)
     private Account account;

@@ -58,7 +58,7 @@ public class CampaignParticipantController {
 
     }
 
-    @PostMapping("/submite/petition")
+    @PostMapping("/submit/petition")
     public ResponseEntity<CreatePetitionResponse> createPetitionHandler(@RequestBody CreatePetitionRequest createPetitionRequest, @AuthenticationPrincipal String email){
         return  campaignParticipantService.submitPetition(createPetitionRequest, email);
     }
