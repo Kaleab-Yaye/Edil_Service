@@ -106,7 +106,7 @@ public class PetitionService {
 
         petitionRepository.save(petition);
 
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new HandlePetitionResponse(true));
+        return ResponseEntity.status(HttpStatus.OK).body(new HandlePetitionResponse(true));
 
 
     }
