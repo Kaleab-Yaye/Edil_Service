@@ -130,8 +130,15 @@ public class PetitionService {
 
         petitionRepository.save(petition);
 
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResolvePetitionResponse(true, "done"));
+        return ResponseEntity.status(HttpStatus.OK).body(new ResolvePetitionResponse(true, "done"));
     }
+
+
+
+
+
+
+
 
 
 

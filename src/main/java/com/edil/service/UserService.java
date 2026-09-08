@@ -87,7 +87,7 @@ public class UserService {
 
     public ResponseEntity<UserMeResponse>  getUserDetails(GetUserProfileRequest getUserProfileRequest){
 
-        UserProfile profile  = userProfileRepository.findByAccountId(getUserProfileRequest.userId()).orElseThrow(()->new AccountNotFoundException("the user profile with the id " +getUserProfileRequest.userId() + " is not found"));
+        UserProfile profile  = userProfileRepository.findById(getUserProfileRequest.userId()).orElseThrow(()->new AccountNotFoundException("the user profile with the id " +getUserProfileRequest.userId() + " is not found"));
         Account account =  profile.getAccount();
 
        if(!account.getRole().equals(AccountRole.USER )){
