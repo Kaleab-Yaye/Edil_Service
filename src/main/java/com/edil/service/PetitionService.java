@@ -6,10 +6,12 @@ import com.edil.domain.enums.AccountRole;
 import com.edil.domain.enums.PetitionStatus;
 import com.edil.dto.request.CreatePetitionRequest;
 import com.edil.dto.request.HandlePetitionRequest;
+import com.edil.dto.request.ResolvePetitionRequest;
 import com.edil.dto.response.CreatePetitionResponse;
 import com.edil.dto.response.GetUnresolvedPetitionsResponse;
 import com.edil.dto.response.HandlePetitionResponse;
-import com.edil.repository.AccountRepository;
+import com.edil.dto.response.ResolvePetitionResponse;
+import com.edil.exception.ResourceNotFoundException;
 import com.edil.repository.AdminProfileRepository;
 import com.edil.repository.PetitionRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +22,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
@@ -108,7 +111,32 @@ public class PetitionService {
 
         return ResponseEntity.status(HttpStatus.OK).body(new HandlePetitionResponse(true));
 
-
     }
+
+
+    // has to be only reachable from the admin page with from the admin page
+    public ResponseEntity<ResolvePetitionResponse> resolvePetition(ResolvePetitionRequest resolvePetitionRequest, String email){
+
+        Petition petition = petitionRepository.getPetitionsById(resolvePetitionRequest.petitionsId()).
+                orElseThrow(()->new ResourceNotFoundException("the petition with the id " + resolvePetitionRequest.petitionsId() + "doest exist"));
+
+        Account account = petition.getResolverAdmin().getAccount();
+        if(!account.getEmail().equals(email)){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResolvePetitionResponse(false, "other admin is already handling the petition"));
+        }
+
+        petition.setStatus(resolvePetitionRequest.status());
+        petition.setResolvedAt(LocalDateTime.now());
+
+        petitionRepository.save(petition);
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResolvePetitionResponse(true, "done"));
+    }
+
+
+
+
+
+
 
 }
