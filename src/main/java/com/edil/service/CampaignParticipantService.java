@@ -389,16 +389,21 @@ public class CampaignParticipantService {
 
         // evict if the user had any slot reserved
 
+      if(slotKey!=null) {
+          Map<UUID, SlotKeyToCampaignAndUserIdDto> slotKeyToCampaignAndUserIdDtoMap = slotKeyToCampaignIdCache.asMap();
+          if (slotKeyToCampaignAndUserIdDtoMap.containsKey(slotKey)) {
 
-        Map<UUID, SlotKeyToCampaignAndUserIdDto> slotKeyToCampaignAndUserIdDtoMap = slotKeyToCampaignIdCache.asMap();
-        if(!slotKeyToCampaignAndUserIdDtoMap.containsKey(slotKey)){
-            log.warn(" a user was find in the email to key cache but the key was not on the cache email: {} key: {}", email, slotKey);
-            slotKeyToCampaignAndUserIdDto = slotKeyToCampaignAndUserIdDtoMap.get(slotKey);
-            slotKeyToCampaignAndUserIdDtoFlaggedAsCancelled = slotKeyToCampaignAndUserIdDto.returnSlotKeyToCampaignAndUserIdDtoFlaggedAsReplaced();
-        }
+              slotKeyToCampaignAndUserIdDto = slotKeyToCampaignAndUserIdDtoMap.get(slotKey);
+              slotKeyToCampaignAndUserIdDtoFlaggedAsCancelled = slotKeyToCampaignAndUserIdDto.returnSlotKeyToCampaignAndUserIdDtoFlaggedAsReplaced();
 
-        slotKeyToCampaignIdCache.put(userEmailToSlotAvailableCheckCache.getIfPresent(email), slotKeyToCampaignAndUserIdDtoFlaggedAsCancelled );
+              slotKeyToCampaignIdCache.put(userEmailToSlotAvailableCheckCache.getIfPresent(email), slotKeyToCampaignAndUserIdDtoFlaggedAsCancelled );
+          }
 
+          else{
+              log.warn(" a user was find in the email to key cache but the key was not on the cache email: {} key: {}", email, slotKey);
+              return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+          }
+      }
         return  responseResponseEntity;
 
 
