@@ -4,16 +4,16 @@ package com.edil.service;
 import com.edil.domain.Campaign;
 import com.edil.domain.Petition;
 import com.edil.domain.UserProfile;
-import com.edil.domain.enums.PetitionReason;
 import com.edil.domain.enums.PetitionStatus;
 import com.edil.dto.request.CreatePetitionRequest;
 import com.edil.dto.response.CreatePetitionResponse;
+import com.edil.dto.response.GetUnresolvedPetitionsResponse;
 import com.edil.repository.PetitionRepository;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.ReactiveUserDetailsPasswordService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,5 +50,34 @@ public class PetitionService {
     public boolean doesUserHasOngoingPetitionForCampaign(UUID campaignId, UUID  userProfileId ){
         return petitionRepository.existsByPetitionerIdAndCampaignIdAndStatus(campaignId, userProfileId, PetitionStatus.UNRESOLVED);
     }
+
+    public ResponseEntity<Page<GetUnresolvedPetitionsResponse>> getUnresolvedPetitions(Pageable pageable){
+
+        Page<Petition> petitionPage = petitionRepository.getPetitionsByStatus(PetitionStatus.UNRESOLVED, pageable);
+
+        return ResponseEntity.status(HttpStatus.OK).body(petitionPage.map(this::mapUnresolvedPetitionToResponse));
+
+
+    }
+
+
+    private GetUnresolvedPetitionsResponse mapUnresolvedPetitionToResponse(Petition petition){
+
+        return  GetUnresolvedPetitionsResponse.builder()
+                .id(petition.getId())
+                .petitionReason(petition.getReason())
+                .createdAt(petition.getCreatedAt())
+                .paymentLink(petition.getPaymentLink())
+                .petitionerId(petition.getPetitioner().getId())
+                .campaignId(petition.getCampaign().getId())
+                .build();
+
+
+
+    }
+
+
+
+
 
 }
