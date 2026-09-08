@@ -1,0 +1,23 @@
+2026-09-08 08:12:04.299 UTC [459] ERROR:  insert or update on table "petitions" violates foreign key constraint "petitions_campaign_id_fkey"
+2026-09-08 08:12:04.299 UTC [459] DETAIL:  Key (campaign_id)=(ea503d27-2c6b-45f5-b7a4-8138e3eaf357) is not present in table "campaigns".
+2026-09-08 08:12:04.299 UTC [459] STATEMENT:  insert into petitions (campaign_id,created_at,payment_link,petitioner_id,reason,resolved_at,resolver_admin_id,statement,status,id) values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
+2026-09-08 08:12:08.221 UTC [29] LOG:  checkpoint starting: time
+2026-09-08 08:12:08.953 UTC [29] LOG:  checkpoint complete: wrote 6 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.657 s, sync=0.051 s, total=0.774 s; sync files=6, longest=0.047 s, average=0.009 s; distance=1 kB, estimate=50 kB
+2026-09-08 13:51:42.476 UTC [881] ERROR:  relation "petition" does not exist
+2026-09-08 13:51:42.476 UTC [881] STATEMENT:  ALTER TABLE petition ADD COLUMN version INT
+2026-09-08 13:52:57.722 UTC [29] LOG:  checkpoint starting: time
+2026-09-08 13:52:58.618 UTC [29] LOG:  checkpoint complete: wrote 9 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.851 s, sync=0.011 s, total=0.897 s; sync files=9, longest=0.004 s, average=0.002 s; distance=21 kB, estimate=47 kB
+2026-09-08 17:14:25.502 UTC [1] LOG:  starting PostgreSQL 15.15 on x86_64-pc-linux-musl, compiled by gcc (Alpine 14.2.0) 14.2.0, 64-bit
+2026-09-08 17:14:25.503 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+2026-09-08 17:14:25.503 UTC [1] LOG:  listening on IPv6 address "::", port 5432
+2026-09-08 17:14:25.512 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+2026-09-08 17:14:25.526 UTC [30] LOG:  database system was interrupted; last known up at 2026-09-08 13:52:58 UTC
+2026-09-08 17:14:26.529 UTC [30] LOG:  database system was not properly shut down; automatic recovery in progress
+2026-09-08 17:14:26.535 UTC [30] LOG:  redo starts at 0/1B11188
+2026-09-08 17:14:26.535 UTC [30] LOG:  invalid record length at 0/1B11270: wanted 24, got 0
+2026-09-08 17:14:26.535 UTC [30] LOG:  redo done at 0/1B11238 system usage: CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.00 s
+2026-09-08 17:14:26.551 UTC [28] LOG:  checkpoint starting: end-of-recovery immediate wait
+2026-09-08 17:14:26.574 UTC [28] LOG:  checkpoint complete: wrote 2 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.007 s, sync=0.004 s, total=0.027 s; sync files=2, longest=0.003 s, average=0.002 s; distance=0 kB, estimate=0 kB
+2026-09-08 17:14:26.590 UTC [1] LOG:  database system is ready to accept connections
+2026-09-08 17:24:34.564 UTC [28] LOG:  checkpoint starting: time
+2026-09-08 17:24:34.947 UTC [28] LOG:  checkpoint complete: wrote 4 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.308 s, sync=0.016 s, total=0.384 s; sync files=4, longest=0.009 s, average=0.004 s; distance=1 kB, estimate=1 kB

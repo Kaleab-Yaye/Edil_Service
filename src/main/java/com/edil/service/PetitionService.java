@@ -2,12 +2,15 @@ package com.edil.service;
 
 
 import com.edil.domain.*;
+import com.edil.domain.enums.AccountRole;
 import com.edil.domain.enums.PetitionStatus;
 import com.edil.dto.request.CreatePetitionRequest;
 import com.edil.dto.request.HandlePetitionRequest;
 import com.edil.dto.response.CreatePetitionResponse;
 import com.edil.dto.response.GetUnresolvedPetitionsResponse;
 import com.edil.dto.response.HandlePetitionResponse;
+import com.edil.repository.AccountRepository;
+import com.edil.repository.AdminProfileRepository;
 import com.edil.repository.PetitionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -24,6 +27,8 @@ import java.util.UUID;
 public class PetitionService {
 
     private final PetitionRepository petitionRepository;
+    private  final UserService userService;
+    private  final AdminProfileRepository adminProfileRepository;
 
 
 
@@ -87,9 +92,13 @@ public class PetitionService {
         }
 
 
-        AdminProfile adminAccount = petition.getResolverAdmin();
+        Account account = userService.getAccountByEmail(email);
 
+        if(!(account.getRole().equals(AccountRole.ADMIN)||account.getRole().equals(AccountRole.ROOT_ADMIN))){
+            return  ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
 
+        AdminProfile adminAccount = account.getAdminProfile();
 
         petition.setResolverAdmin(adminAccount);
         petition.setStatus(PetitionStatus.BING_HANDLED);
@@ -101,9 +110,5 @@ public class PetitionService {
 
 
     }
-
-
-
-
 
 }

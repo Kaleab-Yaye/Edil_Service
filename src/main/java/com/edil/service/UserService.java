@@ -14,16 +14,11 @@ import com.edil.repository.CreatorProfileRepository;
 import com.edil.repository.UserProfileRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.catalina.User;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.HTML;
-import javax.swing.text.html.Option;
-import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
@@ -74,7 +69,7 @@ public class UserService {
         return builder.build();
     }
 
-    public Account getUserByEmail(String email) {
+    public Account getAccountByEmail(String email) {
         log.info("the user  email that is being tried ot be fetched is {}", email);
        return accountRepository.findByEmail(email)
                 .orElseThrow(() -> new AccountNotFoundException("Account not found"));
@@ -83,7 +78,7 @@ public class UserService {
 
     @Cacheable(value = "user_email_to_UUID", key ="#email")
 
-    public UUID getUserUUIDByEmail(String email){
+    public UUID getAccountIDByEmail(String email){
         log.info("cache missed for Email to UUID methode");
         return accountRepository.findByEmail(email).orElseThrow(()->new AccountNotFoundException("the account with the email "+email+ " is not found")).getId();
     }

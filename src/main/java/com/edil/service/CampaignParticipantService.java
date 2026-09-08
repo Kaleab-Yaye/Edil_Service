@@ -5,38 +5,26 @@ package com.edil.service;
 import com.edil.config.util.StoreCampaignToSlotHashMap;
 import com.edil.domain.*;
 import com.edil.domain.enums.CampaignStatus;
-import com.edil.domain.enums.PetitionStatus;
 import com.edil.dto.internal.CbePayload;
 import com.edil.dto.internal.SlotKeyToCampaignAndUserIdDto;
 import com.edil.dto.request.*;
 import com.edil.dto.response.*;
 import com.edil.repository.*;
 import com.github.benmanes.caffeine.cache.Cache;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
-import org.aspectj.weaver.patterns.ConcreteCflowPointcut;
-import org.hibernate.persister.entity.AbstractEntityPersister;
-import org.springframework.cache.CacheManager;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.swing.text.StyledEditorKit;
-import javax.swing.text.html.Option;
 import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -68,7 +56,7 @@ public class CampaignParticipantService {
 
             // lets first make sure the user is active and make sure is not part of the campain already.
 
-            Account biengAddedUserAccount = userService.getUserByEmail(userEmail);
+            Account biengAddedUserAccount = userService.getAccountByEmail(userEmail);
             if (!biengAddedUserAccount.getIsActive()) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new AddParticipantToCampaignResponse("user is banned"));
             }
@@ -219,8 +207,8 @@ public class CampaignParticipantService {
 
     public ResponseEntity<CanParticipantJoinCampaignResponse> canParticipantJoinCampaign(CanParticipantJoinCampaignRequest request, String email){
 
-        UUID userUUId   = userService.getUserUUIDByEmail(email);
-        UserProfile userProfile = userService.getUserByEmail(email).getUserProfile();
+        UUID userUUId   = userService.getAccountIDByEmail(email);
+        UserProfile userProfile = userService.getAccountByEmail(email).getUserProfile();
 
         if (campaignParticipantsRepository.existsByAccountIdAndCampaignId(userUUId, request.campaignId())){
             return  ResponseEntity.status(HttpStatus.CONFLICT).body(new CanParticipantJoinCampaignResponse(false, false, null, null, false));
@@ -249,7 +237,7 @@ public class CampaignParticipantService {
 
     public boolean canParticipantJoinCampaign(UUID campaignId, String email){
 
-        UUID userUUId   = userService.getUserUUIDByEmail(email);
+        UUID userUUId   = userService.getAccountIDByEmail(email);
 
         return !campaignParticipantsRepository.existsByAccountIdAndCampaignId(userUUId, campaignId);
     }
@@ -259,7 +247,7 @@ public class CampaignParticipantService {
 
         Optional<Campaign> campaignOptional = campaignService.getCampaignById(request.campaignId());
         Campaign campaign  = campaignOptional.orElseThrow();
-        UUID userId = userService.getUserUUIDByEmail(userEmail);
+        UUID userId = userService.getAccountIDByEmail(userEmail);
 
         if(campaign.getStatus()!=CampaignStatus.APPROVED ||  !canParticipantJoinCampaign(request.campaignId(), userEmail) ){
             return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
@@ -391,7 +379,7 @@ public class CampaignParticipantService {
        Optional< Campaign> campaignOptional = campaignService.getCampaignById(createPetitionRequest.campaignId());
         Campaign campaign = campaignOptional.orElseThrow();
 
-        UserProfile userProfile = userService.getUserByEmail(email).getUserProfile();
+        UserProfile userProfile = userService.getAccountByEmail(email).getUserProfile();
 
         ResponseEntity<CreatePetitionResponse> responseResponseEntity = petitionService.submitPetition(createPetitionRequest, userProfile,  campaign);
 
