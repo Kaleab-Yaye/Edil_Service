@@ -26,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -302,8 +303,8 @@ public class CampaignService {
 
 
 
-    public Campaign getCampaignById(UUID campaignId) {
-        return campaignRepository.getReferenceById(campaignId);
+    public Optional<Campaign> getCampaignById(UUID campaignId) {
+        return campaignRepository.getCampaignsById(campaignId);
     }
 
 

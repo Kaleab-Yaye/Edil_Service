@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -18,5 +19,6 @@ public interface CampaignRepository extends JpaRepository<Campaign, UUID> {
     List<Campaign> findByStatusAndEndDateLessThanEqual(CampaignStatus status, LocalDateTime now);
     List<Campaign> findByCreatorId(UUID creatorId);
     List<Campaign> findByStatus(CampaignStatus status);
+    Optional<Campaign> getCampaignsById(UUID campaignId);
     boolean existsByCreatorIdAndStatusIn(UUID creatorId, Collection<CampaignStatus> statuses);
 }

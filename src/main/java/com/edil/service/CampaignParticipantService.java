@@ -18,6 +18,7 @@ import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.weaver.patterns.ConcreteCflowPointcut;
 import org.hibernate.persister.entity.AbstractEntityPersister;
+import org.springframework.cache.CacheManager;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.swing.text.StyledEditorKit;
+import javax.swing.text.html.Option;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
@@ -32,6 +34,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
@@ -97,7 +100,8 @@ public class CampaignParticipantService {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new AddParticipantToCampaignResponse("slot key has expired or is not valid"));
             }
 
-            Campaign campaign = campaignService.getCampaignById(addParticipantToCampaignRequest.campaignId());
+            Optional< Campaign > campaignOptional = campaignService.getCampaignById(addParticipantToCampaignRequest.campaignId());
+            Campaign campaign = campaignOptional.orElseThrow(()->new RuntimeException("No Campaign with the id "+ addParticipantToCampaignRequest.campaignId() + " was found"));
 
             // now the logic starts here
             if (!campaign.getStatus().equals(CampaignStatus.APPROVED)) {
@@ -253,7 +257,8 @@ public class CampaignParticipantService {
 
     public ResponseEntity<CreateCampaignSlotForUserResponse> createCampaignSlotForUser(CreateCampaignSlotForUserRequest request, String userEmail){
 
-        Campaign campaign = campaignService.getCampaignById(request.campaignId());
+        Optional<Campaign> campaignOptional = campaignService.getCampaignById(request.campaignId());
+        Campaign campaign  = campaignOptional.orElseThrow();
         UUID userId = userService.getUserUUIDByEmail(userEmail);
 
         if(campaign.getStatus()!=CampaignStatus.APPROVED ||  !canParticipantJoinCampaign(request.campaignId(), userEmail) ){
@@ -328,7 +333,8 @@ public class CampaignParticipantService {
         }
 
         long timeLeft = ChronoUnit.SECONDS.between(LocalDateTime.now(), slotKeyToCampaignAndUserIdDto.cachePutAt());
-        Campaign campaign = campaignService.getCampaignById(slotKeyToCampaignAndUserIdDto.campaignId());
+       Optional< Campaign> campaignOptional = campaignService.getCampaignById(slotKeyToCampaignAndUserIdDto.campaignId());
+       Campaign campaign = campaignOptional.orElseThrow();
 
         return ResponseEntity.status(HttpStatus.OK).body(
 
@@ -382,7 +388,9 @@ public class CampaignParticipantService {
 
         // now we start the submiting of petition this should be handled by a peitition service and repo
 
-        Campaign campaign = campaignService.getCampaignById(createPetitionRequest.campaignId());
+       Optional< Campaign> campaignOptional = campaignService.getCampaignById(createPetitionRequest.campaignId());
+        Campaign campaign = campaignOptional.orElseThrow();
+
         UserProfile userProfile = userService.getUserByEmail(email).getUserProfile();
 
         ResponseEntity<CreatePetitionResponse> responseResponseEntity = petitionService.submitPetition(createPetitionRequest, userProfile,  campaign);
