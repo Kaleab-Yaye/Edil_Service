@@ -18,7 +18,7 @@ public class ReceiptController {
     private final ReceiptService receiptService;
 
     @PostMapping("/check/use")
-    @PreAuthorize("hasRole('admin')")
+    @PreAuthorize("hasRole('ADMIN')")
 
     public ResponseEntity<HasReceiptBeenUsedBeforeResponse> handleReceiptUsageCheck(@RequestBody HasReceiptBeenUsedBeforeRequest hasReceiptBeenUsedBeforeRequest){
         return receiptService.checkForReceiptExitance(hasReceiptBeenUsedBeforeRequest);
