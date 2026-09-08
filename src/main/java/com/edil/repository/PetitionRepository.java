@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
 import java.util.UUID;
 
 
@@ -15,4 +16,5 @@ import java.util.UUID;
 public interface PetitionRepository extends JpaRepository<Petition, UUID> {
     boolean existsByPetitionerIdAndCampaignIdAndStatus(UUID userId, UUID campaignId,PetitionStatus petitionStatus);
     Page<Petition> getPetitionsByStatus(PetitionStatus petitionStatus, Pageable pageable);
+    Optional<Petition> getPetitionsById(UUID petitionId);
 }

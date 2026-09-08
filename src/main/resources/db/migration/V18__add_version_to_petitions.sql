@@ -1,0 +1,1 @@
+ALTER TABLE petition ADD COLUMN version INT

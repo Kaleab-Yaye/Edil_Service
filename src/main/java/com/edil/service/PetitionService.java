@@ -1,13 +1,13 @@
 package com.edil.service;
 
 
-import com.edil.domain.Campaign;
-import com.edil.domain.Petition;
-import com.edil.domain.UserProfile;
+import com.edil.domain.*;
 import com.edil.domain.enums.PetitionStatus;
 import com.edil.dto.request.CreatePetitionRequest;
+import com.edil.dto.request.HandlePetitionRequest;
 import com.edil.dto.response.CreatePetitionResponse;
 import com.edil.dto.response.GetUnresolvedPetitionsResponse;
+import com.edil.dto.response.HandlePetitionResponse;
 import com.edil.repository.PetitionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -72,6 +72,32 @@ public class PetitionService {
                 .campaignId(petition.getCampaign().getId())
                 .build();
 
+
+
+    }
+
+
+    @Transactional
+
+   public ResponseEntity<HandlePetitionResponse> handlePetition(HandlePetitionRequest handlePetitionRequest, String email){
+
+        Petition petition = petitionRepository.getPetitionsById(handlePetitionRequest.petitionId()).orElseThrow();
+        if(!petition.getStatus().equals(PetitionStatus.UNRESOLVED)){
+            return  ResponseEntity.status(HttpStatus.ALREADY_REPORTED).body(new HandlePetitionResponse(false));
+        }
+
+
+        AdminProfile adminAccount = petition.getResolverAdmin();
+
+
+
+        petition.setResolverAdmin(adminAccount);
+        petition.setStatus(PetitionStatus.BING_HANDLED);
+
+
+        petitionRepository.save(petition);
+
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new HandlePetitionResponse(true));
 
 
     }

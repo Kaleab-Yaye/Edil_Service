@@ -5,6 +5,7 @@ import com.edil.domain.AdminProfile;
 import com.edil.domain.CreatorProfile;
 import com.edil.domain.UserProfile;
 import com.edil.domain.enums.AccountRole;
+import com.edil.dto.request.GetUserProfileRequest;
 import com.edil.dto.response.UserMeResponse;
 import com.edil.exception.AccountNotFoundException;
 import com.edil.repository.AccountRepository;
@@ -13,9 +14,16 @@ import com.edil.repository.CreatorProfileRepository;
 import com.edil.repository.UserProfileRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.catalina.User;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.annotation.Profile;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.HTML;
+import javax.swing.text.html.Option;
+import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
@@ -78,5 +86,33 @@ public class UserService {
     public UUID getUserUUIDByEmail(String email){
         log.info("cache missed for Email to UUID methode");
         return accountRepository.findByEmail(email).orElseThrow(()->new AccountNotFoundException("the account with the email "+email+ " is not found")).getId();
+    }
+
+
+
+    public ResponseEntity<UserMeResponse>  getUserDetails(GetUserProfileRequest getUserProfileRequest){
+
+        UserProfile profile  = userProfileRepository.findByAccountId(getUserProfileRequest.userId()).orElseThrow(()->new AccountNotFoundException("the user profile with the id " +getUserProfileRequest.userId() + " is not found"));
+        Account account =  profile.getAccount();
+
+       if(!account.getRole().equals(AccountRole.USER )){
+           return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+       }
+
+
+
+        UserMeResponse.UserMeResponseBuilder builder = UserMeResponse.builder()
+                .accountId(account.getId())
+                .email(account.getEmail())
+                .role(account.getRole().name())
+                .active(Boolean.TRUE.equals(account.getIsActive()));
+
+            builder.fullName(profile.getFullName())
+                    .phoneNumber(profile.getPhoneNumber())
+                    .address(profile.getAddress())
+                    .refundBankAccount(profile.getRefundBankAccount());
+
+
+            return ResponseEntity.status(HttpStatus.OK).body(builder.build());
     }
 }

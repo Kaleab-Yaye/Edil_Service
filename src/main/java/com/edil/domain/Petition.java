@@ -55,4 +55,6 @@ public class Petition {
 
     @Column(name = "resolved_at")
     private LocalDateTime resolvedAt;
+
+    @Version @Getter @Setter Integer version;
 }
