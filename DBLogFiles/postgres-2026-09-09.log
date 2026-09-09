@@ -10,3 +10,10 @@
 2026-09-09 11:01:07.811 UTC [28] LOG:  checkpoint starting: end-of-recovery immediate wait
 2026-09-09 11:01:07.835 UTC [28] LOG:  checkpoint complete: wrote 2 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.005 s, sync=0.003 s, total=0.028 s; sync files=2, longest=0.002 s, average=0.002 s; distance=0 kB, estimate=0 kB
 2026-09-09 11:01:07.865 UTC [1] LOG:  database system is ready to accept connections
+2026-09-09 11:06:13.556 UTC [58] ERROR:  syntax error at or near "campaign_participants" at character 10
+2026-09-09 11:06:13.556 UTC [58] STATEMENT:  SELECT * campaign_participants WHERE campaign_id = 'ea503d27-2c6b-45f5-b7a4-8138e3daf357';
+2026-09-09 11:06:52.685 UTC [58] ERROR:  syntax error at or near "campaign_participants" at character 11
+2026-09-09 11:06:52.685 UTC [58] STATEMENT:  SELECT  * campaign_participants WHERE campaign_id = 'ea503d27-2c6b-45f5-b7a4-8138e3daf357';
+2026-09-09 11:07:21.694 UTC [58] ERROR:  syntax error at or near "campaign_participants" at character 10
+2026-09-09 11:07:21.694 UTC [58] STATEMENT:  SELECT * campaign_participants
+	;

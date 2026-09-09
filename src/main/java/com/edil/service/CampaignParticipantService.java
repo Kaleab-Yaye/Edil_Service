@@ -424,13 +424,16 @@ public class CampaignParticipantService {
 
         CampaignParticipants campaignParticipants = new CampaignParticipants();
 
-        CbePayload cbePayload = campaignParticipantServiceUtil.fetchCbePayload(addUserTOCampaignByAdminRequest.paymentLink());
 
-        if (cbePayload == null){
+
+
+
+        String v2UniqueKey = campaignParticipantServiceUtil.extractV2KeyFromCBeLink(addUserTOCampaignByAdminRequest.paymentLink());
+
+        if (v2UniqueKey == null){
             return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(new AddUserTOCampaignByAdminResponse(false, "the link provided does't match the cbe offical link"));
         }
 
-        String v2UniqueKey = cbePayload.v2Key();
 
         if (hasReceiptBeenUsedBeforeResponse.hasBeenUsed()){
             v2UniqueKey = "admin with Account " + adminAccount.getId() + " added it";

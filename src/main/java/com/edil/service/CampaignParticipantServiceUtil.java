@@ -130,6 +130,22 @@ public class CampaignParticipantServiceUtil {
 
     }
 
+    public String extractV2KeyFromCBeLink(String  url){
+
+        String patternTobeMatched = "^https://mbreciept\\.cbe\\.com\\.et/v2-([a-zA-Z0-9]+)$";
+        Pattern pattern = Pattern.compile(patternTobeMatched);
+        Matcher matcher = pattern.matcher(url);
+
+        if (!matcher.matches()) {
+            return null;
+        }
+
+        String uniqueIdOnLink = matcher.group(1); //
+
+        return  uniqueIdOnLink;
+
+    }
+
 
 
 
