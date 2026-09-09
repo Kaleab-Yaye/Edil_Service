@@ -22,4 +22,6 @@ public class CreatePrizeRequest {
 
     @NotBlank
     private String imageFileId;
+
+
 }

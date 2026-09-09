@@ -15,6 +15,7 @@ import com.edil.repository.UserProfileRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.web.ReactiveSortHandlerMethodArgumentResolver;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -109,5 +110,9 @@ public class UserService {
 
 
             return ResponseEntity.status(HttpStatus.OK).body(builder.build());
+    }
+
+    public UserProfile getUserProfileFromId(UUID userId){
+        return  userProfileRepository.findById(userId).orElseThrow(()->new RuntimeException("could find the account with the user profile id of " + userId));
     }
 }

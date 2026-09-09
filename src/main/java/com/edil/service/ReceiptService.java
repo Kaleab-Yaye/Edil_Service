@@ -39,4 +39,30 @@ public class ReceiptService {
         return ResponseEntity.status(HttpStatus.OK).body(new HasReceiptBeenUsedBeforeResponse(false,  true));
 
     }
+
+
+    public HasReceiptBeenUsedBeforeResponse checkForReceiptExitance(String url){
+
+
+        String patternTobeMatched = "^https://mbreciept\\.cbe\\.com\\.et/v2-([a-zA-Z0-9]+)$";
+        Pattern pattern = Pattern.compile(patternTobeMatched);
+        Matcher matcher = pattern.matcher(url);
+
+        if (!matcher.matches()) {
+            return new HasReceiptBeenUsedBeforeResponse(null, false);
+        }
+
+        String extractedUniqueV2Key = matcher.group(1);
+
+        if(receiptRepository.existsReceiptById(extractedUniqueV2Key)){
+
+            return (new HasReceiptBeenUsedBeforeResponse(true,  true));
+
+        }
+
+        return (new HasReceiptBeenUsedBeforeResponse(false,  true));
+
+    }
+
+
 }

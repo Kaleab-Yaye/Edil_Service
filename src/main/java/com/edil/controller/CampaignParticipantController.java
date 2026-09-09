@@ -2,14 +2,12 @@ package com.edil.controller;
 
 
 import com.edil.dto.request.*;
-import com.edil.dto.response.AddParticipantToCampaignResponse;
-import com.edil.dto.response.CanParticipantJoinCampaignResponse;
-import com.edil.dto.response.CreateCampaignSlotForUserResponse;
-import com.edil.dto.response.CreatePetitionResponse;
+import com.edil.dto.response.*;
 import com.edil.service.CampaignParticipantService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.method.HandlerTypePredicate;
@@ -61,6 +59,13 @@ public class CampaignParticipantController {
     @PostMapping("/submit/petition")
     public ResponseEntity<CreatePetitionResponse> createPetitionHandler(@RequestBody CreatePetitionRequest createPetitionRequest, @AuthenticationPrincipal String email){
         return  campaignParticipantService.submitPetition(createPetitionRequest, email);
+    }
+
+
+    @PostMapping("admin/add/participant")
+    @PreAuthorize("hasAnyRole('ADMIN','ROOT_ADMIN')")
+    public ResponseEntity<AddUserTOCampaignByAdminResponse> addUserTOCampaignByAdminController(@RequestBody AddUserTOCampaignByAdminRequest addUserTOCampaignByAdminRequest, @AuthenticationPrincipal String email){
+        return  campaignParticipantService.addUserTOCampaignByAdmin(addUserTOCampaignByAdminRequest, email);
     }
 }
 

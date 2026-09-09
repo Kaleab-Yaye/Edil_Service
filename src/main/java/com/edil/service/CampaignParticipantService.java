@@ -41,6 +41,7 @@ public class CampaignParticipantService {
     private final SlotRepository slotRepository;
     private  final Cache<UUID, SlotKeyToCampaignAndUserIdDto> slotKeyToCampaignIdCache;
     private final Cache<String, UUID> userEmailToSlotAvailableCheckCache;
+    private  final ReceiptService receiptService;
 
     private final ArchivedCampaignParticipantsRepository archivedCampaignParticipantsRepository;
     private  final PetitionService petitionService;
@@ -401,6 +402,49 @@ public class CampaignParticipantService {
           }
       }
         return  responseResponseEntity;
+
+
+    }
+
+
+    @Transactional
+    public ResponseEntity<AddUserTOCampaignByAdminResponse> addUserTOCampaignByAdmin(AddUserTOCampaignByAdminRequest addUserTOCampaignByAdminRequest, String email){
+
+        UserProfile userProfile  = userService.getUserProfileFromId( addUserTOCampaignByAdminRequest.userId());
+        Account userAccountBingAdded = userProfile.getAccount();
+        Account adminAccount = userService.getAccountByEmail(email);
+        Campaign campaign = campaignService.getCampaignById(addUserTOCampaignByAdminRequest.campaignId()).orElseThrow();
+
+        if(campaignParticipantsRepository.existsByAccountIdAndCampaignId(userAccountBingAdded.getId(), campaign.getId())){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(new AddUserTOCampaignByAdminResponse(false, "user already is joined"));
+        }
+
+
+        HasReceiptBeenUsedBeforeResponse hasReceiptBeenUsedBeforeResponse =  receiptService.checkForReceiptExitance(addUserTOCampaignByAdminRequest.paymentLink());
+
+        CampaignParticipants campaignParticipants = new CampaignParticipants();
+
+        CbePayload cbePayload = campaignParticipantServiceUtil.fetchCbePayload(addUserTOCampaignByAdminRequest.paymentLink());
+
+        if (cbePayload == null){
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(new AddUserTOCampaignByAdminResponse(false, "the link provided does't match the cbe offical link"));
+        }
+
+        String v2UniqueKey = cbePayload.v2Key();
+
+        if (hasReceiptBeenUsedBeforeResponse.hasBeenUsed()){
+            v2UniqueKey = "admin with Account " + adminAccount.getId() + " added it";
+        }
+
+        campaignParticipants.setReceiptHash(v2UniqueKey);
+        campaignParticipants.setCampaign(campaign);
+        campaignParticipants.setAccount(userAccountBingAdded);
+        campaignParticipants.setAdminProfile(adminAccount.getAdminProfile());
+        campaignParticipants.setAddedAt(LocalDateTime.now());
+
+        campaignParticipantsRepository.save(campaignParticipants);
+
+        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(new AddUserTOCampaignByAdminResponse(true, "done added"));
 
 
     }
