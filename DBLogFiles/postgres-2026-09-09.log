@@ -26,3 +26,9 @@
 2026-09-09 12:05:21.447 UTC [28] LOG:  checkpoint complete: wrote 3 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.233 s, sync=0.008 s, total=0.275 s; sync files=3, longest=0.006 s, average=0.003 s; distance=2 kB, estimate=9 kB
 2026-09-09 12:10:46.235 UTC [28] LOG:  checkpoint starting: time
 2026-09-09 12:10:47.193 UTC [28] LOG:  checkpoint complete: wrote 10 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.920 s, sync=0.011 s, total=0.959 s; sync files=10, longest=0.005 s, average=0.002 s; distance=11 kB, estimate=11 kB
+2026-09-09 12:26:36.426 UTC [58] ERROR:  syntax error at or near "DELET" at character 1
+2026-09-09 12:26:36.426 UTC [58] STATEMENT:  DELET FROM campaign_participants;
+2026-09-09 12:26:47.114 UTC [28] LOG:  checkpoint starting: time
+2026-09-09 12:26:47.264 UTC [28] LOG:  checkpoint complete: wrote 2 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.121 s, sync=0.009 s, total=0.151 s; sync files=2, longest=0.008 s, average=0.005 s; distance=2 kB, estimate=10 kB
+2026-09-09 12:32:12.045 UTC [28] LOG:  checkpoint starting: time
+2026-09-09 12:32:12.993 UTC [28] LOG:  checkpoint complete: wrote 10 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.915 s, sync=0.013 s, total=0.948 s; sync files=10, longest=0.007 s, average=0.002 s; distance=12 kB, estimate=12 kB

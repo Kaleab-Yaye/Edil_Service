@@ -32,7 +32,7 @@ public class PetitionController {
 
     }
 
-    @PostMapping("/handel")
+    @PostMapping("/handle")
     @PreAuthorize("hasRole('ADMIN')")
 
     public  ResponseEntity<HandlePetitionResponse> handlePetitionController(@RequestBody HandlePetitionRequest handlePetitionRequest, @AuthenticationPrincipal String email){
