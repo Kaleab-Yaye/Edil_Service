@@ -427,8 +427,6 @@ public class CampaignParticipantService {
 
 
 
-
-
         String v2UniqueKey = campaignParticipantServiceUtil.extractV2KeyFromCBeLink(addUserTOCampaignByAdminRequest.paymentLink());
 
         if (v2UniqueKey == null){
@@ -450,6 +448,10 @@ public class CampaignParticipantService {
         //now decrement from the map that was ralting the campaign Id to the number of the users
             while (true) {
                 int expectedValue = StoreCampaignToSlotHashMap.campaignToSlotStore.get(campaign.getId()).intValue();
+
+                if(expectedValue <= 0 ){
+                    return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(new AddUserTOCampaignByAdminResponse(false, "No more slots availabl"));
+                }
 
                 if (StoreCampaignToSlotHashMap.campaignToSlotStore.get(campaign.getId()).compareAndSet(expectedValue, expectedValue - 1)) {
                     // this was the isseu why the slot existed long after the cahfe is  exited
