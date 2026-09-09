@@ -216,6 +216,7 @@ public class CampaignParticipantService {
             return  ResponseEntity.status(HttpStatus.CONFLICT).body(new CanParticipantJoinCampaignResponse(false, false, null, null, false));
         }
 
+
         UUID  slotKeyFromEmailToBooleanCache = userEmailToSlotAvailableCheckCache.getIfPresent(email);
 
         if(slotKeyFromEmailToBooleanCache != null){

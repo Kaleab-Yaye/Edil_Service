@@ -56,7 +56,7 @@ public class PetitionService {
 
     //true if it exists
     public boolean doesUserHasOngoingPetitionForCampaign(UUID campaignId, UUID  userProfileId ){
-        return petitionRepository.existsByPetitionerIdAndCampaignIdAndStatus(campaignId, userProfileId, PetitionStatus.UNRESOLVED);
+        return petitionRepository.existsByPetitionerIdAndCampaignIdAndStatus(userProfileId, campaignId, PetitionStatus.UNRESOLVED);
     }
 
     public ResponseEntity<Page<GetUnresolvedPetitionsResponse>> getUnresolvedPetitions(Pageable pageable){
@@ -90,12 +90,17 @@ public class PetitionService {
    public ResponseEntity<HandlePetitionResponse> handlePetition(HandlePetitionRequest handlePetitionRequest, String email){
 
         Petition petition = petitionRepository.getPetitionsById(handlePetitionRequest.petitionId()).orElseThrow();
+        Account account = userService.getAccountByEmail(email);
         if(!petition.getStatus().equals(PetitionStatus.UNRESOLVED)){
-            return  ResponseEntity.status(HttpStatus.ALREADY_REPORTED).body(new HandlePetitionResponse(false));
+            if ( !(petition.getStatus().equals(PetitionStatus.BING_HANDLED) &  account.getAdminProfile().getId().equals(petition.getResolverAdmin().getId()))){
+
+                return ResponseEntity.status(HttpStatus.ALREADY_REPORTED).body(new HandlePetitionResponse(false));
+
+            }
+
+
         }
 
-
-        Account account = userService.getAccountByEmail(email);
 
         if(!(account.getRole().equals(AccountRole.ADMIN)||account.getRole().equals(AccountRole.ROOT_ADMIN))){
             return  ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -132,6 +137,12 @@ public class PetitionService {
 
         return ResponseEntity.status(HttpStatus.OK).body(new ResolvePetitionResponse(true, "done"));
     }
+
+
+
+//    public boolean checkForOngoingPetitionForAccountAndCampaign(UUID userProfileId, UUID campaignId){
+//        return petitionRepository.existsByPetitionerIdAndCampaignIdAndStatus(userProfileId, campaignId, PetitionStatus.UNRESOLVED);
+//    }
 
 
 
