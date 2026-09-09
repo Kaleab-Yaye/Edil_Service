@@ -17,3 +17,5 @@
 2026-09-09 11:07:21.694 UTC [58] ERROR:  syntax error at or near "campaign_participants" at character 10
 2026-09-09 11:07:21.694 UTC [58] STATEMENT:  SELECT * campaign_participants
 	;
+2026-09-09 11:17:15.742 UTC [28] LOG:  checkpoint starting: time
+2026-09-09 11:17:16.707 UTC [28] LOG:  checkpoint complete: wrote 10 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.918 s, sync=0.022 s, total=0.965 s; sync files=10, longest=0.008 s, average=0.003 s; distance=10 kB, estimate=10 kB

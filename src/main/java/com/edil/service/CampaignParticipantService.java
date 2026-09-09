@@ -436,7 +436,7 @@ public class CampaignParticipantService {
 
 
         if (hasReceiptBeenUsedBeforeResponse.hasBeenUsed()){
-            v2UniqueKey = "admin with Account " + adminAccount.getId() + " added it";
+            v2UniqueKey = "admin with Account " + adminAccount.getId() + " added it with the key" + v2UniqueKey;
         }
 
         campaignParticipants.setReceiptHash(v2UniqueKey);
