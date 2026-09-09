@@ -19,3 +19,6 @@
 	;
 2026-09-09 11:17:15.742 UTC [28] LOG:  checkpoint starting: time
 2026-09-09 11:17:16.707 UTC [28] LOG:  checkpoint complete: wrote 10 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.918 s, sync=0.022 s, total=0.965 s; sync files=10, longest=0.008 s, average=0.003 s; distance=10 kB, estimate=10 kB
+2026-09-09 12:02:07.638 UTC [143] ERROR:  duplicate key value violates unique constraint "campaign_participants_receipt_hash_key"
+2026-09-09 12:02:07.638 UTC [143] DETAIL:  Key (receipt_hash)=(admin with Account 7cf7a828-72af-4487-a1d1-7716ea712510 added it) already exists.
+2026-09-09 12:02:07.638 UTC [143] STATEMENT:  insert into campaign_participants (account_id,added_at,adder_admin_id,campaign_id,receipt_hash,id) values ($1,$2,$3,$4,$5,$6)

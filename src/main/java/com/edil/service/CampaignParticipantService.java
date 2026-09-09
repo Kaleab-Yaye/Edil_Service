@@ -45,6 +45,7 @@ public class CampaignParticipantService {
 
     private final ArchivedCampaignParticipantsRepository archivedCampaignParticipantsRepository;
     private  final PetitionService petitionService;
+    private  final StoreCampaignToSlotHashMap storeCampaignToSlotHashMap;
 
 
 
@@ -444,6 +445,25 @@ public class CampaignParticipantService {
         campaignParticipants.setAccount(userAccountBingAdded);
         campaignParticipants.setAdminProfile(adminAccount.getAdminProfile());
         campaignParticipants.setAddedAt(LocalDateTime.now());
+
+
+        //now decrement from the map that was ralting the campaign Id to the number of the users
+            while (true) {
+                int expectedValue = StoreCampaignToSlotHashMap.campaignToSlotStore.get(campaign.getId()).intValue();
+
+                if (StoreCampaignToSlotHashMap.campaignToSlotStore.get(campaign.getId()).compareAndSet(expectedValue, expectedValue - 1)) {
+                    // this was the isseu why the slot existed long after the cahfe is  exited
+                    break;
+                }
+            }
+
+
+
+
+        if ( campaignService.updateUserCount(campaign.getId())){
+           campaignParticipantServiceUtil.archiveParticipantsOfAnEndedCampaign(campaign.getId());
+       }
+
 
         campaignParticipantsRepository.save(campaignParticipants);
 
