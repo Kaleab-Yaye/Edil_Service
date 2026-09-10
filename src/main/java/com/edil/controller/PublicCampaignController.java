@@ -2,6 +2,7 @@ package com.edil.controller;
 
 import com.edil.dto.response.CampaignDetailResponse;
 import com.edil.dto.response.CampaignResponse;
+import com.edil.dto.response.GetCampaignPaymentInfoResponse;
 import com.edil.service.CampaignService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -35,5 +36,8 @@ public class PublicCampaignController {
         return ResponseEntity.ok(campaignService.getCampaignDetail(id));
     }
 
-
+    @GetMapping("/payment/detail")
+    public ResponseEntity<GetCampaignPaymentInfoResponse> getCampaignPaymentDetailController(@RequestParam("campaignId") UUID campaignId){
+        return campaignService.getCampaignPaymentInfo(campaignId);
+    }
 }

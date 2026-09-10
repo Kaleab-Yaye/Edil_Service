@@ -8,9 +8,12 @@ import com.edil.domain.ArchivedCampaignPrize;
 import com.edil.domain.Campaign;
 import com.edil.domain.enums.CampaignStatus;
 import com.edil.dto.request.CreateCampaignRequest;
+import com.edil.dto.request.GetCampaignPaymentInfoRequest;
 import com.edil.dto.response.CampaignDetailResponse;
 import com.edil.dto.response.CampaignResponse;
+import com.edil.dto.response.GetCampaignPaymentInfoResponse;
 import com.edil.dto.response.PrizeResponse;
+import com.edil.exception.CampaignNotFoundException;
 import com.edil.repository.AccountRepository;
 import com.edil.repository.ActiveCampaignPrizeRepository;
 import com.edil.repository.ArchivedCampaignPrizeRepository;
@@ -19,6 +22,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -395,4 +400,20 @@ public class CampaignService {
         return  campaignRepository.findByStatus(CampaignStatus.APPROVED);
 
    }
+
+
+   public ResponseEntity<GetCampaignPaymentInfoResponse> getCampaignPaymentInfo(UUID campaignId){
+        Campaign campaign  = getCampaignById(campaignId).orElseThrow(()->new CampaignNotFoundException(campaignId.toString()));
+        if(!campaign.getStatus().equals(CampaignStatus.APPROVED)){
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
+       }
+
+       return ResponseEntity.status(HttpStatus.OK).body(
+                new GetCampaignPaymentInfoResponse(campaign.getTicketPrice(), campaign.getCreator().getCreatorProfile().getPayoutBankAccount(),
+                        campaign.getCreator().getCreatorProfile().getFullName()
+                        )
+        );
+   }
+
+
 }
