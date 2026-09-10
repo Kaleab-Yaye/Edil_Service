@@ -9,6 +9,7 @@ import com.edil.dto.internal.CbePayload;
 import com.edil.dto.internal.SlotKeyToCampaignAndUserIdDto;
 import com.edil.dto.request.*;
 import com.edil.dto.response.*;
+import com.edil.exception.CampaignNotFoundException;
 import com.edil.repository.*;
 import com.github.benmanes.caffeine.cache.Cache;
 import lombok.RequiredArgsConstructor;
@@ -488,7 +489,8 @@ public class CampaignParticipantService {
 
     public ResponseEntity<AddParticipantFromOpenResponse> addCampaignParticipantFromPublic(AddParticipantToCampaignFromOpenWithLinkRequest addParticipantRequest){
 
-        Campaign campaign = campaignService.getCampaignById(addParticipantRequest.campaignId()).orElseThrow();
+        Campaign campaign = campaignService.getCampaignById(addParticipantRequest.campaignId()).orElseThrow(()->new CampaignNotFoundException((addParticipantRequest.campaignId().toString())))
+                ;
         if (!campaign.getStatus().equals(CampaignStatus.APPROVED)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(AddParticipantFromOpenResponse.getAddParticipantFromOpenResponseWithOnlyMessage("campaign is over/or doesn't exist anymore"));
         }

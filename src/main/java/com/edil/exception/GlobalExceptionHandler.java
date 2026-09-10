@@ -79,6 +79,14 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
 
+    @ExceptionHandler(CampaignNotFoundException.class)
+    public ResponseEntity<String> handelCampaignNotFoundException(CampaignNotFoundException campaignNotFoundException){
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                campaignNotFoundException.getMessage()
+        );
+    }
+
+
 
     @ExceptionHandler(Throwable.class)
     public ResponseEntity<ErrorResponse> handleGenericException(Throwable ex) {
@@ -91,4 +99,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                         .build()
         );
     }
+
+
 }

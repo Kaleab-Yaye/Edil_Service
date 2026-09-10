@@ -15,7 +15,7 @@ import org.springframework.web.method.HandlerTypePredicate;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/v1/participant")
+@RequestMapping("/api/v1/participant")   // /api/v1/participant/public/add/participant
 public class CampaignParticipantController {
     private final CampaignParticipantService campaignParticipantService;
 

@@ -38,6 +38,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/api/campaigns/**").permitAll()
                 .requestMatchers("/api/uploads/auth-check").permitAll()
+                    .requestMatchers("api/v1/participant/public/add/participant").permitAll()
                 .requestMatchers("/api/admin/**").hasAnyRole("ADMIN", "ROOT_ADMIN")
                 .anyRequest().authenticated()
             )
