@@ -9,13 +9,16 @@ import com.edil.dto.internal.CbePayload;
 import com.edil.repository.ArchivedCampaignParticipantsRepository;
 import com.edil.repository.CampaignParticipantsRepository;
 import com.edil.repository.CampaignRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.passay.data.EnglishCharacterData;
 import org.passay.generate.PasswordGenerator;
 import org.passay.rule.CharacterRule;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,7 +41,7 @@ public class CampaignParticipantServiceUtil {
     private  final CampaignParticipantsRepository campaignParticipantsRepository;
     private  final ArchivedCampaignParticipantsRepository archivedCampaignParticipantsRepository;
     private final CampaignRepository campaignRepository;
-
+    private  final ObjectMapper objectMapper;
 
 
 
@@ -68,7 +71,24 @@ public class CampaignParticipantServiceUtil {
         String requestTobeMadeLink = cbeJasonPayloadEndPoint + uniqueIdOnLink;
 
 
-         CbePayload rawCbePayload = restClient.get()
+//        ResponseEntity<Void> preflightCheck= restClient.get()
+//                .uri(requestTobeMadeLink)
+//                .accept(MediaType.APPLICATION_JSON)// Tells server we want JSON
+//                .header("x-app-version", x_app_version)
+//                .header("x-app-id", x_app_id)
+//                .header("user-agent", user_agent
+//                )
+//                .header("Origin", Origin)
+//                .header("Referer", Referer)
+//                .retrieve()
+//                .toBodilessEntity();
+//
+//        if(!preflightCheck.getStatusCode().equals(HttpStatus.OK)){
+//            return  null;
+//        }
+
+
+        ResponseEntity<String> response = restClient.get()
                 .uri(requestTobeMadeLink)
                 .accept(MediaType.APPLICATION_JSON)// Tells server we want JSON
                 .header("x-app-version", x_app_version)
@@ -77,11 +97,24 @@ public class CampaignParticipantServiceUtil {
                 )
                 .header("Origin", Origin)
                 .header("Referer", Referer)
-                .retrieve()
-                .body(CbePayload.class);
+                 .retrieve()
+                 .toEntity(String.class);
 
-         return  rawCbePayload.withv2Key(uniqueIdOnLink);
 
+        if(!response.getStatusCode().equals(HttpStatus.OK)){
+            return null;
+        }
+
+        try {
+
+            CbePayload rawCbePayload = objectMapper.convertValue(response.getBody(), CbePayload.class);
+            return  rawCbePayload.withv2Key(uniqueIdOnLink);
+        }
+
+        catch (Exception exception){
+            log.warn(" the response from the recipt server was ok but there was error in mapping process");
+            throw exception;
+        }
 
 
     }

@@ -91,13 +91,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(Throwable.class)
     public ResponseEntity<ErrorResponse> handleGenericException(Throwable ex) {
         log.warn("Unhandled Exception captured in GlobalExceptionHandler: [{}] - {}", ex.getClass().getName(), ex.getMessage(), ex);
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
-                ErrorResponse.builder()
-                        .errorCode("INTERNAL_ERROR")
-                        .timestamp(LocalDateTime.now())
-                        .message(ex.getMessage() != null ? ex.getMessage() : "An unexpected error occurred")
-                        .build()
-        );
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 
 
