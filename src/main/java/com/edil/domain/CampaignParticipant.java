@@ -11,7 +11,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name ="campaign_participants")
-public class CampaignParticipants {
+public class CampaignParticipant {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Setter
@@ -45,6 +45,11 @@ public class CampaignParticipants {
     @Getter
     @Setter
     private AdminProfile adminProfile;
+
+    @Column(name = "edil_code")
+    @Getter
+    @Setter
+    private String edilCode;
 
 
 }

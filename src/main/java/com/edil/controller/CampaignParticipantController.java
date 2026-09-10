@@ -4,6 +4,7 @@ package com.edil.controller;
 import com.edil.dto.request.*;
 import com.edil.dto.response.*;
 import com.edil.service.CampaignParticipantService;
+import jakarta.annotation.security.PermitAll;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -66,6 +67,12 @@ public class CampaignParticipantController {
     @PreAuthorize("hasAnyRole('ADMIN','ROOT_ADMIN')")
     public ResponseEntity<AddUserTOCampaignByAdminResponse> addUserTOCampaignByAdminController(@RequestBody AddUserTOCampaignByAdminRequest addUserTOCampaignByAdminRequest, @AuthenticationPrincipal String email){
         return  campaignParticipantService.addUserTOCampaignByAdmin(addUserTOCampaignByAdminRequest, email);
+    }
+
+    @PostMapping("public/add/participant")
+    @PermitAll
+    public ResponseEntity<AddParticipantFromOpenResponse> addParticipantsFromOpen(@RequestBody AddParticipantToCampaignFromOpenWithLinkRequest addParticipantToCampaignFromOpenWithLinkRequest){
+        return campaignParticipantService.addCampaignParticipantFromPublic(addParticipantToCampaignFromOpenWithLinkRequest);
     }
 }
 

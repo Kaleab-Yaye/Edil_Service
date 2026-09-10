@@ -3,36 +3,30 @@ package com.edil.service;
 
 import com.edil.domain.ArchivedCampaignParticipants;
 import com.edil.domain.Campaign;
-import com.edil.domain.CampaignParticipants;
-import com.edil.domain.UserProfile;
+import com.edil.domain.CampaignParticipant;
 import com.edil.domain.enums.CampaignStatus;
 import com.edil.dto.internal.CbePayload;
-import com.edil.dto.request.AddUserTOCampaignByAdminRequest;
-import com.edil.dto.request.CreatePrizeRequest;
-import com.edil.dto.response.AddUserTOCampaignByAdminResponse;
 import com.edil.repository.ArchivedCampaignParticipantsRepository;
 import com.edil.repository.CampaignParticipantsRepository;
 import com.edil.repository.CampaignRepository;
+import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.passay.data.EnglishCharacterData;
 import org.passay.generate.PasswordGenerator;
 import org.passay.rule.CharacterRule;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClient;
 
-import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import static sun.security.ec.ECOperations.Secp256R1GeneratorMontgomeryMultiplier.generator;
 
 
 @Slf4j
@@ -101,7 +95,7 @@ public class CampaignParticipantServiceUtil {
 
         }
 
-        for(CampaignParticipants campaignParticipant : campaignParticipantsRepository.findCampaignParticipantsByCampaign(campaign)){
+        for(CampaignParticipant campaignParticipant : campaignParticipantsRepository.findCampaignParticipantsByCampaign(campaign)){
             archivedCampaignParticipantsRepository.save(ArchivedCampaignParticipants.archivedCampaignParticipantFromCampaignParticipant(campaignParticipant));
             campaignParticipantsRepository.delete(campaignParticipant);
         }
@@ -118,7 +112,7 @@ public class CampaignParticipantServiceUtil {
 
         }
 
-        for(CampaignParticipants campaignParticipant : campaignParticipantsRepository.findCampaignParticipantsByCampaign(campaign)){
+        for(CampaignParticipant campaignParticipant : campaignParticipantsRepository.findCampaignParticipantsByCampaign(campaign)){
             archivedCampaignParticipantsRepository.save(ArchivedCampaignParticipants.archivedCampaignParticipantFromCampaignParticipant(campaignParticipant));
             campaignParticipantsRepository.delete(campaignParticipant);
         }
@@ -130,7 +124,7 @@ public class CampaignParticipantServiceUtil {
 
     public void archiveParticipantsOfAnEndedCampaign2(Campaign campaign){ // to be used from the cron scheduler is non async
 
-        for(CampaignParticipants campaignParticipant : campaignParticipantsRepository.findCampaignParticipantsByCampaign(campaign)){
+        for(CampaignParticipant campaignParticipant : campaignParticipantsRepository.findCampaignParticipantsByCampaign(campaign)){
             archivedCampaignParticipantsRepository.save(ArchivedCampaignParticipants.archivedCampaignParticipantFromCampaignParticipant(campaignParticipant));
             campaignParticipantsRepository.delete(campaignParticipant);
         }
@@ -173,8 +167,60 @@ public class CampaignParticipantServiceUtil {
 
     }
 
+    public String addCampaignParticipantWithGeneratedRandomLotteryNumber(CampaignParticipant campaignParticipants){
+
+        Random randomGen = new Random();
+        int randomNumber =  randomGen.nextInt(100000000, 1000000000 );
+        String randomEdilCode = String.valueOf(randomNumber);
+
+        String edil = randomEdilCode.substring(0,3) + "-" + randomEdilCode.substring(3,6) + "-" + randomEdilCode.substring(6,9);
 
 
+
+        try {
+            if (campaignParticipantsRepository.existsByEdilCode(edil)) {
+                return addCampaignParticipantWithGeneratedRandomLotteryNumber(campaignParticipants, randomGen);
+            }
+
+            campaignParticipants.setEdilCode(randomEdilCode);
+            campaignParticipantsRepository.save(campaignParticipants);
+
+            return randomEdilCode;
+        }
+
+        catch (ConstraintViolationException constraintViolationException){
+
+            return addCampaignParticipantWithGeneratedRandomLotteryNumber(campaignParticipants, randomGen);
+        }
+
+
+    }
+
+
+    public String addCampaignParticipantWithGeneratedRandomLotteryNumber(CampaignParticipant campaignParticipants, Random randomGen){
+        int randomNumber =  randomGen.nextInt(100000000, 1000000000 );
+        String randomEdilCode = String.valueOf(randomNumber);
+
+        String edil = randomEdilCode.substring(0,3) + "-" + randomEdilCode.substring(3,6) + "-" + randomEdilCode.substring(6,9);
+
+
+        try {
+            if (campaignParticipantsRepository.existsByEdilCode(edil)) {
+                return addCampaignParticipantWithGeneratedRandomLotteryNumber(campaignParticipants, randomGen);
+            }
+
+            campaignParticipants.setEdilCode(randomEdilCode);
+            campaignParticipantsRepository.save(campaignParticipants);
+
+            return randomEdilCode;
+        }
+
+        catch (ConstraintViolationException constraintViolationException){
+
+            return addCampaignParticipantWithGeneratedRandomLotteryNumber(campaignParticipants, randomGen);
+        }
+
+    }
 
 }
 

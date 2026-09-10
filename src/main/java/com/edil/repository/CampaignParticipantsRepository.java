@@ -1,7 +1,7 @@
 package com.edil.repository;
 
 import com.edil.domain.Campaign;
-import com.edil.domain.CampaignParticipants;
+import com.edil.domain.CampaignParticipant;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -10,10 +10,11 @@ import java.util.UUID;
 
 @Repository
 
-public interface CampaignParticipantsRepository extends JpaRepository<CampaignParticipants, UUID> {
+public interface CampaignParticipantsRepository extends JpaRepository<CampaignParticipant, UUID> {
 
     boolean existsByAccountIdAndCampaignId(UUID accountId, UUID campaignId);
-    List<CampaignParticipants> findCampaignParticipantsByCampaign(Campaign campaign);
+    List<CampaignParticipant> findCampaignParticipantsByCampaign(Campaign campaign);
+    boolean existsByEdilCode(String edilCode);
 
 
 }

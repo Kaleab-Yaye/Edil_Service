@@ -184,7 +184,7 @@ public class CampaignParticipantService {
 
             // well after this we have asert that the payment is made lets update it well let me do it tommorow i guess.
 
-            CampaignParticipants campaignParticipants = new CampaignParticipants();
+            CampaignParticipant campaignParticipants = new CampaignParticipant();
             campaignParticipants.setCampaign(campaign);
             campaignParticipants.setAccount(biengAddedUserAccount);
             campaignParticipants.setReceiptHash(cbePayload.v2Key());
@@ -434,7 +434,7 @@ public class CampaignParticipantService {
 
         HasReceiptBeenUsedBeforeResponse hasReceiptBeenUsedBeforeResponse =  receiptService.checkForReceiptExitance(addUserTOCampaignByAdminRequest.paymentLink());
 
-        CampaignParticipants campaignParticipants = new CampaignParticipants();
+        CampaignParticipant campaignParticipants = new CampaignParticipant();
 
 
 
@@ -486,21 +486,21 @@ public class CampaignParticipantService {
 
     @Transactional
 
-    public ResponseEntity<AddParticipantToCampaignResponse> addCampaignParticipantFromPublic(AddParticipantToCampaignFromOpenWithLinkRequest addParticipantRequest){
+    public ResponseEntity<AddParticipantFromOpenResponse> addCampaignParticipantFromPublic(AddParticipantToCampaignFromOpenWithLinkRequest addParticipantRequest){
 
         Campaign campaign = campaignService.getCampaignById(addParticipantRequest.campaignId()).orElseThrow();
         if (!campaign.getStatus().equals(CampaignStatus.APPROVED)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new AddParticipantToCampaignResponse("campaign is over/or doesn't exist anymore"));
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(AddParticipantFromOpenResponse.getAddParticipantFromOpenResponseWithOnlyMessage("campaign is over/or doesn't exist anymore"));
         }
 
         CbePayload cbePayload = campaignParticipantServiceUtil.fetchCbePayload(addParticipantRequest.paymentLink());
 
         if (cbePayload == null) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new AddParticipantToCampaignResponse("The link provided does't match with the registered CBE API"));
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(AddParticipantFromOpenResponse.getAddParticipantFromOpenResponseWithOnlyMessage("The link provided does't match with the registered CBE API"));
         }
 
         if (!cbePayload.status().equals("COMPLETED")) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new AddParticipantToCampaignResponse("The link provided is invalid, input a correct one"));
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(AddParticipantFromOpenResponse.getAddParticipantFromOpenResponseWithOnlyMessage("The link provided is invalid, input a correct one"));
         }
 
 
@@ -544,20 +544,20 @@ public class CampaignParticipantService {
         }
 
         if (receiptRepository.existsReceiptById(cbePayload.v2Key())) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new AddParticipantToCampaignResponse("this link is already registered/used"));
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(AddParticipantFromOpenResponse.getAddParticipantFromOpenResponseWithOnlyMessage("this link is already registered/used"));
 
         }
 
 
         if (!extractedFouLastDigitsFromReceiptAccountNumber.equals(extractedFourLastDigitsFromAccountNumber) || !receiverAccountName.equals(receiverAccountNameFromReceipt)) {
 
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new AddParticipantToCampaignResponse("the account you made payment information to does't match the provided account's information"));
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(AddParticipantFromOpenResponse.getAddParticipantFromOpenResponseWithOnlyMessage("the account you made payment information to does't match the provided account's information"));
 
 
         }
 
         if (transactionMadelocalDateTime.isAfter(campaignEndDate) || transactionMadelocalDateTime.isBefore(campaignStratDate)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new AddParticipantToCampaignResponse("the date on the receipt is not valid"));
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(AddParticipantFromOpenResponse.getAddParticipantFromOpenResponseWithOnlyMessage("the date on the receipt is not valid"));
         }
 
         log.info("the price from the campaign listing is {}", ticketPrice);
@@ -565,7 +565,7 @@ public class CampaignParticipantService {
 
         if (receivedAmountFromRecept.compareTo(campaign.getTicketPrice()) < 0) {
 
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new AddParticipantToCampaignResponse(" the amount payed is less than the ticket price"));
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(AddParticipantFromOpenResponse.getAddParticipantFromOpenResponseWithOnlyMessage(" the amount payed is less than the ticket price"));
         }
 
         // now we have made sure the payment is correct lets genrate the email
@@ -583,37 +583,36 @@ public class CampaignParticipantService {
        Account biengAddedUserAccount =  authService.registerUserFromInternal(registerUserRequest);
 
 
-        CampaignParticipants campaignParticipants = new CampaignParticipants();
-        campaignParticipants.setCampaign(campaign);
-        campaignParticipants.setAccount(biengAddedUserAccount);
-        campaignParticipants.setReceiptHash(cbePayload.v2Key());
-        campaignParticipantsRepository.save(campaignParticipants);
-
+        CampaignParticipant campaignParticipant = new CampaignParticipant();
+        campaignParticipant.setCampaign(campaign);
+        campaignParticipant.setAccount(biengAddedUserAccount);
+        campaignParticipant.setReceiptHash(cbePayload.v2Key());
+        // where generation of the random number takes place
+        String edilCode = campaignParticipantServiceUtil.addCampaignParticipantWithGeneratedRandomLotteryNumber(campaignParticipant);
 
         Receipt receipt = new Receipt();
         receipt.setId(cbePayload.v2Key());
         receipt.setReferenceNumber(cbePayload.id());
 
+
         receiptRepository.save(receipt);
 
+        return  ResponseEntity.status(HttpStatus.OK).body(
+                new AddParticipantFromOpenResponse(
+                        "done",
+                        addParticipantRequest.firstName()+" "+addParticipantRequest.lastName(),
+                        campaign.getId(),
+                        campaign.getTitle(),
+                        receivedAmountFromRecept,
+                        addParticipantRequest.paymentLink(),
+                        edilCode,
+                        shadowEmail,
+                        shadowPassword,
+                        campaign.getCreator().getCreatorProfile().getFullName(),
+                        LocalDateTime.now()
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+                )
+        );
 
 
     }

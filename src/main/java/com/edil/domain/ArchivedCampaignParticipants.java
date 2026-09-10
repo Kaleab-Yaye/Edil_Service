@@ -13,7 +13,7 @@ import java.util.UUID;
 @Table(name ="archived_Campaign_participant")
 public class ArchivedCampaignParticipants {
 
-    public static  ArchivedCampaignParticipants archivedCampaignParticipantFromCampaignParticipant(CampaignParticipants campaignParticipants){
+    public static  ArchivedCampaignParticipants archivedCampaignParticipantFromCampaignParticipant(CampaignParticipant campaignParticipants){
 
     ArchivedCampaignParticipants archivedCampaignParticipants = new ArchivedCampaignParticipants();
     archivedCampaignParticipants.setId(campaignParticipants.getId());
