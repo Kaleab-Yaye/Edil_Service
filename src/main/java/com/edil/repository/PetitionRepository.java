@@ -1,5 +1,6 @@
 package com.edil.repository;
 
+import com.edil.domain.Campaign;
 import com.edil.domain.Petition;
 import com.edil.domain.enums.PetitionStatus;
 import org.checkerframework.common.util.count.report.qual.ReportCreation;
@@ -17,4 +18,5 @@ public interface PetitionRepository extends JpaRepository<Petition, UUID> {
     boolean existsByPetitionerIdAndCampaignIdAndStatus(UUID userId, UUID campaignId,PetitionStatus petitionStatus);
     Page<Petition> getPetitionsByStatus(PetitionStatus petitionStatus, Pageable pageable);
     Optional<Petition> getPetitionsById(UUID petitionId);
+    Page<Petition> getPetitionsByStatusAndResolverAdminId(PetitionStatus petitionStatus, UUID adminProfileId, Pageable pageable);
 }

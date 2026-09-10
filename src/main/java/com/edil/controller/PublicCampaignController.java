@@ -34,4 +34,6 @@ public class PublicCampaignController {
     public ResponseEntity<CampaignDetailResponse> getCampaignDetail(@PathVariable UUID id) {
         return ResponseEntity.ok(campaignService.getCampaignDetail(id));
     }
+
+
 }

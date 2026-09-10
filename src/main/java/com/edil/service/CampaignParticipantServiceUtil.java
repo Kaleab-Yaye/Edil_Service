@@ -15,6 +15,9 @@ import com.edil.repository.CampaignParticipantsRepository;
 import com.edil.repository.CampaignRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.passay.data.EnglishCharacterData;
+import org.passay.generate.PasswordGenerator;
+import org.passay.rule.CharacterRule;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
@@ -22,10 +25,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClient;
 
+import java.security.SecureRandom;
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static sun.security.ec.ECOperations.Secp256R1GeneratorMontgomeryMultiplier.generator;
 
 
 @Slf4j
@@ -147,6 +154,24 @@ public class CampaignParticipantServiceUtil {
     }
 
 
+    public  String generateRandomPassword(int length){
+
+
+
+        List<CharacterRule> rules = Arrays.asList(
+                new CharacterRule(EnglishCharacterData.UpperCase, 1),
+                new CharacterRule(EnglishCharacterData.LowerCase, 1),
+                new CharacterRule(EnglishCharacterData.Digit, 1),
+                new CharacterRule(EnglishCharacterData.Special, 1)
+        );
+
+        PasswordGenerator passwordGenerator = new PasswordGenerator(length, rules);
+
+
+        return  passwordGenerator.generate().toString();
+
+
+    }
 
 
 

@@ -7,10 +7,7 @@ import com.edil.domain.enums.PetitionStatus;
 import com.edil.dto.request.CreatePetitionRequest;
 import com.edil.dto.request.HandlePetitionRequest;
 import com.edil.dto.request.ResolvePetitionRequest;
-import com.edil.dto.response.CreatePetitionResponse;
-import com.edil.dto.response.GetUnresolvedPetitionsResponse;
-import com.edil.dto.response.HandlePetitionResponse;
-import com.edil.dto.response.ResolvePetitionResponse;
+import com.edil.dto.response.*;
 import com.edil.exception.ResourceNotFoundException;
 import com.edil.repository.AdminProfileRepository;
 import com.edil.repository.PetitionRepository;
@@ -85,6 +82,19 @@ public class PetitionService {
     }
 
 
+    private GetPetitionsBeingHandledByMeResponse mapPetitionToResponse(Petition petition){
+
+        return  GetPetitionsBeingHandledByMeResponse.builder()
+                .id(petition.getId())
+                .petitionReason(petition.getReason())
+                .createdAt(petition.getCreatedAt())
+                .paymentLink(petition.getPaymentLink())
+                .petitionerId(petition.getPetitioner().getId())
+                .campaignId(petition.getCampaign().getId())
+                .build();
+    }
+
+
     @Transactional
 
    public ResponseEntity<HandlePetitionResponse> handlePetition(HandlePetitionRequest handlePetitionRequest, String email){
@@ -118,6 +128,17 @@ public class PetitionService {
 
     }
 
+    public ResponseEntity<Page<GetPetitionsBeingHandledByMeResponse>> getBeingHandledPetitionsByAdmin(Pageable pageable, String email){
+        Account account = userService.getAccountByEmail(email);
+        AdminProfile adminProfile = account.getAdminProfile();
+
+        return ResponseEntity.status(HttpStatus.OK).body(
+
+                petitionRepository.getPetitionsByStatusAndResolverAdminId(PetitionStatus.BING_HANDLED, adminProfile.getId(), pageable).map(this::mapPetitionToResponse)
+        );
+
+    }
+
 
     // has to be only reachable from the admin page with from the admin page
     public ResponseEntity<ResolvePetitionResponse> resolvePetition(ResolvePetitionRequest resolvePetitionRequest, String email){
@@ -137,6 +158,8 @@ public class PetitionService {
 
         return ResponseEntity.status(HttpStatus.OK).body(new ResolvePetitionResponse(true, "done"));
     }
+
+
 
 
 

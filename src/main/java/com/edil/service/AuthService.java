@@ -65,6 +65,38 @@ public class AuthService {
         return AuthResponse.builder().token(token).build();
     }
 
+
+    public Account registerUserFromInternal(RegisterUserRequest request) {
+        if (accountRepository.findByEmail(request.getEmail()).isPresent()) {
+            throw new EmailAlreadyExistsException("Email is already taken");
+        }
+        if (userProfileRepository.findByPhoneNumber(request.getPhoneNumber()).isPresent()) {
+            throw new PhoneAlreadyExistsException("Phone number is already taken");
+        }
+
+        Account account = Account.builder()
+                .email(request.getEmail())
+                .passwordHash(passwordEncoder.encode(request.getPassword()))
+                .role(AccountRole.USER)
+                .isActive(true)
+                .build();
+        account = accountRepository.save(account);
+
+        UserProfile profile = UserProfile.builder()
+                .account(account)
+                .fullName(request.getFullName())
+                .phoneNumber(request.getPhoneNumber())
+                .address(request.getAddress())
+                .refundBankAccount(request.getRefundBankAccount())
+                .build();
+        userProfileRepository.save(profile);
+
+        return account;
+    }
+
+
+
+
     public AuthResponse registerCreator(RegisterCreatorRequest request) {
         if (accountRepository.findByEmail(request.getEmail()).isPresent()) {
             throw new EmailAlreadyExistsException("Email is already taken");

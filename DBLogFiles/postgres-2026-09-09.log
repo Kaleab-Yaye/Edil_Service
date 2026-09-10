@@ -37,3 +37,25 @@
 2026-09-09 14:01:58.113 UTC [306] STATEMENT:  insert into campaign_participants (account_id,added_at,adder_admin_id,campaign_id,receipt_hash,id) values ($1,$2,$3,$4,$5,$6)
 2026-09-09 14:02:26.445 UTC [28] LOG:  checkpoint starting: time
 2026-09-09 14:02:27.601 UTC [28] LOG:  checkpoint complete: wrote 11 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=1.103 s, sync=0.011 s, total=1.157 s; sync files=11, longest=0.004 s, average=0.001 s; distance=17 kB, estimate=17 kB
+2026-09-09 19:29:40.011 UTC [1] LOG:  starting PostgreSQL 15.15 on x86_64-pc-linux-musl, compiled by gcc (Alpine 14.2.0) 14.2.0, 64-bit
+2026-09-09 19:29:40.012 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+2026-09-09 19:29:40.012 UTC [1] LOG:  listening on IPv6 address "::", port 5432
+2026-09-09 19:29:40.020 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+2026-09-09 19:29:40.032 UTC [30] LOG:  database system was interrupted; last known up at 2026-09-09 14:02:27 UTC
+2026-09-09 19:29:40.952 UTC [30] LOG:  database system was not properly shut down; automatic recovery in progress
+2026-09-09 19:29:40.959 UTC [30] LOG:  redo starts at 0/1B20E40
+2026-09-09 19:29:40.959 UTC [30] LOG:  invalid record length at 0/1B20F28: wanted 24, got 0
+2026-09-09 19:29:40.959 UTC [30] LOG:  redo done at 0/1B20EF0 system usage: CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.00 s
+2026-09-09 19:29:40.970 UTC [28] LOG:  checkpoint starting: end-of-recovery immediate wait
+2026-09-09 19:29:40.989 UTC [28] LOG:  checkpoint complete: wrote 2 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.006 s, sync=0.003 s, total=0.022 s; sync files=2, longest=0.002 s, average=0.002 s; distance=0 kB, estimate=0 kB
+2026-09-09 19:29:41.004 UTC [1] LOG:  database system is ready to accept connections
+2026-09-09 19:35:05.322 UTC [28] LOG:  checkpoint starting: time
+2026-09-09 19:35:06.004 UTC [28] LOG:  checkpoint complete: wrote 7 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.607 s, sync=0.008 s, total=0.683 s; sync files=7, longest=0.004 s, average=0.002 s; distance=11 kB, estimate=11 kB
+2026-09-09 19:37:12.930 UTC [54] ERROR:  syntax error at or near "slect" at character 1
+2026-09-09 19:37:12.930 UTC [54] STATEMENT:  slect * from campaigns;
+2026-09-09 19:40:31.378 UTC [28] LOG:  checkpoint starting: time
+2026-09-09 19:40:32.748 UTC [28] LOG:  checkpoint complete: wrote 13 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=1.341 s, sync=0.010 s, total=1.371 s; sync files=13, longest=0.004 s, average=0.001 s; distance=17 kB, estimate=17 kB
+2026-09-09 19:45:55.344 UTC [28] LOG:  checkpoint starting: time
+2026-09-09 19:45:56.486 UTC [28] LOG:  checkpoint complete: wrote 11 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=1.086 s, sync=0.016 s, total=1.142 s; sync files=11, longest=0.006 s, average=0.002 s; distance=17 kB, estimate=17 kB
+2026-09-09 20:02:02.054 UTC [28] LOG:  checkpoint starting: time
+2026-09-09 20:02:02.327 UTC [28] LOG:  checkpoint complete: wrote 3 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.223 s, sync=0.016 s, total=0.273 s; sync files=3, longest=0.014 s, average=0.006 s; distance=3 kB, estimate=16 kB
