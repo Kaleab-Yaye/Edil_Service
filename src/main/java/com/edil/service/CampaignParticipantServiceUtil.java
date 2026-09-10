@@ -195,7 +195,7 @@ public class CampaignParticipantServiceUtil {
                 new CharacterRule(EnglishCharacterData.UpperCase, 1),
                 new CharacterRule(EnglishCharacterData.LowerCase, 1),
                 new CharacterRule(EnglishCharacterData.Digit, 1),
-                new CharacterRule(EnglishCharacterData.Special, 1)
+                new CharacterRule(EnglishCharacterData.SpecialAscii, 1)
         );
 
         PasswordGenerator passwordGenerator = new PasswordGenerator(length, rules);

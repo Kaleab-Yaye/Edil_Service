@@ -573,7 +573,7 @@ public class CampaignParticipantService {
         // now we have made sure the payment is correct lets genrate the email
 
         String shadowPassword =  campaignParticipantServiceUtil.generateRandomPassword(12);
-        String shadowEmail = addParticipantRequest.firstName()+addParticipantRequest.lastName()+cbePayload.v2Key();
+        String shadowEmail = addParticipantRequest.firstName()+"-"+addParticipantRequest.lastName()+cbePayload.v2Key()+"@edil.com";
 
         RegisterUserRequest registerUserRequest = new RegisterUserRequest();
         String userFullName = addParticipantRequest.firstName() + " " + addParticipantRequest.lastName();
