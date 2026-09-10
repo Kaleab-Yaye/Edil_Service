@@ -2,6 +2,7 @@ package com.edil.exception;
 
 import com.edil.dto.response.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.checkerframework.checker.index.qual.PolyUpperBound;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -85,6 +86,17 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 campaignNotFoundException.getMessage()
         );
     }
+
+    @ExceptionHandler(CBE5xxServerException.class)
+    public  ResponseEntity<String> handelCampaignCBE5xxServerException (CBE5xxServerException cbe5xxServerException){
+        return  ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+    }
+
+    @ExceptionHandler (CBE4xxServerException.class)
+    public  ResponseEntity<String> handelCampaignCBE4xxServerException (CBE4xxServerException CBE4xxServerException){
+        return  ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+    }
+
 
 
 

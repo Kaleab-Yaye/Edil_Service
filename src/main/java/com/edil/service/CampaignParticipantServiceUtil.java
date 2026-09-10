@@ -6,6 +6,7 @@ import com.edil.domain.Campaign;
 import com.edil.domain.CampaignParticipant;
 import com.edil.domain.enums.CampaignStatus;
 import com.edil.dto.internal.CbePayload;
+import com.edil.exception.CBE4xxServerException;
 import com.edil.exception.CBE5xxServerException;
 import com.edil.repository.ArchivedCampaignParticipantsRepository;
 import com.edil.repository.CampaignParticipantsRepository;
@@ -104,11 +105,15 @@ public class CampaignParticipantServiceUtil {
                     .header("Referer", Referer)
                     .retrieve()
                     .onStatus(HttpStatusCode::is5xxServerError, (req, res) -> {
-                        System.out.println("The third-party server crashed! Status: " + res.getStatusCode());
-                        // You can throw your own custom exception here, or handle it logging it.
-                        // (Note: If you don't throw an exception here, Spring will try to continue parsing the body)
+                        log.warn("CBE server crashed! Status: {} ", res.getStatusCode());
                         throw new CBE5xxServerException(res.getStatusText());
                     })
+
+                    .onStatus(HttpStatusCode::is4xxClientError, (req, res)->{
+                        log.warn("Made unacceptable request to CBE server: {}", res.getStatusCode());
+                        throw new CBE4xxServerException(res.getStatusText());
+                    })
+
                     .toEntity(String.class);
 
 
@@ -116,14 +121,6 @@ public class CampaignParticipantServiceUtil {
             if (!response.getStatusCode().equals(HttpStatus.OK)) {
                 return null;
             }
-
-
-
-
-
-
-
-
         try {
 
             CbePayload rawCbePayload = objectMapper.convertValue(response.getBody(), CbePayload.class);
@@ -271,6 +268,8 @@ public class CampaignParticipantServiceUtil {
 
             return addCampaignParticipantWithGeneratedRandomLotteryNumber(campaignParticipants, randomGen);
         }
+
+
 
     }
 

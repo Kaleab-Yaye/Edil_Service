@@ -315,7 +315,38 @@ public class CampaignService {
 
     @Transactional
     public boolean updateUserCount(UUID campaignId) {
-        Campaign campaign = campaignRepository.getReferenceById(campaignId);
+        Campaign campaign = campaignRepository.getCampaignsById(campaignId).orElseThrow(()->new CampaignNotFoundException(campaignId.toString()));
+
+        log.info("this is to be printed first jsut to check ");
+
+        log.info("the number of already joinged users is {}", campaign.getJoinedUsers());
+
+        campaign.setJoinedUsers(campaign.getJoinedUsers() + 1);
+
+        if (campaign.getJoinedUsers() >= campaign.getTargetEntries()) {
+            campaign.setTargetReachedAt(LocalDateTime.now());
+            campaign.setStatus(CampaignStatus.ENDED);
+            campaignRepository.save(campaign);
+
+            // async methode
+            archivePrizesForAnEndedCampaign(campaign);
+
+
+            return true;
+
+
+        }
+
+        campaignRepository.save(campaign);
+        return false;
+
+
+    }
+
+
+    @Transactional
+    public boolean updateUserCount(Campaign campaign) {
+
 
         log.info("this is to be printed first jsut to check ");
 

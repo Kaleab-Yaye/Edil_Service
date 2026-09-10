@@ -576,7 +576,8 @@ public class CampaignParticipantService {
         String shadowEmail = addParticipantRequest.firstName()+addParticipantRequest.lastName()+cbePayload.v2Key();
 
         RegisterUserRequest registerUserRequest = new RegisterUserRequest();
-        registerUserRequest.setFullName(addParticipantRequest.firstName()+" "+addParticipantRequest.lastName());
+        String userFullName = addParticipantRequest.firstName() + " " + addParticipantRequest.lastName();
+        registerUserRequest.setFullName(userFullName);
         registerUserRequest.setEmail(shadowEmail);
         registerUserRequest.setPassword(shadowPassword);
         registerUserRequest.setRefundBankAccount(addParticipantRequest.refundAccountNumber());
@@ -599,10 +600,12 @@ public class CampaignParticipantService {
 
         receiptRepository.save(receipt);
 
+        campaignService.updateUserCount(campaign);
+
         return  ResponseEntity.status(HttpStatus.OK).body(
                 new AddParticipantFromOpenResponse(
                         "done",
-                        addParticipantRequest.firstName()+" "+addParticipantRequest.lastName(),
+                        userFullName,
                         campaign.getId(),
                         campaign.getTitle(),
                         receivedAmountFromRecept,

@@ -19,6 +19,6 @@ public interface CampaignRepository extends JpaRepository<Campaign, UUID> {
     List<Campaign> findByStatusAndEndDateLessThanEqual(CampaignStatus status, LocalDateTime now);
     List<Campaign> findByCreatorId(UUID creatorId);
     List<Campaign> findByStatus(CampaignStatus status);
-    Optional<Campaign> getCampaignsById(UUID campaignId);
     boolean existsByCreatorIdAndStatusIn(UUID creatorId, Collection<CampaignStatus> statuses);
+    Optional<Campaign> getCampaignsById(UUID Id);
 }
