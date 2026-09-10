@@ -37,7 +37,7 @@ public class UserProfile {
     @Column(name = "full_name")
     private String fullName;
 
-    @Column(name = "phone_number", unique = true)
+    @Column(name = "phone_number")
     private String phoneNumber;
 
     private String address;
