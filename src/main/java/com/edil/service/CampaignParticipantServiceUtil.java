@@ -6,6 +6,7 @@ import com.edil.domain.Campaign;
 import com.edil.domain.CampaignParticipant;
 import com.edil.domain.enums.CampaignStatus;
 import com.edil.dto.internal.CbePayload;
+import com.edil.exception.CBE5xxServerException;
 import com.edil.repository.ArchivedCampaignParticipantsRepository;
 import com.edil.repository.CampaignParticipantsRepository;
 import com.edil.repository.CampaignRepository;
@@ -17,6 +18,7 @@ import org.passay.data.EnglishCharacterData;
 import org.passay.generate.PasswordGenerator;
 import org.passay.rule.CharacterRule;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
@@ -88,22 +90,39 @@ public class CampaignParticipantServiceUtil {
 //        }
 
 
-        ResponseEntity<String> response = restClient.get()
-                .uri(requestTobeMadeLink)
-                .accept(MediaType.APPLICATION_JSON)// Tells server we want JSON
-                .header("x-app-version", x_app_version)
-                .header("x-app-id", x_app_id)
-                .header("user-agent", user_agent
-                )
-                .header("Origin", Origin)
-                .header("Referer", Referer)
-                 .retrieve()
-                 .toEntity(String.class);
 
 
-        if(!response.getStatusCode().equals(HttpStatus.OK)){
-            return null;
-        }
+
+            ResponseEntity<String> response = restClient.get()
+                    .uri(requestTobeMadeLink)
+                    .accept(MediaType.APPLICATION_JSON)// Tells server we want JSON
+                    .header("x-app-version", x_app_version)
+                    .header("x-app-id", x_app_id)
+                    .header("user-agent", user_agent
+                    )
+                    .header("Origin", Origin)
+                    .header("Referer", Referer)
+                    .retrieve()
+                    .onStatus(HttpStatusCode::is5xxServerError, (req, res) -> {
+                        System.out.println("The third-party server crashed! Status: " + res.getStatusCode());
+                        // You can throw your own custom exception here, or handle it logging it.
+                        // (Note: If you don't throw an exception here, Spring will try to continue parsing the body)
+                        throw new CBE5xxServerException(res.getStatusText());
+                    })
+                    .toEntity(String.class);
+
+
+
+            if (!response.getStatusCode().equals(HttpStatus.OK)) {
+                return null;
+            }
+
+
+
+
+
+
+
 
         try {
 
@@ -254,6 +273,8 @@ public class CampaignParticipantServiceUtil {
         }
 
     }
+
+
 
 }
 
