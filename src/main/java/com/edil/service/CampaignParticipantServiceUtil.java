@@ -224,7 +224,7 @@ public class CampaignParticipantServiceUtil {
             campaignParticipants.setEdilCode(randomEdilCode);
             campaignParticipantsRepository.save(campaignParticipants);
 
-            return randomEdilCode;
+            return edil;
         }
 
         catch (ConstraintViolationException constraintViolationException){
