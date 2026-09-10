@@ -1,0 +1,1 @@
+ALTER TABLE user_profiles DROP CONSTRAINT  user_profiles_phone_number_key
