@@ -67,9 +67,7 @@ public class AuthService {
         if (accountRepository.findByEmail(request.getEmail()).isPresent()) {
             throw new EmailAlreadyExistsException("Email is already taken");
         }
-        if (userProfileRepository.findByPhoneNumber(request.getPhoneNumber()).isPresent()) {
-            throw new PhoneAlreadyExistsException("Phone number is already taken");
-        }
+
 
         Account account = Account.builder()
                 .email(request.getEmail())
