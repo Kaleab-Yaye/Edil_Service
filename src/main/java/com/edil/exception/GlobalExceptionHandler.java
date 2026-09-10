@@ -89,12 +89,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(CBE5xxServerException.class)
     public  ResponseEntity<String> handelCampaignCBE5xxServerException (CBE5xxServerException cbe5xxServerException){
-        return  ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body("make sure the url used is correct");
     }
 
     @ExceptionHandler (CBE4xxServerException.class)
     public  ResponseEntity<String> handelCampaignCBE4xxServerException (CBE4xxServerException CBE4xxServerException){
-        return  ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body("make sure the url used is correct");
     }
 
 

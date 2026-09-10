@@ -94,7 +94,7 @@ public class CampaignParticipantServiceUtil {
 
 
 
-            ResponseEntity<String> response = restClient.get()
+            CbePayload  cbePayload = restClient.get()
                     .uri(requestTobeMadeLink)
                     .accept(MediaType.APPLICATION_JSON)// Tells server we want JSON
                     .header("x-app-version", x_app_version)
@@ -114,24 +114,14 @@ public class CampaignParticipantServiceUtil {
                         throw new CBE4xxServerException(res.getStatusText());
                     })
 
-                    .toEntity(String.class);
+                    .body(CbePayload.class);
 
 
-
-            if (!response.getStatusCode().equals(HttpStatus.OK)) {
-                return null;
+            if(cbePayload == null){
+                return  null;
             }
-        try {
 
-            CbePayload rawCbePayload = objectMapper.convertValue(response.getBody(), CbePayload.class);
-            return  rawCbePayload.withv2Key(uniqueIdOnLink);
-        }
-
-        catch (Exception exception){
-            log.warn(" the response from the recipt server was ok but there was error in mapping process");
-            throw exception;
-        }
-
+            return  cbePayload.withv2Key(uniqueIdOnLink);
 
     }
 
