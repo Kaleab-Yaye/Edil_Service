@@ -7,11 +7,16 @@ import com.edil.dto.response.UploadReceiptResponse;
 import com.edil.service.ReceiptService;
 import com.fasterxml.classmate.members.ResolvedParameterizedMember;
 import jakarta.annotation.security.PermitAll;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/receipt")
@@ -27,8 +32,17 @@ public class ReceiptController {
     }
 
     @GetMapping("/create/upload/key")
-    @PreAuthorize("PermitAll()")
     public ResponseEntity<UploadReceiptResponse> handleCreateReceiptUploadKey (){
         return  receiptService.createUploadReceiptKey();
     }
+
+    @GetMapping("/check/upload/auth")
+    public ResponseEntity<Void> handelReceiptUploadAuth(HttpServletRequest httpServletRequest){
+        String uri = httpServletRequest.getHeader("X-Original-URI");
+        log.info("the received uri for auth is {}", uri);
+
+        return  receiptService.checkForUploadReceiptKey(uri);
+    }
+
+
 }

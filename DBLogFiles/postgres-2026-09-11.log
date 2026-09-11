@@ -1,0 +1,18 @@
+2026-09-11 14:19:17.100 UTC [1] LOG:  received fast shutdown request
+2026-09-11 14:19:17.119 UTC [1] LOG:  aborting any active transactions
+2026-09-11 14:19:17.123 UTC [956] FATAL:  terminating connection due to administrator command
+2026-09-11 14:19:17.123 UTC [955] FATAL:  terminating connection due to administrator command
+2026-09-11 14:19:17.128 UTC [962] FATAL:  terminating connection due to administrator command
+2026-09-11 14:19:17.129 UTC [957] FATAL:  terminating connection due to administrator command
+2026-09-11 14:19:17.130 UTC [959] FATAL:  terminating connection due to administrator command
+2026-09-11 14:19:17.133 UTC [958] FATAL:  terminating connection due to administrator command
+2026-09-11 14:19:17.133 UTC [960] FATAL:  terminating connection due to administrator command
+2026-09-11 14:19:17.137 UTC [961] FATAL:  terminating connection due to administrator command
+2026-09-11 14:19:17.137 UTC [94] FATAL:  terminating connection due to administrator command
+2026-09-11 14:19:17.137 UTC [953] FATAL:  terminating connection due to administrator command
+2026-09-11 14:19:17.142 UTC [954] FATAL:  terminating connection due to administrator command
+2026-09-11 14:19:17.171 UTC [1] LOG:  background worker "logical replication launcher" (PID 39) exited with exit code 1
+2026-09-11 14:19:17.188 UTC [28] LOG:  shutting down
+2026-09-11 14:19:17.196 UTC [28] LOG:  checkpoint starting: shutdown immediate
+2026-09-11 14:19:17.295 UTC [28] LOG:  checkpoint complete: wrote 0 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.052 s, sync=0.001 s, total=0.106 s; sync files=0, longest=0.000 s, average=0.000 s; distance=0 kB, estimate=53 kB
+2026-09-11 14:19:17.337 UTC [1] LOG:  database system is shut down

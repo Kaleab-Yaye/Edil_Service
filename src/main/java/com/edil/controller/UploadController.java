@@ -66,4 +66,5 @@ public class UploadController {
         uploadService.confirmUpload(fileId, account.getId());
         return ResponseEntity.ok().build();
     }
+
 }
