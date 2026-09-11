@@ -46,7 +46,7 @@ public class CampaignParticipantServiceUtil {
     private  final CampaignParticipantsRepository campaignParticipantsRepository;
     private  final ArchivedCampaignParticipantsRepository archivedCampaignParticipantsRepository;
     private final CampaignRepository campaignRepository;
-    private  final Cache<UUID, Boolean> reciptUploadKeyCache;
+
 
 
 

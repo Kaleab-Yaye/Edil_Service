@@ -27,7 +27,7 @@ public class ReceiptController {
     }
 
     @GetMapping("/create/upload/key")
-    @PermitAll
+    @PreAuthorize("PermitAll()")
     public ResponseEntity<UploadReceiptResponse> handleCreateReceiptUploadKey (){
         return  receiptService.createUploadReceiptKey();
     }
