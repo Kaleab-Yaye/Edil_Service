@@ -44,16 +44,12 @@ public class CampaignParticipantService {
     private final Cache<String, UUID> userEmailToSlotAvailableCheckCache;
     private  final ReceiptService receiptService;
     private  final AuthService authService;
+    private final Cache<UUID, Boolean> reciptUploadKeyCache;
 
 
     private final ArchivedCampaignParticipantsRepository archivedCampaignParticipantsRepository;
     private  final PetitionService petitionService;
     private  final StoreCampaignToSlotHashMap storeCampaignToSlotHashMap;
-
-
-
-
-
     @Transactional
     public ResponseEntity<AddParticipantToCampaignResponse> AddCampaignParticipant(AddParticipantToCampaignRequest addParticipantToCampaignRequest, String userEmail) {
 
@@ -629,6 +625,17 @@ public class CampaignParticipantService {
 
 
 
+
+    public ResponseEntity<AddParticipantToCampaignResponse> addCampaignParticipantFromPublicWithReceiptImage(AddParticipantToCampaignFromOpenWithImageRequest addRequest){
+
+        if(reciptUploadKeyCache.asMap().containsKey(addRequest.receiptKey())){
+            ResponseEntity.status(HttpStatus.GONE).body(new AddParticipantToCampaignResponse("the upload expired upload it again please"));
+        }
+
+
+
+
+    }
 
 
 

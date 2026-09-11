@@ -12,6 +12,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import javax.imageio.IIOException;
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.awt.image.ImagingOpException;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Map;
 import java.util.UUID;
 import java.util.regex.Matcher;
@@ -123,6 +132,35 @@ public class ReceiptService {
 
         return  ResponseEntity.status(HttpStatus.OK).build();
     }
+
+
+
+    public String extractURLFromUploadedReceipt(String uploadedReceiptName){
+
+        // has to be env latter on
+        String receiptImageStorePath =  "./receipt_store/";
+        String receiptImageFilePath = receiptImageStorePath+uploadedReceiptName;
+        File receiptImageFile = new File(receiptImageFilePath);
+        try {
+            BufferedImage bufferedImage = ImageIO.read(receiptImageFile);
+            if (bufferedImage ==null){
+                throw new RuntimeException("could't buffer the image");
+            }
+
+
+
+
+
+
+        }
+
+         catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+
+    }
+
 
 
 

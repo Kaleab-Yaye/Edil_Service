@@ -23,4 +23,15 @@ public record AddParticipantToCampaignFromOpenWithLinkRequest(
 
 )
 {
+    public static AddParticipantToCampaignFromOpenWithLinkRequest returnMeFromImageReceiptRequest(AddParticipantToCampaignFromOpenWithImageRequest addRequest, String paymentLink){
+        return new AddParticipantToCampaignFromOpenWithLinkRequest(
+                addRequest.firstName(),
+                addRequest.lastName(),
+                addRequest.phoneNumber(),
+                addRequest.refundAccountNumber(),
+                addRequest.campaignId(),
+                paymentLink
+
+        );
+    }
 }
