@@ -3,8 +3,10 @@ package com.edil.controller;
 
 import com.edil.dto.request.HasReceiptBeenUsedBeforeRequest;
 import com.edil.dto.response.HasReceiptBeenUsedBeforeResponse;
+import com.edil.dto.response.UploadReceiptResponse;
 import com.edil.service.ReceiptService;
 import com.fasterxml.classmate.members.ResolvedParameterizedMember;
+import jakarta.annotation.security.PermitAll;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -24,4 +26,9 @@ public class ReceiptController {
         return receiptService.checkForReceiptExitance(hasReceiptBeenUsedBeforeRequest);
     }
 
+    @GetMapping("/create/upload/key")
+    @PermitAll
+    public ResponseEntity<UploadReceiptResponse> handleCreateReceiptUploadKey (){
+        return  receiptService.createUploadReceiptKey();
+    }
 }

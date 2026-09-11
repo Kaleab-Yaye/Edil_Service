@@ -18,6 +18,7 @@ import org.springframework.web.servlet.handler.WebRequestHandlerInterceptorAdapt
 
 import java.time.Duration;
 import java.util.UUID;
+import java.util.function.BinaryOperator;
 
 @Configuration
 @RequiredArgsConstructor
@@ -82,6 +83,16 @@ public class CacheConfig {
                 .scheduler(Scheduler.systemScheduler())
                 .build();
     }
+
+
+    @Bean
+    Cache<UUID, Boolean> uuidBooleanCache() { // BEING USED TO STORE UPLOAD TICKET
+        return Caffeine.newBuilder()
+                .expireAfterWrite(Duration.ofMinutes(5))
+                .scheduler(Scheduler.systemScheduler())
+                .build();
+    }
+
 
 
 

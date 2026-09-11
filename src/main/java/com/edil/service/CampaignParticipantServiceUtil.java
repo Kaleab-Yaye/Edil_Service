@@ -6,12 +6,14 @@ import com.edil.domain.Campaign;
 import com.edil.domain.CampaignParticipant;
 import com.edil.domain.enums.CampaignStatus;
 import com.edil.dto.internal.CbePayload;
+import com.edil.dto.response.UploadReceiptResponse;
 import com.edil.exception.CBE4xxServerException;
 import com.edil.exception.CBE5xxServerException;
 import com.edil.repository.ArchivedCampaignParticipantsRepository;
 import com.edil.repository.CampaignParticipantsRepository;
 import com.edil.repository.CampaignRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.benmanes.caffeine.cache.Cache;
 import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -44,7 +46,7 @@ public class CampaignParticipantServiceUtil {
     private  final CampaignParticipantsRepository campaignParticipantsRepository;
     private  final ArchivedCampaignParticipantsRepository archivedCampaignParticipantsRepository;
     private final CampaignRepository campaignRepository;
-    private  final ObjectMapper objectMapper;
+    private  final Cache<UUID, Boolean> reciptUploadKeyCache;
 
 
 
@@ -261,6 +263,10 @@ public class CampaignParticipantServiceUtil {
 
 
     }
+
+
+
+
 
 
 

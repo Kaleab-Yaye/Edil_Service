@@ -45,6 +45,7 @@ public class CampaignParticipantService {
     private  final ReceiptService receiptService;
     private  final AuthService authService;
 
+
     private final ArchivedCampaignParticipantsRepository archivedCampaignParticipantsRepository;
     private  final PetitionService petitionService;
     private  final StoreCampaignToSlotHashMap storeCampaignToSlotHashMap;
@@ -487,6 +488,10 @@ public class CampaignParticipantService {
 
     @Transactional
 
+
+
+    // so we will intorde the enntire image prossesing path here
+
     public ResponseEntity<AddParticipantFromOpenResponse> addCampaignParticipantFromPublic(AddParticipantToCampaignFromOpenWithLinkRequest addParticipantRequest){
 
         Campaign campaign = campaignService.getCampaignById(addParticipantRequest.campaignId()).orElseThrow(()->new CampaignNotFoundException((addParticipantRequest.campaignId().toString())))
@@ -621,4 +626,10 @@ public class CampaignParticipantService {
 
 
     }
+
+
+
+
+
+
 }

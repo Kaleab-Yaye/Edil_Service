@@ -14,3 +14,34 @@
 2026-09-10 09:52:45.251 UTC [154] STATEMENT:  SELECT * FROM user_profile;
 2026-09-10 13:02:49.947 UTC [28] LOG:  checkpoint starting: time
 2026-09-10 13:02:52.558 UTC [28] LOG:  checkpoint complete: wrote 26 buffers (0.2%); 0 WAL file(s) added, 0 removed, 0 recycled; write=2.566 s, sync=0.020 s, total=2.621 s; sync files=25, longest=0.007 s, average=0.001 s; distance=114 kB, estimate=114 kB
+2026-09-10 19:02:00.190 UTC [1] LOG:  starting PostgreSQL 15.15 on x86_64-pc-linux-musl, compiled by gcc (Alpine 14.2.0) 14.2.0, 64-bit
+2026-09-10 19:02:00.190 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+2026-09-10 19:02:00.190 UTC [1] LOG:  listening on IPv6 address "::", port 5432
+2026-09-10 19:02:00.200 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+2026-09-10 19:02:00.217 UTC [30] LOG:  database system was interrupted; last known up at 2026-09-10 13:02:52 UTC
+2026-09-10 19:02:01.288 UTC [30] LOG:  database system was not properly shut down; automatic recovery in progress
+2026-09-10 19:02:01.296 UTC [30] LOG:  redo starts at 0/1B4A680
+2026-09-10 19:02:01.296 UTC [30] LOG:  invalid record length at 0/1B4A768: wanted 24, got 0
+2026-09-10 19:02:01.296 UTC [30] LOG:  redo done at 0/1B4A730 system usage: CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.00 s
+2026-09-10 19:02:01.311 UTC [28] LOG:  checkpoint starting: end-of-recovery immediate wait
+2026-09-10 19:02:01.333 UTC [28] LOG:  checkpoint complete: wrote 2 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.007 s, sync=0.003 s, total=0.026 s; sync files=2, longest=0.002 s, average=0.002 s; distance=0 kB, estimate=0 kB
+2026-09-10 19:02:01.351 UTC [1] LOG:  database system is ready to accept connections
+2026-09-10 19:27:26.775 UTC [94] ERROR:  syntax error at or near "get" at character 1
+2026-09-10 19:27:26.775 UTC [94] STATEMENT:  get * campaign_participants
+	l
+	;
+2026-09-10 19:27:30.600 UTC [94] ERROR:  syntax error at or near "get" at character 1
+2026-09-10 19:27:30.600 UTC [94] STATEMENT:  get * campaign_participants;
+2026-09-10 19:27:44.193 UTC [94] ERROR:  syntax error at or near "SLECTE" at character 1
+2026-09-10 19:27:44.193 UTC [94] STATEMENT:  SLECTE * campaign_participants;
+2026-09-10 19:28:57.436 UTC [28] LOG:  checkpoint starting: time
+2026-09-10 19:29:00.034 UTC [28] LOG:  checkpoint complete: wrote 25 buffers (0.2%); 0 WAL file(s) added, 0 removed, 0 recycled; write=2.459 s, sync=0.078 s, total=2.598 s; sync files=24, longest=0.048 s, average=0.004 s; distance=17 kB, estimate=17 kB
+2026-09-10 19:49:15.085 UTC [147] ERROR:  duplicate key value violates unique constraint "user_profiles_phone_number_key"
+2026-09-10 19:49:15.085 UTC [147] DETAIL:  Key (phone_number)=(+251911234567) already exists.
+2026-09-10 19:49:15.085 UTC [147] STATEMENT:  insert into user_profiles (account_id,address,full_name,phone_number,refund_bank_account,id) values ($1,$2,$3,$4,$5,$6)
+2026-09-10 19:50:48.804 UTC [28] LOG:  checkpoint starting: time
+2026-09-10 19:50:50.121 UTC [28] LOG:  checkpoint complete: wrote 13 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=1.232 s, sync=0.061 s, total=1.318 s; sync files=12, longest=0.048 s, average=0.006 s; distance=5 kB, estimate=16 kB
+2026-09-10 19:56:16.288 UTC [28] LOG:  checkpoint starting: time
+2026-09-10 19:56:19.336 UTC [28] LOG:  checkpoint complete: wrote 29 buffers (0.2%); 0 WAL file(s) added, 0 removed, 0 recycled; write=2.908 s, sync=0.058 s, total=3.048 s; sync files=29, longest=0.031 s, average=0.002 s; distance=63 kB, estimate=63 kB
+2026-09-10 20:01:44.614 UTC [28] LOG:  checkpoint starting: time
+2026-09-10 20:01:46.573 UTC [28] LOG:  checkpoint complete: wrote 20 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=1.922 s, sync=0.020 s, total=1.960 s; sync files=20, longest=0.009 s, average=0.001 s; distance=22 kB, estimate=59 kB
