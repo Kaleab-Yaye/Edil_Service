@@ -1,9 +1,6 @@
 package com.edil.dto.response;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -12,10 +9,9 @@ import java.util.UUID;
 
 
 @RequiredArgsConstructor
-
+@Getter
+@Setter
 public class AddParticipantFromOpenResponse
-
-
   {
 
     String message;

@@ -628,7 +628,7 @@ public class CampaignParticipantService {
     @Transactional
     public ResponseEntity<AddParticipantFromOpenResponse> addCampaignParticipantFromPublicWithReceiptImage(AddParticipantToCampaignFromOpenWithImageRequest addRequest){
 
-        if(reciptUploadKeyCache.asMap().containsKey(addRequest.receiptKey())){
+        if(!reciptUploadKeyCache.asMap().containsKey(addRequest.receiptKey())){
             ResponseEntity.status(HttpStatus.GONE).body(AddParticipantFromOpenResponse.getAddParticipantFromOpenResponseWithMessageAndUploadAgainFlag("upload the receipt again"));
         }
 

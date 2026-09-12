@@ -84,12 +84,14 @@ public class CampaignParticipantController {
 //        return campaignParticipantService.addCampaignParticipantFromPublic(addParticipantToCampaignFromOpenWithLinkRequest);
 //    }
 
-    @PostMapping("/public/add/paticipant")
+    @PostMapping("/public/add/participant")
     public ResponseEntity<AddParticipantFromOpenResponse> addParticipantsFromOpen(@RequestBody JsonNode jsonNode, @RequestParam("format") String format) throws Exception{
         if(format.equalsIgnoreCase("link")){
 
             AddParticipantToCampaignFromOpenWithLinkRequest addParticipantToCampaignFromOpenWithLinkRequest =  objectMapper.treeToValue(jsonNode, AddParticipantToCampaignFromOpenWithLinkRequest.class );
             validateObject(addParticipantToCampaignFromOpenWithLinkRequest);
+
+            log.info("the validation of the object has passed and have reached here");
 
             return campaignParticipantService.addCampaignParticipantFromPublic(addParticipantToCampaignFromOpenWithLinkRequest);
 

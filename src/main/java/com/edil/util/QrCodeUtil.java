@@ -4,7 +4,6 @@ package com.edil.util;
 import com.google.zxing.*;
 import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
 import com.google.zxing.common.HybridBinarizer;
-import com.google.zxing.client.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
