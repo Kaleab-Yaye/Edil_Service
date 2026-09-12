@@ -629,7 +629,7 @@ public class CampaignParticipantService {
     public ResponseEntity<AddParticipantFromOpenResponse> addCampaignParticipantFromPublicWithReceiptImage(AddParticipantToCampaignFromOpenWithImageRequest addRequest){
 
         if(!reciptUploadKeyCache.asMap().containsKey(addRequest.receiptKey())){
-            ResponseEntity.status(HttpStatus.GONE).body(AddParticipantFromOpenResponse.getAddParticipantFromOpenResponseWithMessageAndUploadAgainFlag("upload the receipt again"));
+           return ResponseEntity.status(HttpStatus.GONE).body(AddParticipantFromOpenResponse.getAddParticipantFromOpenResponseWithMessageAndUploadAgainFlag("upload the receipt again"));
         }
 
         String paymentLink = receiptService.extractURLFromUploadedReceipt(addRequest.receiptKey().toString());
