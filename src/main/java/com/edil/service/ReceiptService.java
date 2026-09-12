@@ -5,6 +5,7 @@ import com.edil.dto.request.HasReceiptBeenUsedBeforeRequest;
 import com.edil.dto.response.HasReceiptBeenUsedBeforeResponse;
 import com.edil.dto.response.UploadReceiptResponse;
 import com.edil.repository.ReceiptRepository;
+import com.edil.util.QrCodeUtil;
 import com.github.benmanes.caffeine.cache.Cache;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +33,7 @@ import java.util.regex.Pattern;
 public class ReceiptService {
     private final ReceiptRepository receiptRepository;
     private final Cache<UUID, Boolean> reciptUploadKeyCache;
+    private QrCodeUtil qrCodeUtil;
 
 
     public ResponseEntity<HasReceiptBeenUsedBeforeResponse> checkForReceiptExitance(HasReceiptBeenUsedBeforeRequest hasReceiptBeenUsedBeforeRequest){
@@ -147,13 +149,10 @@ public class ReceiptService {
                 throw new RuntimeException("could't buffer the image");
             }
 
-
-
-
+            return qrCodeUtil.scanQrCodeFromImage(bufferedImage);
 
 
         }
-
          catch (IOException e) {
             throw new RuntimeException(e);
         }

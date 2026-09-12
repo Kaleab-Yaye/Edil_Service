@@ -4,7 +4,13 @@ package com.edil.controller;
 import com.edil.dto.request.*;
 import com.edil.dto.response.*;
 import com.edil.service.CampaignParticipantService;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.security.PermitAll;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Validator;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,16 +20,18 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.method.HandlerTypePredicate;
 
+import java.util.Set;
+
 @Slf4j
 @RestController
-@RequestMapping("/api/v1/participant")   // /api/v1/participant/public/add/participant
+@RequestMapping("/api/v1/participant")
+@RequiredArgsConstructor// /api/v1/participant/public/add/participant
 public class CampaignParticipantController {
     private final CampaignParticipantService campaignParticipantService;
+    private final ObjectMapper objectMapper;
+    private final Validator validator;
 
-    CampaignParticipantController(CampaignParticipantService campaignParticipantService) {
-        this.campaignParticipantService = campaignParticipantService;
 
-    }
     // /apit/v1/participant/add/participant
 
     @PostMapping("/can/join")
@@ -70,12 +78,44 @@ public class CampaignParticipantController {
         return  campaignParticipantService.addUserTOCampaignByAdmin(addUserTOCampaignByAdminRequest, email);
     }
 
-    @PostMapping("public/add/participant")
-    @PermitAll
-    public ResponseEntity<AddParticipantFromOpenResponse> addParticipantsFromOpen(@RequestBody @Validated AddParticipantToCampaignFromOpenWithLinkRequest addParticipantToCampaignFromOpenWithLinkRequest){
-        return campaignParticipantService.addCampaignParticipantFromPublic(addParticipantToCampaignFromOpenWithLinkRequest);
+//    @PostMapping("public/add/participant")
+//    @PermitAll
+//    public ResponseEntity<AddParticipantFromOpenResponse> addParticipantsFromOpen(@RequestBody @Validated AddParticipantToCampaignFromOpenWithLinkRequest addParticipantToCampaignFromOpenWithLinkRequest){
+//        return campaignParticipantService.addCampaignParticipantFromPublic(addParticipantToCampaignFromOpenWithLinkRequest);
+//    }
+
+    @PostMapping("/public/add/paticipant")
+    public ResponseEntity<AddParticipantFromOpenResponse> addParticipantsFromOpen(@RequestBody JsonNode jsonNode, @RequestParam("format") String format) throws Exception{
+        if(format.equalsIgnoreCase("link")){
+
+            AddParticipantToCampaignFromOpenWithLinkRequest addParticipantToCampaignFromOpenWithLinkRequest =  objectMapper.treeToValue(jsonNode, AddParticipantToCampaignFromOpenWithLinkRequest.class );
+            validateObject(addParticipantToCampaignFromOpenWithLinkRequest);
+
+            return campaignParticipantService.addCampaignParticipantFromPublic(addParticipantToCampaignFromOpenWithLinkRequest);
+
+
+        }
+        if(format.equalsIgnoreCase("image")){
+
+            AddParticipantToCampaignFromOpenWithImageRequest addParticipantRequest =  objectMapper.treeToValue(jsonNode, AddParticipantToCampaignFromOpenWithImageRequest.class );
+            validateObject(addParticipantRequest);
+            return campaignParticipantService.addCampaignParticipantFromPublicWithReceiptImage(addParticipantRequest);
+
+        }
+        return  ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+    }
+
+    private <T> void validateObject(T objectToValidate) {
+
+        Set<ConstraintViolation<T>> violations = validator.validate(objectToValidate);
+        if (!violations.isEmpty()) {
+            throw new ConstraintViolationException(violations);
+        }
     }
 }
+
+
+
 
 
 

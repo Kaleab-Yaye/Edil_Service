@@ -625,16 +625,16 @@ public class CampaignParticipantService {
 
 
 
-
-    public ResponseEntity<AddParticipantToCampaignResponse> addCampaignParticipantFromPublicWithReceiptImage(AddParticipantToCampaignFromOpenWithImageRequest addRequest){
+    @Transactional
+    public ResponseEntity<AddParticipantFromOpenResponse> addCampaignParticipantFromPublicWithReceiptImage(AddParticipantToCampaignFromOpenWithImageRequest addRequest){
 
         if(reciptUploadKeyCache.asMap().containsKey(addRequest.receiptKey())){
-            ResponseEntity.status(HttpStatus.GONE).body(new AddParticipantToCampaignResponse("the upload expired upload it again please"));
+            ResponseEntity.status(HttpStatus.GONE).body(AddParticipantFromOpenResponse.getAddParticipantFromOpenResponseWithMessageAndUploadAgainFlag("upload the receipt again"));
         }
 
+        String paymentLink = receiptService.extractURLFromUploadedReceipt(addRequest.receiptKey().toString());
 
-
-
+        return  addCampaignParticipantFromPublic(AddParticipantToCampaignFromOpenWithLinkRequest.returnMeFromImageReceiptRequest(addRequest, paymentLink));
     }
 
 
