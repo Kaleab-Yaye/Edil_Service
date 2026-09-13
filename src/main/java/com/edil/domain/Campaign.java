@@ -71,5 +71,21 @@ public class Campaign {
     @OneToMany(mappedBy = "campaign")
     private List<ArchivedCampaignPrize> archivedCampaignPrizes;
 
+    @Column(name = "started_being_processed_at")
+    private LocalDateTime startedBeingProcessedAt;
+
+    @OneToMany(mappedBy = "campaign")
+    private List<CampaignParticipant> campaignParticipant;
+
+    @OneToOne(mappedBy = "campaign")
+    private CampaignParticipantsPdf campaignParticipantsPdf;
+
+
+
+    @Column(name = "has_pdf")
+    private boolean hadPdf;
+
+
     @Version @Getter @Setter Integer version;
+
 }

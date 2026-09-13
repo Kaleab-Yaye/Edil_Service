@@ -115,6 +115,14 @@
             <scope>compile</scope>
         </dependency>
 
+
+        <dependency>
+            <groupId>com.github.librepdf</groupId>
+            <artifactId>openpdf</artifactId>
+            <version>3.0.5</version>
+            <scope>compile</scope>
+        </dependency>
+
     </dependencies>
 
     <build>

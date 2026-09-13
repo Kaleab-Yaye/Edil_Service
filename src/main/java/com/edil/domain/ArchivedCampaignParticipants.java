@@ -51,5 +51,10 @@ public class ArchivedCampaignParticipants {
     @UpdateTimestamp
     private LocalDateTime archivedAt;
 
+    @Column(name = "edil_code")
+    @Getter
+    @Setter
+    private String edilCode;
+
 
 }

@@ -29,7 +29,7 @@ public class QrCodeUtil {
 
         catch ( NotFoundException exception){
             log.warn("an excepiton of not finding is thrown from the qr code scanner", exception);
-            throw new RuntimeException(exception);
+            return  null;
         }
 
 

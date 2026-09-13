@@ -51,5 +51,15 @@ public class CampaignParticipant {
     @Setter
     private String edilCode;
 
+    public  ArchivedCampaignParticipants archivedCampaignParticipant(){
+        ArchivedCampaignParticipants archivedCampaignParticipants = new ArchivedCampaignParticipants();
+        archivedCampaignParticipants.setId(this.id);
+        archivedCampaignParticipants.setCampaign(this.campaign);
+        archivedCampaignParticipants.setReceiptHash(this.getReceiptHash());
+        archivedCampaignParticipants.setEdilCode(this.edilCode);
+        archivedCampaignParticipants.setArchivedAt(LocalDateTime.now());
+         return  archivedCampaignParticipants;
+    }
+
 
 }

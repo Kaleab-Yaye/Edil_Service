@@ -1,6 +1,7 @@
 package com.edil.service;
 
 
+import com.edil.dto.internal.ReadReceiptDTO;
 import com.edil.dto.request.HasReceiptBeenUsedBeforeRequest;
 import com.edil.dto.response.HasReceiptBeenUsedBeforeResponse;
 import com.edil.dto.response.UploadReceiptResponse;
@@ -33,7 +34,7 @@ import java.util.regex.Pattern;
 public class ReceiptService {
     private final ReceiptRepository receiptRepository;
     private final Cache<UUID, Boolean> reciptUploadKeyCache;
-    private QrCodeUtil qrCodeUtil;
+    private final QrCodeUtil qrCodeUtil;
 
 
     public ResponseEntity<HasReceiptBeenUsedBeforeResponse> checkForReceiptExitance(HasReceiptBeenUsedBeforeRequest hasReceiptBeenUsedBeforeRequest){
@@ -137,7 +138,7 @@ public class ReceiptService {
 
 
 
-    public String extractURLFromUploadedReceipt(String uploadedReceiptName){
+    public ReadReceiptDTO extractURLFromUploadedReceipt(String uploadedReceiptName){
 
         // has to be env latter on
         String receiptImageStorePath =  "./receipt_store/";
@@ -146,15 +147,15 @@ public class ReceiptService {
         try {
             BufferedImage bufferedImage = ImageIO.read(receiptImageFile);
             if (bufferedImage ==null){
-                throw new RuntimeException("could't buffer the image");
+                return  new ReadReceiptDTO(null, false);
             }
 
-            return qrCodeUtil.scanQrCodeFromImage(bufferedImage);
+            return new ReadReceiptDTO(qrCodeUtil.scanQrCodeFromImage(bufferedImage), true);
 
 
         }
          catch (IOException e) {
-            throw new RuntimeException(e);
+             return  new ReadReceiptDTO(null, false);
         }
 
 

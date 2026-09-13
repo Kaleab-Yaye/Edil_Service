@@ -6,6 +6,7 @@ import com.edil.config.util.StoreCampaignToSlotHashMap;
 import com.edil.domain.*;
 import com.edil.domain.enums.CampaignStatus;
 import com.edil.dto.internal.CbePayload;
+import com.edil.dto.internal.ReadReceiptDTO;
 import com.edil.dto.internal.SlotKeyToCampaignAndUserIdDto;
 import com.edil.dto.request.*;
 import com.edil.dto.response.*;
@@ -632,7 +633,21 @@ public class CampaignParticipantService {
            return ResponseEntity.status(HttpStatus.GONE).body(AddParticipantFromOpenResponse.getAddParticipantFromOpenResponseWithMessageAndUploadAgainFlag("upload the receipt again"));
         }
 
-        String paymentLink = receiptService.extractURLFromUploadedReceipt(addRequest.receiptKey().toString());
+        com.edil.dto.internal.ReadReceiptDTO readReceiptDTO = receiptService.extractURLFromUploadedReceipt(addRequest.receiptKey().toString());
+
+        String paymentLink = readReceiptDTO.uri();
+
+        if(!readReceiptDTO.fileAvailable()){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(AddParticipantFromOpenResponse.getAddParticipantFromOpenResponseWithOnlyMessage("the uploaded receipt image doesn't exit or is not in a format that can be processed"));
+
+        }
+        if(paymentLink==null){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(AddParticipantFromOpenResponse.getAddParticipantFromOpenResponseWithOnlyMessage("the receipt Image contains no scannable qr code, please upload a better quality image"));
+        }
+
+
+        log.info("teh link extracted is {}", paymentLink);
+
 
         return  addCampaignParticipantFromPublic(AddParticipantToCampaignFromOpenWithLinkRequest.returnMeFromImageReceiptRequest(addRequest, paymentLink));
     }

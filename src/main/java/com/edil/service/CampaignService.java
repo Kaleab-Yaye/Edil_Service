@@ -241,6 +241,11 @@ public class CampaignService {
         campaignRepository.saveAll(expiredCampaigns);
     }
 
+    public void archivePrizesForEndedCampaign(UUID campaignID){
+
+
+    }
+
     private CampaignResponse mapToCampaignResponse(Campaign campaign) {
         String firstPrizeImageUrl = null;
         if (campaign.getActivePrizes() != null && !campaign.getActivePrizes().isEmpty()) {
