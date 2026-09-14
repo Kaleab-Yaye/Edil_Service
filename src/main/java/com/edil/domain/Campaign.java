@@ -83,7 +83,7 @@ public class Campaign {
 
 
     @Column(name = "has_pdf")
-    private boolean hadPdf;
+    private Boolean hasPdf;
 
 
     @Version @Getter @Setter Integer version;

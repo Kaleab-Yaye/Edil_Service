@@ -38,6 +38,9 @@ public class CreatorsCampaignService {
             return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(new EndCampaignByCreatorResponse("the current status of campaign can't be ended"));
         }
 
+        campaign.setStatus(CampaignStatus.ENDED_BY_CREATOR);
+        campaignRepository.save(campaign);
+
 
 
 

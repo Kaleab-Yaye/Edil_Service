@@ -20,6 +20,7 @@ import com.edil.repository.ArchivedCampaignPrizeRepository;
 import com.edil.repository.CampaignRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.coyote.Response;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -241,10 +242,7 @@ public class CampaignService {
         campaignRepository.saveAll(expiredCampaigns);
     }
 
-    public void archivePrizesForEndedCampaign(UUID campaignID){
 
-
-    }
 
     private CampaignResponse mapToCampaignResponse(Campaign campaign) {
         String firstPrizeImageUrl = null;
@@ -437,12 +435,26 @@ public class CampaignService {
 
    }
 
+   public List<Campaign> getPageableByStatus(CampaignStatus campaignStatus, Pageable pageable){
+
+        return campaignRepository.findAllByStatus(campaignStatus, pageable);
+
+   }
+
+   public List<Campaign> getPageableByStatusAndTime(CampaignStatus campaignStatus , LocalDateTime localDateTime , Pageable pageable){
+       return  campaignRepository.findByStatusAndStartedBeingProcessedAtLessThanEqual(campaignStatus, localDateTime, pageable);
+   };
+
+
+
 
    public ResponseEntity<GetCampaignPaymentInfoResponse> getCampaignPaymentInfo(UUID campaignId){
         Campaign campaign  = getCampaignById(campaignId).orElseThrow(()->new CampaignNotFoundException(campaignId.toString()));
         if(!campaign.getStatus().equals(CampaignStatus.APPROVED)){
             return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
        }
+
+
 
        return ResponseEntity.status(HttpStatus.OK).body(
                 new GetCampaignPaymentInfoResponse(campaign.getTicketPrice(), campaign.getCreator().getCreatorProfile().getPayoutBankAccount(),

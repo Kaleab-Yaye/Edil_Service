@@ -17,8 +17,12 @@ import java.util.UUID;
 public interface CampaignRepository extends JpaRepository<Campaign, UUID> {
     Page<Campaign> findByStatus(CampaignStatus status, Pageable pageable);
     List<Campaign> findByStatusAndEndDateLessThanEqual(CampaignStatus status, LocalDateTime now);
+    List<Campaign> findByStatusAndStartedBeingProcessedAtLessThanEqual(CampaignStatus status, LocalDateTime now,Pageable pageable);
     List<Campaign> findByCreatorId(UUID creatorId);
     List<Campaign> findByStatus(CampaignStatus status);
     boolean existsByCreatorIdAndStatusIn(UUID creatorId, Collection<CampaignStatus> statuses);
     Optional<Campaign> getCampaignsById(UUID Id);
+    List<Campaign> findAllByStatus(CampaignStatus campaignStatus, Pageable pageable);
+
+
 }

@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.UUID;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
 @Component
@@ -43,117 +44,130 @@ public class ArchiveCampaignAndGeneratePdfUtil {
             CampaignParticipantPdfRepository campaignParticipantPdfRepository,
             CampaignRepository campaignRepository,
             CampaignParticipantsRepository campaignParticipantsRepository,
-            UUID campaignId
+            UUID campaignId,
+            AtomicInteger openSlot
 
     ) {
 
-        final String pdfSaveLocation = "./pdf_store"; // needs to go to env
-
-        Campaign campaign = campaignRepository.getCampaignsById(campaignId).orElseThrow(() -> new CampaignNotFoundException(campaignId.toString()));
-        List<CampaignParticipant> campaignParticipants = campaign.getCampaignParticipant();
-        List<ActiveCampaignPrize> activePrizes = campaign.getActivePrizes();
-
-        // start of prize archival
-
-        List<ArchivedCampaignPrize> archivedPrizes = new ArrayList<>();
-        for (ActiveCampaignPrize activePrize : activePrizes) {
-            ArchivedCampaignPrize archivedPrize = ArchivedCampaignPrize.builder()
-                    .campaign(campaign)
-                    .title(activePrize.getTitle())
-                    .description(activePrize.getDescription())
-                    .prizeOrder(activePrize.getPrizeOrder())
-                    .imageUrl(activePrize.getImageUrl())
-                    .build();
-            archivedPrizes.add(archivedPrize);
-        }
-
-        archivedCampaignPrizeRepository.saveAll(archivedPrizes);
-
-        // end of archival
-
-        if (campaignParticipants.isEmpty()) {
-            return;
-        }
-
-        String pdfName = campaign.getTitle() + "-" + campaign.getStartDate().toString();
-        String pdfSavePath = pdfSaveLocation + "/" + pdfName;
-
-        String titleValue = "Campaign---" + campaign.getTitle() + " participants";
-
         try {
-            Document document = new Document(PageSize.A4, 36, 36, 36, 36);
-            PdfWriter.getInstance(document, new FileOutputStream(pdfSavePath));
-            document.open();
 
+            final String pdfSaveLocation = "./pdf_store"; // needs to go to env
 
-            Font titleFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 18, Color.BLACK);
-            Paragraph title = new Paragraph("EDIL CAMPAIGN: " + titleValue, titleFont);
-            title.setAlignment(Element.ALIGN_CENTER);
-            title.setSpacingAfter(20f); //
-            document.add(title);
+            Campaign campaign = campaignRepository.getCampaignsById(campaignId).orElseThrow(() -> new CampaignNotFoundException(campaignId.toString()));
+            List<CampaignParticipant> campaignParticipants = campaign.getCampaignParticipant();
+            List<ActiveCampaignPrize> activePrizes = campaign.getActivePrizes();
 
-            PdfPTable table = new PdfPTable(3);
-            table.setWidthPercentage(100); // Stretch across the whole page
-            table.setWidths(new float[]{1.5f, 2.5f, 2f});
+            // start of prize archival
 
-            Font headerFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 12, Color.BLACK);
-            table.addCell(createStyledCell("order", headerFont));
-            table.addCell(createStyledCell("edilCode", headerFont));
-            table.addCell(createStyledCell("fullName", headerFont));
-            table.addCell(createStyledCell("phoneNumber", headerFont));
-            table.addCell(createStyledCell("refundBankAccount", headerFont));
-            table.addCell(createStyledCell("address", headerFont));
-
-            table.setHeaderRows(1);
-
-
-            Font rowFont = FontFactory.getFont(FontFactory.HELVETICA, 11, Color.DARK_GRAY);
-
-            // here each entry will be removed from the campaign participant and get archived at the same time it is getting added
-            int order = 1;
-            for (CampaignParticipant campaignParticipant : campaignParticipants ) {
-                UserProfile userProfile = campaignParticipant.getAccount().getUserProfile();
-                table.addCell(createStyledCell(String.valueOf(order), rowFont));
-                table.addCell(createStyledCell(campaignParticipant.getEdilCode(), rowFont));
-                table.addCell(createStyledCell(userProfile.getFullName(), rowFont));
-                table.addCell(createStyledCell(userProfile.getPhoneNumber(), rowFont));
-                table.addCell(createStyledCell(userProfile.getRefundBankAccount(), rowFont));
-                table.addCell(createStyledCell(userProfile.getAddress(), rowFont));
-
-                // start of archival
-                archivedCampaignParticipantsRepository.save(campaignParticipant.archivedCampaignParticipant());
-                campaignParticipantsRepository.delete(campaignParticipant);
+            List<ArchivedCampaignPrize> archivedPrizes = new ArrayList<>();
+            for (ActiveCampaignPrize activePrize : activePrizes) {
+                ArchivedCampaignPrize archivedPrize = ArchivedCampaignPrize.builder()
+                        .campaign(campaign)
+                        .title(activePrize.getTitle())
+                        .description(activePrize.getDescription())
+                        .prizeOrder(activePrize.getPrizeOrder())
+                        .imageUrl(activePrize.getImageUrl())
+                        .build();
+                archivedPrizes.add(archivedPrize);
             }
 
-            campaign.setStatus(CampaignStatus.ENDED_BY_CREATOR_PROCESSED);
-            campaignRepository.save(campaign);
+            archivedCampaignPrizeRepository.saveAll(archivedPrizes);
 
-            document.add(table);
-            document.close();
+            // end of archival
 
-            Long pdfSizeInBytes = Files.size(Paths.get(pdfSavePath));
+            if (campaignParticipants.isEmpty()) {
+                return;
+            }
 
-            // create the pdf table lol
+            String pdfName = campaign.getTitle() + "-" + campaign.getStartDate().toString();
+            String pdfSavePath = pdfSaveLocation + "/" + pdfName;
 
-            CampaignParticipantsPdf campaignParticipantsPdf =  new CampaignParticipantsPdf();
-            campaignParticipantsPdf.setCampaign(campaign);
-            campaignParticipantsPdf.setPdfName(pdfName);
-            campaignParticipantsPdf.setPdfSizeInBytes(pdfSizeInBytes);
-            campaignParticipantsPdf.setGeneratedAt(LocalDateTime.now());
-            campaignParticipantPdfRepository.save(campaignParticipantsPdf);
+            String titleValue = "Campaign---" + campaign.getTitle() + " participants";
 
-
-            log.info("the campaign wit the id {} is archived and pdf with the size of {} is generated for it",campaignId, pdfSizeInBytes);
+            try {
+                Document document = new Document(PageSize.A4, 36, 36, 36, 36);
+                PdfWriter.getInstance(document, new FileOutputStream(pdfSavePath));
+                document.open();
 
 
+                Font titleFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 18, Color.BLACK);
+                Paragraph title = new Paragraph("EDIL CAMPAIGN: " + titleValue, titleFont);
+                title.setAlignment(Element.ALIGN_CENTER);
+                title.setSpacingAfter(20f); //
+                document.add(title);
+
+                PdfPTable table = new PdfPTable(3);
+                table.setWidthPercentage(100); // Stretch across the whole page
+                table.setWidths(new float[]{1.5f, 2.5f, 2f});
+
+                Font headerFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 12, Color.BLACK);
+                table.addCell(createStyledCell("order", headerFont));
+                table.addCell(createStyledCell("edilCode", headerFont));
+                table.addCell(createStyledCell("fullName", headerFont));
+                table.addCell(createStyledCell("phoneNumber", headerFont));
+                table.addCell(createStyledCell("refundBankAccount", headerFont));
+                table.addCell(createStyledCell("address", headerFont));
+
+                table.setHeaderRows(1);
 
 
+                Font rowFont = FontFactory.getFont(FontFactory.HELVETICA, 11, Color.DARK_GRAY);
 
-        } catch (Exception exception
-        ) {
-            throw new RuntimeException("pdf processing failed");
+                // here each entry will be removed from the campaign participant and get archived at the same time it is getting added
+                int order = 1;
+                for (CampaignParticipant campaignParticipant : campaignParticipants) {
+                    UserProfile userProfile = campaignParticipant.getAccount().getUserProfile();
+                    table.addCell(createStyledCell(String.valueOf(order), rowFont));
+                    table.addCell(createStyledCell(campaignParticipant.getEdilCode(), rowFont));
+                    table.addCell(createStyledCell(userProfile.getFullName(), rowFont));
+                    table.addCell(createStyledCell(userProfile.getPhoneNumber(), rowFont));
+                    table.addCell(createStyledCell(userProfile.getRefundBankAccount(), rowFont));
+                    table.addCell(createStyledCell(userProfile.getAddress(), rowFont));
+
+                    // start of archival
+                    archivedCampaignParticipantsRepository.save(campaignParticipant.archivedCampaignParticipant());
+                    campaignParticipantsRepository.delete(campaignParticipant);
+                }
+
+                campaign.setStatus(CampaignStatus.ENDED_BY_CREATOR_PROCESSED);
+                campaign.setHasPdf(true);
+                campaignRepository.save(campaign);
+
+                document.add(table);
+                document.close();
+
+                Long pdfSizeInBytes = Files.size(Paths.get(pdfSavePath));
+
+                // create the pdf table lol
+
+                CampaignParticipantsPdf campaignParticipantsPdf = new CampaignParticipantsPdf();
+                campaignParticipantsPdf.setCampaign(campaign);
+                campaignParticipantsPdf.setPdfName(pdfName);
+                campaignParticipantsPdf.setPdfSizeInBytes(pdfSizeInBytes);
+                campaignParticipantsPdf.setGeneratedAt(LocalDateTime.now());
+                campaignParticipantPdfRepository.save(campaignParticipantsPdf);
+
+                // signal an open slot for the rest
+                openSlot.incrementAndGet();
 
 
+                log.info("the campaign wit the id {} is archived and pdf with the size of {} is generated for it", campaignId, pdfSizeInBytes);
+
+
+            } catch (Exception exception
+            ) {
+                openSlot.incrementAndGet();
+                throw new RuntimeException("pdf processing failed");
+
+
+            }
+
+        }
+
+        catch (Exception exception){
+
+            openSlot.incrementAndGet();
+            throw new RuntimeException("thread level trasaction of archival and pdg generation failed");
         }
 
 

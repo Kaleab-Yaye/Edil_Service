@@ -32,7 +32,4 @@ public class CampaignParticipantsPdf {
     @Column(name = "generated_at")
     private LocalDateTime generatedAt;
 
-
-
-
 }
