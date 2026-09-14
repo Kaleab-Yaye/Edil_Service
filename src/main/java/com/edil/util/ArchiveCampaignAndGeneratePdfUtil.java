@@ -157,6 +157,7 @@ public class ArchiveCampaignAndGeneratePdfUtil {
             } catch (Exception exception
             ) {
                 openSlot.incrementAndGet();
+                log.warn("exception with the follwoing messege was invoked while trying to generate pdf {} and the stack trace is {}",exception.getMessage(), exception.getStackTrace());
                 throw new RuntimeException("pdf processing failed");
 
 
@@ -167,6 +168,7 @@ public class ArchiveCampaignAndGeneratePdfUtil {
         catch (Exception exception){
 
             openSlot.incrementAndGet();
+            log.warn("exception with the follwoing messege was invoked while trying to generate pdf and archive campaigni {} and the stack trace is {}",exception.getMessage(), exception.getStackTrace());
             throw new RuntimeException("thread level trasaction of archival and pdg generation failed");
         }
 

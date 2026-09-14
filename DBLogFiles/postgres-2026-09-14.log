@@ -10,3 +10,54 @@
 2026-09-14 08:19:55.143 UTC [28] LOG:  checkpoint starting: end-of-recovery immediate wait
 2026-09-14 08:19:55.164 UTC [28] LOG:  checkpoint complete: wrote 2 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.006 s, sync=0.003 s, total=0.025 s; sync files=2, longest=0.002 s, average=0.002 s; distance=0 kB, estimate=0 kB
 2026-09-14 08:19:55.180 UTC [1] LOG:  database system is ready to accept connections
+2026-09-14 08:23:44.362 UTC [41] ERROR:  syntax error at or near "campaigns" at character 10
+2026-09-14 08:23:44.362 UTC [41] STATEMENT:  SELECT * campaigns;
+2026-09-14 08:31:19.124 UTC [41] ERROR:  duplicate key value violates unique constraint "campaign_participants_receipt_hash_key"
+2026-09-14 08:31:19.124 UTC [41] DETAIL:  Key (receipt_hash)=(v2-bW9ja19yY3B0X3NhbHRf) already exists.
+2026-09-14 08:31:19.124 UTC [41] STATEMENT:  WITH new_accounts AS (
+	    INSERT INTO accounts (email, password_hash, role, is_active)
+	    SELECT
+	        'mock.creator' || n || '@testmail.com',
+	        '$2a$10$EIX2rVZKF5G3v1Q5Y8D4aOJ7sQm3Kv6VZk8d9X0bN4tR2uL7pW6Cy',
+	        'CREATOR',
+	        true
+	    FROM generate_series(1, 100) AS n
+	    RETURNING id, email
+	),
+	account_map AS (
+	    SELECT
+	        id AS account_id,
+	        CAST(regexp_replace(email, '[^0-9]', '', 'g') AS INTEGER) AS n
+	    FROM new_accounts
+	),
+	new_profiles AS (
+	    INSERT INTO user_profiles (account_id, full_name, phone_number, address, refund_bank_account)
+	    SELECT
+	        account_id,
+	        'Mock Creator ' || n,
+	        '+25191' || LPAD(n::text, 7, '0'),
+	        n || ' Mock Street, Addis Ababa',
+	        'CBE-1000' || LPAD(n::text, 10, '0')
+	    FROM account_map
+	)
+	INSERT INTO campaign_participants (account_id, campaign_id, receipt_hash, adder_admin_id, edil_code)
+	SELECT
+	    account_id,
+	    'ea503d27-2c6b-45f5-b7a4-8138e3daf357'::uuid,
+	    'v2-' || substr(
+	        replace(
+	            replace(
+	                encode(('mock_rcpt_salt_' || n)::bytea, 'base64'),
+	                '/', '_'
+	            ),
+	            '+', '-'
+	        ),
+	        1, 20
+	    ),
+	    NULL,
+	    'MOCK-CP-' || LPAD(n::text, 6, '0')
+	FROM account_map;
+2026-09-14 08:36:08.628 UTC [28] LOG:  checkpoint starting: time
+2026-09-14 08:36:12.815 UTC [28] LOG:  checkpoint complete: wrote 42 buffers (0.3%); 0 WAL file(s) added, 0 removed, 0 recycled; write=4.125 s, sync=0.035 s, total=4.192 s; sync files=28, longest=0.014 s, average=0.002 s; distance=237 kB, estimate=237 kB
+2026-09-14 08:41:40.777 UTC [28] LOG:  checkpoint starting: time
+2026-09-14 08:41:44.840 UTC [28] LOG:  checkpoint complete: wrote 41 buffers (0.3%); 0 WAL file(s) added, 0 removed, 0 recycled; write=4.017 s, sync=0.028 s, total=4.064 s; sync files=37, longest=0.008 s, average=0.001 s; distance=201 kB, estimate=233 kB
