@@ -79,7 +79,7 @@ public class ArchiveCampaignAndGeneratePdfUtil {
                 return;
             }
 
-            String pdfName = campaign.getTitle() + "-" + campaign.getStartDate().toString();
+            String pdfName = campaign.getTitle() + "-" + campaign.getStartDate().toString().replace(":", "-")+".pdf";
             String pdfSavePath = pdfSaveLocation + "/" + pdfName;
 
             String titleValue = "Campaign---" + campaign.getTitle() + " participants";
@@ -133,8 +133,7 @@ public class ArchiveCampaignAndGeneratePdfUtil {
                 campaign.setHasPdf(true);
                 campaignRepository.save(campaign);
 
-                document.add(table);
-                document.close();
+
 
                 Long pdfSizeInBytes = Files.size(Paths.get(pdfSavePath));
 
@@ -152,9 +151,12 @@ public class ArchiveCampaignAndGeneratePdfUtil {
 
 
                 log.info("the campaign wit the id {} is archived and pdf with the size of {} is generated for it", campaignId, pdfSizeInBytes);
+                document.add(table);
+                document.close();
 
+            }
 
-            } catch (Exception exception
+            catch (Exception exception
             ) {
                 openSlot.incrementAndGet();
                 log.warn("exception with the follwoing messege was invoked while trying to generate pdf {} and the stack trace is {}",exception.getMessage(), exception.getStackTrace());
