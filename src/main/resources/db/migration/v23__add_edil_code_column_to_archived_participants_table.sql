@@ -1,1 +1,0 @@
-ALTER TABLE archived_Campaign_participant ADD COLUMN edil_code VARCHAR(25) UNIQUE
