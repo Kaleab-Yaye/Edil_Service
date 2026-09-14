@@ -2,6 +2,8 @@ package com.edil.service;
 
 import com.edil.domain.Campaign;
 import com.edil.domain.enums.CampaignStatus;
+import com.edil.dto.response.CampaignResponse;
+import com.edil.repository.CampaignRepository;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +28,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class CampaignScheduler {
 
     private final CampaignService campaignService;
+    private  final CampaignRepository campaignRepository;
     private final CreatorCampaignServiceAsyncEntry creatorCampaignServiceAsyncEntry;
 
     public final AtomicInteger  OpenSlots = new AtomicInteger(100);
@@ -64,6 +67,7 @@ public class CampaignScheduler {
 
         for(Campaign campaign: campaigns){
             campaign.setStatus(CampaignStatus.BEING_PROCESSED);
+            campaignRepository.save(campaign);
             log.info("submiting the work to the async handler");
             creatorCampaignServiceAsyncEntry.endCampaignANdGenPdfEntry(campaign.getId(), OpenSlots);
 

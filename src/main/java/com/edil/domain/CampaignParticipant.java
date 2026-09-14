@@ -55,6 +55,7 @@ public class CampaignParticipant {
         ArchivedCampaignParticipants archivedCampaignParticipants = new ArchivedCampaignParticipants();
         archivedCampaignParticipants.setId(this.id);
         archivedCampaignParticipants.setCampaign(this.campaign);
+        archivedCampaignParticipants.setAccount(this.account);
         archivedCampaignParticipants.setReceiptHash(this.getReceiptHash());
         archivedCampaignParticipants.setEdilCode(this.edilCode);
         archivedCampaignParticipants.setArchivedAt(LocalDateTime.now());

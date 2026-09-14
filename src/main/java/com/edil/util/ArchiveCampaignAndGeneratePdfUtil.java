@@ -85,33 +85,34 @@ public class ArchiveCampaignAndGeneratePdfUtil {
             String titleValue = "Campaign---" + campaign.getTitle() + " participants";
 
             try {
-                Document document = new Document(PageSize.A4, 36, 36, 36, 36);
+                Document document = new Document(PageSize.A4.rotate(), 36, 36, 36, 36);
                 PdfWriter.getInstance(document, new FileOutputStream(pdfSavePath));
                 document.open();
 
 
-                Font titleFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 18, Color.BLACK);
+                Font titleFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 9, Color.BLACK);
                 Paragraph title = new Paragraph("EDIL CAMPAIGN: " + titleValue, titleFont);
                 title.setAlignment(Element.ALIGN_CENTER);
                 title.setSpacingAfter(20f); //
                 document.add(title);
 
-                PdfPTable table = new PdfPTable(3);
+                PdfPTable table = new PdfPTable(7);
                 table.setWidthPercentage(100); // Stretch across the whole page
-                table.setWidths(new float[]{1.5f, 2.5f, 2f});
+                table.setWidths(new float[]{0.4f, 1.4f, 1.5f, 1.2f, 1.2f, 2f, 5f});
 
-                Font headerFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 12, Color.BLACK);
+                Font headerFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 8, Color.BLACK);
                 table.addCell(createStyledCell("order", headerFont));
                 table.addCell(createStyledCell("edilCode", headerFont));
                 table.addCell(createStyledCell("fullName", headerFont));
                 table.addCell(createStyledCell("phoneNumber", headerFont));
                 table.addCell(createStyledCell("refundBankAccount", headerFont));
                 table.addCell(createStyledCell("address", headerFont));
+                table.addCell(createStyledCell("paymentLink", headerFont));
 
                 table.setHeaderRows(1);
 
 
-                Font rowFont = FontFactory.getFont(FontFactory.HELVETICA, 11, Color.DARK_GRAY);
+                Font rowFont = FontFactory.getFont(FontFactory.HELVETICA, 8, Color.DARK_GRAY);
 
                 // here each entry will be removed from the campaign participant and get archived at the same time it is getting added
                 int order = 1;
@@ -123,15 +124,23 @@ public class ArchiveCampaignAndGeneratePdfUtil {
                     table.addCell(createStyledCell(userProfile.getPhoneNumber(), rowFont));
                     table.addCell(createStyledCell(userProfile.getRefundBankAccount(), rowFont));
                     table.addCell(createStyledCell(userProfile.getAddress(), rowFont));
+                    String paymentLink = "https://mbreciept.cbe.com.et/v2-" + campaignParticipant.getReceiptHash();
+                    table.addCell(createStyledCell(paymentLink, rowFont));
+
 
                     // start of archival
                     archivedCampaignParticipantsRepository.save(campaignParticipant.archivedCampaignParticipant());
                     campaignParticipantsRepository.delete(campaignParticipant);
+                    order++;
                 }
 
                 campaign.setStatus(CampaignStatus.ENDED_BY_CREATOR_PROCESSED);
                 campaign.setHasPdf(true);
                 campaignRepository.save(campaign);
+
+
+                document.add(table);
+                document.close();
 
 
 
@@ -151,8 +160,6 @@ public class ArchiveCampaignAndGeneratePdfUtil {
 
 
                 log.info("the campaign wit the id {} is archived and pdf with the size of {} is generated for it", campaignId, pdfSizeInBytes);
-                document.add(table);
-                document.close();
 
             }
 
@@ -188,8 +195,8 @@ public class ArchiveCampaignAndGeneratePdfUtil {
         cell.setBorderColorBottom(Color.LIGHT_GRAY);
 
 
-        cell.setPaddingBottom(8f);
-        cell.setPaddingTop(8f);
+        cell.setPaddingBottom(4f);
+        cell.setPaddingTop(4f);
 
         cell.setHorizontalAlignment(Element.ALIGN_LEFT);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
