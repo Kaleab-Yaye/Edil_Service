@@ -60,9 +60,11 @@ public class CampaignScheduler {
 
         List<Campaign> campaigns = new ArrayList<>(campaignsBeingProcessed);
         campaigns.addAll(endedCampaigns);
+        log.info("we have got a campaign of the number: {}", campaigns.size());
 
         for(Campaign campaign: campaigns){
             campaign.setStatus(CampaignStatus.BEING_PROCESSED);
+            log.info("submiting the work to the async handler");
             creatorCampaignServiceAsyncEntry.endCampaignANdGenPdfEntry(campaign.getId(), OpenSlots);
 
         }
