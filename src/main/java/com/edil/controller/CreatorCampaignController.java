@@ -3,12 +3,15 @@ package com.edil.controller;
 import com.edil.domain.Account;
 import com.edil.dto.request.CreateCampaignRequest;
 import com.edil.dto.request.EndCampaignByCreatorRequest;
+import com.edil.dto.request.GetPdfInfoRequest;
 import com.edil.dto.response.CampaignResponse;
 import com.edil.dto.response.EndCampaignByCreatorResponse;
+import com.edil.dto.response.GetPdfInfoResponse;
 import com.edil.exception.AccountNotFoundException;
 import com.edil.repository.AccountRepository;
 import com.edil.service.CampaignService;
 import com.edil.service.CreatorsCampaignService;
+import com.edil.util.ArchiveCampaignAndGeneratePdfUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,6 +32,7 @@ public class CreatorCampaignController {
     private final CampaignService campaignService;
     private final CreatorsCampaignService creatorsCampaignService;
     private final AccountRepository accountRepository;
+    private final ArchiveCampaignAndGeneratePdfUtil archiveCampaignAndGeneratePdfUtil;
 
     @PreAuthorize("hasRole('CREATOR')")
     @PostMapping
@@ -52,4 +57,10 @@ public class CreatorCampaignController {
     }
 
 
+    @PreAuthorize("hasRole('CREATOR')")
+    @GetMapping("/report")
+
+    public ResponseEntity<GetPdfInfoResponse> getPdfInfoHandler(@RequestBody @Validated GetPdfInfoRequest getPdfInfoRequest, @AuthenticationPrincipal String email){
+        return  creatorsCampaignService.getPdfForCreator(getPdfInfoRequest, email);
+    }
 }

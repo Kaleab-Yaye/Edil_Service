@@ -1,0 +1,12 @@
+2026-09-15 18:10:00.046 UTC [1] LOG:  starting PostgreSQL 15.15 on x86_64-pc-linux-musl, compiled by gcc (Alpine 14.2.0) 14.2.0, 64-bit
+2026-09-15 18:10:00.046 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+2026-09-15 18:10:00.046 UTC [1] LOG:  listening on IPv6 address "::", port 5432
+2026-09-15 18:10:00.075 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+2026-09-15 18:10:00.088 UTC [30] LOG:  database system was interrupted; last known up at 2026-09-14 14:09:30 UTC
+2026-09-15 18:10:01.377 UTC [30] LOG:  database system was not properly shut down; automatic recovery in progress
+2026-09-15 18:10:01.386 UTC [30] LOG:  redo starts at 0/1CD04E8
+2026-09-15 18:10:01.386 UTC [30] LOG:  invalid record length at 0/1CD05D0: wanted 24, got 0
+2026-09-15 18:10:01.386 UTC [30] LOG:  redo done at 0/1CD0598 system usage: CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.00 s
+2026-09-15 18:10:01.400 UTC [28] LOG:  checkpoint starting: end-of-recovery immediate wait
+2026-09-15 18:10:01.423 UTC [28] LOG:  checkpoint complete: wrote 2 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.006 s, sync=0.003 s, total=0.027 s; sync files=2, longest=0.002 s, average=0.002 s; distance=0 kB, estimate=0 kB
+2026-09-15 18:10:01.439 UTC [1] LOG:  database system is ready to accept connections

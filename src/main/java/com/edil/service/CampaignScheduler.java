@@ -72,8 +72,6 @@ public class CampaignScheduler {
             creatorCampaignServiceAsyncEntry.endCampaignANdGenPdfEntry(campaign.getId(), OpenSlots);
 
         }
-
-
     }
 }
 
