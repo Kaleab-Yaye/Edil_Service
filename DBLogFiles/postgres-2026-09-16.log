@@ -293,3 +293,21 @@
 2026-09-16 13:46:07.668 UTC [309] STATEMENT:  SELECT * FROm archived_campaign_paticipants;
 2026-09-16 13:46:37.674 UTC [309] ERROR:  relation "archived_campaign_paticipant" does not exist at character 15
 2026-09-16 13:46:37.674 UTC [309] STATEMENT:  SELECT * FROm archived_campaign_paticipant;
+2026-09-16 13:51:21.319 UTC [28] LOG:  checkpoint starting: time
+2026-09-16 13:51:21.854 UTC [28] LOG:  checkpoint complete: wrote 5 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.503 s, sync=0.007 s, total=0.536 s; sync files=2, longest=0.006 s, average=0.004 s; distance=12 kB, estimate=301 kB
+2026-09-16 13:56:22.125 UTC [28] LOG:  checkpoint starting: time
+2026-09-16 13:56:26.297 UTC [28] LOG:  checkpoint complete: wrote 42 buffers (0.3%); 0 WAL file(s) added, 0 removed, 0 recycled; write=4.128 s, sync=0.022 s, total=4.173 s; sync files=29, longest=0.006 s, average=0.001 s; distance=238 kB, estimate=294 kB
+2026-09-16 14:01:22.612 UTC [28] LOG:  checkpoint starting: time
+2026-09-16 14:01:28.037 UTC [28] LOG:  checkpoint complete: wrote 53 buffers (0.3%); 0 WAL file(s) added, 0 removed, 0 recycled; write=5.321 s, sync=0.049 s, total=5.426 s; sync files=33, longest=0.019 s, average=0.002 s; distance=152 kB, estimate=280 kB
+2026-09-16 19:32:58.223 UTC [1] LOG:  starting PostgreSQL 15.15 on x86_64-pc-linux-musl, compiled by gcc (Alpine 14.2.0) 14.2.0, 64-bit
+2026-09-16 19:32:58.224 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+2026-09-16 19:32:58.224 UTC [1] LOG:  listening on IPv6 address "::", port 5432
+2026-09-16 19:32:58.235 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+2026-09-16 19:32:58.249 UTC [30] LOG:  database system was interrupted; last known up at 2026-09-16 14:01:28 UTC
+2026-09-16 19:32:59.163 UTC [30] LOG:  database system was not properly shut down; automatic recovery in progress
+2026-09-16 19:32:59.170 UTC [30] LOG:  redo starts at 0/1E2F3F8
+2026-09-16 19:32:59.170 UTC [30] LOG:  invalid record length at 0/1E2F4A8: wanted 24, got 0
+2026-09-16 19:32:59.170 UTC [30] LOG:  redo done at 0/1E2F430 system usage: CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.00 s
+2026-09-16 19:32:59.182 UTC [28] LOG:  checkpoint starting: end-of-recovery immediate wait
+2026-09-16 19:32:59.204 UTC [28] LOG:  checkpoint complete: wrote 2 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.009 s, sync=0.003 s, total=0.026 s; sync files=2, longest=0.002 s, average=0.002 s; distance=0 kB, estimate=0 kB
+2026-09-16 19:32:59.221 UTC [1] LOG:  database system is ready to accept connections

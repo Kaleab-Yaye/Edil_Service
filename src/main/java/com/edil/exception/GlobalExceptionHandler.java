@@ -1,8 +1,10 @@
 package com.edil.exception;
 
 import com.edil.dto.response.ErrorResponse;
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.checkerframework.checker.index.qual.PolyUpperBound;
+import org.springframework.data.web.ReactivePageableHandlerMethodArgumentResolver;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -95,6 +97,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler (CBE4xxServerException.class)
     public  ResponseEntity<String> handelCampaignCBE4xxServerException (CBE4xxServerException CBE4xxServerException){
         return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body("make sure the url used is correct");
+    }
+
+    @ExceptionHandler (ConstraintViolationException.class)
+
+    public ResponseEntity<String> handelConstraintViolationException(ConstraintViolationException constraintViolationException){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(constraintViolationException.getMessage());
     }
 
 
