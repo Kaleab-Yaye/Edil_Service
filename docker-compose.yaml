@@ -32,6 +32,7 @@ services:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
       - ./static_store:/var/www/static_store
       - ./receipt_store:/receipt_store/uploads
+      - ./pdf_store:/report/store/pdf
     depends_on:
       - postgres
 

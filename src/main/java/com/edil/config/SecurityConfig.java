@@ -39,7 +39,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/campaigns/**").permitAll()
                 .requestMatchers("/api/uploads/auth-check").permitAll()
                 .requestMatchers("api/v1/participant/public/add/participant").permitAll()
-                .requestMatchers("/api/v1/receipt/create/upload/key", "/api/v1/receipt/check/upload/auth").permitAll()
+                .requestMatchers("/api/v1/receipt/create/upload/key", "/api/v1/receipt/check/upload/auth", "/api/v1/download/report/internal/auth").permitAll()
                 .requestMatchers("/api/admin/**").hasAnyRole("ADMIN", "ROOT_ADMIN")
                 .anyRequest().authenticated()
             )

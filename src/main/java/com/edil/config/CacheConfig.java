@@ -93,6 +93,14 @@ public class CacheConfig {
                 .build();
     }
 
+    @Bean
+    Cache<UUID, String> UUIDStringCache() { // BEING USED TO STORE Download PDf TICKET
+        return Caffeine.newBuilder()
+                .expireAfterWrite(Duration.ofMinutes(5))
+                .scheduler(Scheduler.systemScheduler())
+                .build();
+    }
+
 
 
 

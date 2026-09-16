@@ -6,25 +6,30 @@ import com.edil.domain.Campaign;
 import com.edil.domain.CampaignParticipantsPdf;
 import com.edil.domain.enums.CampaignStatus;
 import com.edil.dto.request.EndCampaignByCreatorRequest;
+import com.edil.dto.request.GetDownloadPdfKeyRequest;
 import com.edil.dto.request.GetPdfInfoRequest;
 import com.edil.dto.response.EndCampaignByCreatorResponse;
+import com.edil.dto.response.GetDownloadPdfKeyResponse;
 import com.edil.dto.response.GetPdfInfoResponse;
 import com.edil.exception.CampaignNotFoundException;
 import com.edil.repository.CampaignRepository;
-import lombok.NoArgsConstructor;
+import com.github.benmanes.caffeine.cache.Cache;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import java.util.UUID;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CreatorsCampaignService {
 
     private final CampaignRepository campaignRepository;
     private final UserService userService;
+    private final Cache<UUID,String> uploadPdfKeyToPdfNameCache;
 
 
 
@@ -67,6 +72,52 @@ public class CreatorsCampaignService {
         CampaignParticipantsPdf campaignParticipantsPdf = campaign.getCampaignParticipantsPdf();
 
         return  ResponseEntity.status(HttpStatus.OK).body(new GetPdfInfoResponse(campaignParticipantsPdf.getPdfName(), campaignParticipantsPdf.getPdfSizeInBytes(), true));
+
+    }
+    
+   public ResponseEntity<GetDownloadPdfKeyResponse> getPdfDownloadKey(GetDownloadPdfKeyRequest getPdfDownloadRequest, String email){
+        Campaign campaign = campaignRepository.getCampaignsById(getPdfDownloadRequest.campaignId()).orElseThrow(()->new CampaignNotFoundException(getPdfDownloadRequest.campaignId().toString()));
+        if(!campaign.getCreator().getEmail().equals(email)){
+
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+        if(!campaign.getStatus().equals(CampaignStatus.ENDED)){
+
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+        if(!campaign.getHasPdf()){
+
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+
+        }
+
+        UUID key = UUID.randomUUID();
+        String name = campaign.getCampaignParticipantsPdf().getPdfName();
+
+        uploadPdfKeyToPdfNameCache.put(key, name);
+
+        return  ResponseEntity.status(HttpStatus.OK).body(new GetDownloadPdfKeyResponse(key));
+        
+    }
+
+    public boolean canDownloadPdf(UUID key, String rawRequestUrl){
+       // ""/download/report/pdf/pdfname?key=uuid
+
+        String[] brokenUrl = rawRequestUrl.split("/");
+        String pdfName1 = brokenUrl[4];
+        log.info("extracted name is {}", pdfName1);
+        String[] pdfNameSecondArray = pdfName1.split("\\?");
+        String pdfName = pdfNameSecondArray[0];
+        log.info("extracted being compared name is {}",pdfName);
+
+        String cachedPdfName = uploadPdfKeyToPdfNameCache.getIfPresent(key);
+        if (cachedPdfName!=null){
+            return cachedPdfName.equals(pdfName);
+        }
+
+        return false;
 
     }
 }

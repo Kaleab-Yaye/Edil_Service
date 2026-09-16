@@ -79,7 +79,7 @@ public class ArchiveCampaignAndGeneratePdfUtil {
                 return;
             }
 
-            String pdfName = campaign.getTitle() + "-" + campaign.getStartDate().toString().replace(":", "-")+".pdf";
+            String pdfName = campaign.getTitle().replace(" ","-") + "-" + campaign.getStartDate().toString().replace(":", "-")+".pdf";
             String pdfSavePath = pdfSaveLocation + "/" + pdfName;
 
             String titleValue = "Campaign---" + campaign.getTitle() + " participants";
