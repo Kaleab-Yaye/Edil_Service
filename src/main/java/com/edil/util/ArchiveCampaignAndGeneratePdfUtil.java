@@ -98,7 +98,7 @@ public class ArchiveCampaignAndGeneratePdfUtil {
 
                 PdfPTable table = new PdfPTable(7);
                 table.setWidthPercentage(100); // Stretch across the whole page
-                table.setWidths(new float[]{0.4f, 1.4f, 1.5f, 1.2f, 1.2f, 2f, 5f});
+                table.setWidths(new float[]{0.5f, 1.4f, 1.5f, 1.2f, 2f, 2f, 5f});
 
                 Font headerFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 8, Color.BLACK);
                 table.addCell(createStyledCell("order", headerFont));

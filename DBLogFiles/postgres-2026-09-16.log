@@ -283,3 +283,13 @@
 2026-09-16 10:26:32.308 UTC [1] LOG:  database system is ready to accept connections
 2026-09-16 10:32:00.941 UTC [28] LOG:  checkpoint starting: time
 2026-09-16 10:32:00.973 UTC [28] LOG:  checkpoint complete: wrote 2 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.008 s, sync=0.004 s, total=0.033 s; sync files=2, longest=0.003 s, average=0.002 s; distance=0 kB, estimate=0 kB
+2026-09-16 13:31:20.524 UTC [28] LOG:  checkpoint starting: time
+2026-09-16 13:31:26.448 UTC [28] LOG:  checkpoint complete: wrote 59 buffers (0.4%); 0 WAL file(s) added, 0 removed, 0 recycled; write=5.859 s, sync=0.032 s, total=5.926 s; sync files=44, longest=0.003 s, average=0.001 s; distance=346 kB, estimate=346 kB
+2026-09-16 13:36:20.513 UTC [28] LOG:  checkpoint starting: time
+2026-09-16 13:36:25.662 UTC [28] LOG:  checkpoint complete: wrote 51 buffers (0.3%); 0 WAL file(s) added, 0 removed, 0 recycled; write=5.083 s, sync=0.038 s, total=5.149 s; sync files=44, longest=0.002 s, average=0.001 s; distance=213 kB, estimate=333 kB
+2026-09-16 13:46:03.155 UTC [309] ERROR:  syntax error at or near "FRO" at character 10
+2026-09-16 13:46:03.155 UTC [309] STATEMENT:  SELECT * FRO archived_campaign_paticipants;
+2026-09-16 13:46:07.668 UTC [309] ERROR:  relation "archived_campaign_paticipants" does not exist at character 15
+2026-09-16 13:46:07.668 UTC [309] STATEMENT:  SELECT * FROm archived_campaign_paticipants;
+2026-09-16 13:46:37.674 UTC [309] ERROR:  relation "archived_campaign_paticipant" does not exist at character 15
+2026-09-16 13:46:37.674 UTC [309] STATEMENT:  SELECT * FROm archived_campaign_paticipant;
