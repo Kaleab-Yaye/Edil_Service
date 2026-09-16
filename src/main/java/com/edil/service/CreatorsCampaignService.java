@@ -65,6 +65,9 @@ public class CreatorsCampaignService {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
+
+        log.info("campaigns id is {}, and campaigns status is {}, and campaigns has pdf status is {}", campaign.getId(), campaign.getStatus(),  campaign.getHasPdf());
+
         if(!campaign.getHasPdf()){
             return ResponseEntity.status(HttpStatus.OK).body(new GetPdfInfoResponse(null, null, true));
         }

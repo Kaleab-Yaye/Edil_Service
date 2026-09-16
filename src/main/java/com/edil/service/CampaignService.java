@@ -211,6 +211,31 @@ public class CampaignService {
         campaignRepository.save(campaign);
     }
 
+    @Transactional(readOnly = true)
+    public List<CampaignResponse> getEndedByCreatorCampaigns() {
+        List<CampaignStatus> endStatuses = List.of(
+                CampaignStatus.ENDED_BY_CREATOR_PROCESSED,
+                CampaignStatus.ENDED_BY_CREATOR
+        );
+        return campaignRepository.findByStatusIn(endStatuses).stream()
+                .map(this::mapToCampaignResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void approveCampaignEnd(UUID campaignId) {
+        Campaign campaign = campaignRepository.findById(campaignId)
+                .orElseThrow(() -> new AccountNotFoundException("Campaign not found"));
+
+        if (!campaign.getStatus().equals(CampaignStatus.ENDED_BY_CREATOR_PROCESSED) &&
+            !campaign.getStatus().equals(CampaignStatus.ENDED_BY_CREATOR)) {
+            throw new IllegalStateException("Campaign is not waiting for end approval");
+        }
+
+        campaign.setStatus(CampaignStatus.ENDED);
+        campaignRepository.save(campaign);
+    }
+
     @Transactional
     public void archiveExpiredCampaigns() {
         List<Campaign> expiredCampaigns = campaignRepository.findByStatusAndEndDateLessThanEqual(CampaignStatus.APPROVED, LocalDateTime.now());

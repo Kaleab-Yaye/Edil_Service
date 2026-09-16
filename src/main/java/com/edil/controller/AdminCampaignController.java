@@ -36,4 +36,17 @@ public class AdminCampaignController {
         campaignService.rejectCampaign(id);
         return ResponseEntity.ok().build();
     }
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'ROOT_ADMIN')")
+    @GetMapping("/ended-by-creator")
+    public ResponseEntity<List<CampaignResponse>> getEndedByCreatorCampaigns() {
+        return ResponseEntity.ok(campaignService.getEndedByCreatorCampaigns());
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'ROOT_ADMIN')")
+    @PostMapping("/{id}/approve-end")
+    public ResponseEntity<Void> approveCampaignEnd(@PathVariable UUID id) {
+        campaignService.approveCampaignEnd(id);
+        return ResponseEntity.ok().build();
+    }
 }
