@@ -8,6 +8,7 @@ import org.springframework.data.web.ReactivePageableHandlerMethodArgumentResolve
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -103,6 +104,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     public ResponseEntity<String> handelConstraintViolationException(ConstraintViolationException constraintViolationException){
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(constraintViolationException.getMessage());
+    }
+
+
+
+    @ExceptionHandler(AuthorizationDeniedException.class)
+    public ResponseEntity<String> handelAuthorizationDeniedException(AuthorizationDeniedException constraintViolationException){
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(constraintViolationException.getMessage());
     }
 
 

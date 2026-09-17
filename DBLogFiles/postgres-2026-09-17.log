@@ -29,3 +29,13 @@
 2026-09-17 06:30:38.934 UTC [28] LOG:  checkpoint starting: shutdown immediate
 2026-09-17 06:30:38.958 UTC [28] LOG:  checkpoint complete: wrote 3 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.004 s, sync=0.005 s, total=0.029 s; sync files=3, longest=0.004 s, average=0.002 s; distance=0 kB, estimate=39 kB
 2026-09-17 06:30:38.985 UTC [1] LOG:  database system is shut down
+2026-09-17 19:31:47.060 UTC [1] LOG:  starting PostgreSQL 15.15 on x86_64-pc-linux-musl, compiled by gcc (Alpine 14.2.0) 14.2.0, 64-bit
+2026-09-17 19:31:47.061 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+2026-09-17 19:31:47.061 UTC [1] LOG:  listening on IPv6 address "::", port 5432
+2026-09-17 19:31:47.069 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+2026-09-17 19:31:47.085 UTC [30] LOG:  database system was shut down at 2026-09-17 06:30:38 UTC
+2026-09-17 19:31:47.115 UTC [1] LOG:  database system is ready to accept connections
+2026-09-17 19:37:00.813 UTC [28] LOG:  checkpoint starting: time
+2026-09-17 19:37:00.884 UTC [28] LOG:  checkpoint complete: wrote 2 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.007 s, sync=0.004 s, total=0.072 s; sync files=2, longest=0.003 s, average=0.002 s; distance=0 kB, estimate=0 kB
+2026-09-17 19:42:15.681 UTC [28] LOG:  checkpoint starting: time
+2026-09-17 19:42:17.774 UTC [28] LOG:  checkpoint complete: wrote 20 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=1.970 s, sync=0.060 s, total=2.093 s; sync files=20, longest=0.047 s, average=0.003 s; distance=44 kB, estimate=44 kB
