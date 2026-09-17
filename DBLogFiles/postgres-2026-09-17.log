@@ -1,0 +1,31 @@
+2026-09-17 05:56:39.340 UTC [1] LOG:  starting PostgreSQL 15.15 on x86_64-pc-linux-musl, compiled by gcc (Alpine 14.2.0) 14.2.0, 64-bit
+2026-09-17 05:56:39.341 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+2026-09-17 05:56:39.341 UTC [1] LOG:  listening on IPv6 address "::", port 5432
+2026-09-17 05:56:39.355 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+2026-09-17 05:56:39.368 UTC [30] LOG:  database system was interrupted; last known up at 2026-09-16 21:43:27 UTC
+2026-09-17 05:56:40.357 UTC [30] LOG:  database system was not properly shut down; automatic recovery in progress
+2026-09-17 05:56:40.365 UTC [30] LOG:  redo starts at 0/1EDD630
+2026-09-17 05:56:40.365 UTC [30] LOG:  invalid record length at 0/1EDD718: wanted 24, got 0
+2026-09-17 05:56:40.365 UTC [30] LOG:  redo done at 0/1EDD6E0 system usage: CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.00 s
+2026-09-17 05:56:40.379 UTC [28] LOG:  checkpoint starting: end-of-recovery immediate wait
+2026-09-17 05:56:40.402 UTC [28] LOG:  checkpoint complete: wrote 2 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.007 s, sync=0.004 s, total=0.027 s; sync files=2, longest=0.002 s, average=0.002 s; distance=0 kB, estimate=0 kB
+2026-09-17 05:56:40.419 UTC [1] LOG:  database system is ready to accept connections
+2026-09-17 06:07:00.165 UTC [28] LOG:  checkpoint starting: time
+2026-09-17 06:07:02.236 UTC [28] LOG:  checkpoint complete: wrote 20 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=2.018 s, sync=0.017 s, total=2.114 s; sync files=20, longest=0.007 s, average=0.001 s; distance=43 kB, estimate=43 kB
+2026-09-17 06:30:38.903 UTC [1] LOG:  received fast shutdown request
+2026-09-17 06:30:38.908 UTC [1] LOG:  aborting any active transactions
+2026-09-17 06:30:38.909 UTC [86] FATAL:  terminating connection due to administrator command
+2026-09-17 06:30:38.909 UTC [88] FATAL:  terminating connection due to administrator command
+2026-09-17 06:30:38.909 UTC [87] FATAL:  terminating connection due to administrator command
+2026-09-17 06:30:38.909 UTC [85] FATAL:  terminating connection due to administrator command
+2026-09-17 06:30:38.909 UTC [84] FATAL:  terminating connection due to administrator command
+2026-09-17 06:30:38.909 UTC [81] FATAL:  terminating connection due to administrator command
+2026-09-17 06:30:38.909 UTC [82] FATAL:  terminating connection due to administrator command
+2026-09-17 06:30:38.913 UTC [83] FATAL:  terminating connection due to administrator command
+2026-09-17 06:30:38.913 UTC [79] FATAL:  terminating connection due to administrator command
+2026-09-17 06:30:38.917 UTC [78] FATAL:  terminating connection due to administrator command
+2026-09-17 06:30:38.920 UTC [1] LOG:  background worker "logical replication launcher" (PID 39) exited with exit code 1
+2026-09-17 06:30:38.929 UTC [28] LOG:  shutting down
+2026-09-17 06:30:38.934 UTC [28] LOG:  checkpoint starting: shutdown immediate
+2026-09-17 06:30:38.958 UTC [28] LOG:  checkpoint complete: wrote 3 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.004 s, sync=0.005 s, total=0.029 s; sync files=3, longest=0.004 s, average=0.002 s; distance=0 kB, estimate=39 kB
+2026-09-17 06:30:38.985 UTC [1] LOG:  database system is shut down

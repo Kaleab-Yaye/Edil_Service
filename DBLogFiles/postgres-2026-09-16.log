@@ -311,3 +311,72 @@
 2026-09-16 19:32:59.182 UTC [28] LOG:  checkpoint starting: end-of-recovery immediate wait
 2026-09-16 19:32:59.204 UTC [28] LOG:  checkpoint complete: wrote 2 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.009 s, sync=0.003 s, total=0.026 s; sync files=2, longest=0.002 s, average=0.002 s; distance=0 kB, estimate=0 kB
 2026-09-16 19:32:59.221 UTC [1] LOG:  database system is ready to accept connections
+2026-09-16 19:44:48.601 UTC [1] LOG:  starting PostgreSQL 15.15 on x86_64-pc-linux-musl, compiled by gcc (Alpine 14.2.0) 14.2.0, 64-bit
+2026-09-16 19:44:48.602 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+2026-09-16 19:44:48.603 UTC [1] LOG:  listening on IPv6 address "::", port 5432
+2026-09-16 19:44:48.611 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+2026-09-16 19:44:48.626 UTC [30] LOG:  database system was interrupted; last known up at 2026-09-16 19:32:59 UTC
+2026-09-16 19:44:49.496 UTC [30] LOG:  database system was not properly shut down; automatic recovery in progress
+2026-09-16 19:44:49.504 UTC [30] LOG:  redo starts at 0/1E2F520
+2026-09-16 19:44:49.504 UTC [30] LOG:  invalid record length at 0/1E2F558: wanted 24, got 0
+2026-09-16 19:44:49.504 UTC [30] LOG:  redo done at 0/1E2F520 system usage: CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.00 s
+2026-09-16 19:44:49.515 UTC [28] LOG:  checkpoint starting: end-of-recovery immediate wait
+2026-09-16 19:44:49.538 UTC [28] LOG:  checkpoint complete: wrote 2 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.007 s, sync=0.003 s, total=0.026 s; sync files=2, longest=0.002 s, average=0.002 s; distance=0 kB, estimate=0 kB
+2026-09-16 19:44:49.552 UTC [1] LOG:  database system is ready to accept connections
+2026-09-16 19:47:35.919 UTC [52] ERROR:  syntax error at or near "-" at character 36
+2026-09-16 19:47:35.919 UTC [52] STATEMENT:  SELECT * from campaign_participants-pdf;
+2026-09-16 19:50:32.063 UTC [52] ERROR:  syntax error at or near "SET" at character 1126
+2026-09-16 19:50:32.063 UTC [52] STATEMENT:  WITH new_accounts AS (
+	    INSERT INTO accounts (email, password_hash, role, is_active)
+	    SELECT
+	        'mock.creator' || n || '@testmail.com',
+	        '$2a$10$EIX2rVZKF5G3v1Q5Y8D4aOJ7sQm3Kv6VZk8d9X0bN4tR2uL7pW6Cy',
+	        'CREATOR',
+	        true
+	    FROM generate_series(1, 100) AS n
+	    RETURNING id, email
+	),
+	account_map AS (
+	    SELECT
+	        id AS account_id,
+	        CAST(regexp_replace(email, '[^0-9]', '', 'g') AS INTEGER) AS n
+	    FROM new_accounts
+	),
+	new_profiles AS (
+	    INSERT INTO user_profiles (account_id, full_name, phone_number, address, refund_bank_account)
+	    SELECT
+	        account_id,
+	        'Mock Creator ' || n,
+	        '+25191' || LPAD(n::text, 7, '0'),
+	        n || ' Mock Street, Addis Ababa',
+	        'CBE-1000' || LPAD(n::text, 10, '0')
+	    FROM account_map
+	)
+	INSERT INTO campaign_participants (account_id, campaign_id, receipt_hash, adder_admin_id, edil_code)
+	SELECT
+	    account_id,
+	    'ea503d27-2c6b-45f5-b7a4-8138e3daf357'::uuid,
+	    'v2-' || substr(md5('mock_campaign_receipt_' || n::text), 1, 20),
+	    NULL,
+	    'MOCK-CP-' || LPAD(n::text, 6, '0')
+	FROM account_map,
+	UPDATE campaigns SET status='APPROVED' where id =
+	'ea503d27-2c6b-45f5-b7a4-8138e3daf357';
+2026-09-16 19:54:14.345 UTC [52] ERROR:  syntax error at or near "-" at character 36
+2026-09-16 19:54:14.345 UTC [52] STATEMENT:  SELECT * from campaign_participants-pdf;
+2026-09-16 19:55:04.871 UTC [28] LOG:  checkpoint starting: time
+2026-09-16 19:55:09.941 UTC [28] LOG:  checkpoint complete: wrote 50 buffers (0.3%); 0 WAL file(s) added, 0 removed, 0 recycled; write=4.960 s, sync=0.077 s, total=5.115 s; sync files=34, longest=0.052 s, average=0.003 s; distance=346 kB, estimate=346 kB
+2026-09-16 20:00:16.620 UTC [28] LOG:  checkpoint starting: time
+2026-09-16 20:00:19.317 UTC [28] LOG:  checkpoint complete: wrote 25 buffers (0.2%); 0 WAL file(s) added, 0 removed, 0 recycled; write=2.632 s, sync=0.029 s, total=2.698 s; sync files=24, longest=0.011 s, average=0.002 s; distance=106 kB, estimate=322 kB
+2026-09-16 20:05:22.350 UTC [28] LOG:  checkpoint starting: time
+2026-09-16 20:05:24.636 UTC [28] LOG:  checkpoint complete: wrote 22 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=2.240 s, sync=0.020 s, total=2.286 s; sync files=18, longest=0.009 s, average=0.002 s; distance=65 kB, estimate=297 kB
+2026-09-16 20:10:24.810 UTC [28] LOG:  checkpoint starting: time
+2026-09-16 20:10:24.984 UTC [28] LOG:  checkpoint complete: wrote 1 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.107 s, sync=0.047 s, total=0.215 s; sync files=1, longest=0.047 s, average=0.047 s; distance=3 kB, estimate=267 kB
+2026-09-16 20:51:38.574 UTC [28] LOG:  checkpoint starting: time
+2026-09-16 20:51:41.439 UTC [28] LOG:  checkpoint complete: wrote 26 buffers (0.2%); 0 WAL file(s) added, 0 removed, 0 recycled; write=2.781 s, sync=0.030 s, total=2.866 s; sync files=26, longest=0.008 s, average=0.002 s; distance=44 kB, estimate=245 kB
+2026-09-16 20:56:51.650 UTC [28] LOG:  checkpoint starting: time
+2026-09-16 20:56:53.910 UTC [28] LOG:  checkpoint complete: wrote 22 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=2.176 s, sync=0.057 s, total=2.261 s; sync files=22, longest=0.045 s, average=0.003 s; distance=45 kB, estimate=225 kB
+2026-09-16 21:38:25.765 UTC [28] LOG:  checkpoint starting: time
+2026-09-16 21:38:28.016 UTC [28] LOG:  checkpoint complete: wrote 20 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=2.192 s, sync=0.018 s, total=2.258 s; sync files=20, longest=0.005 s, average=0.001 s; distance=41 kB, estimate=206 kB
+2026-09-16 21:43:25.047 UTC [28] LOG:  checkpoint starting: time
+2026-09-16 21:43:27.056 UTC [28] LOG:  checkpoint complete: wrote 20 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=1.925 s, sync=0.043 s, total=2.010 s; sync files=20, longest=0.025 s, average=0.003 s; distance=42 kB, estimate=190 kB

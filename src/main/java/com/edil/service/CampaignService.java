@@ -1,18 +1,14 @@
 package com.edil.service;
 
-import com.edil.config.util.CampaignToSlotNumberAndSlotKeyToCampaignBuilder;
 import com.edil.config.util.StoreCampaignToSlotHashMap;
 import com.edil.domain.Account;
 import com.edil.domain.ActiveCampaignPrize;
 import com.edil.domain.ArchivedCampaignPrize;
 import com.edil.domain.Campaign;
+import com.edil.domain.enums.AccountRole;
 import com.edil.domain.enums.CampaignStatus;
 import com.edil.dto.request.CreateCampaignRequest;
-import com.edil.dto.request.GetCampaignPaymentInfoRequest;
-import com.edil.dto.response.CampaignDetailResponse;
-import com.edil.dto.response.CampaignResponse;
-import com.edil.dto.response.GetCampaignPaymentInfoResponse;
-import com.edil.dto.response.PrizeResponse;
+import com.edil.dto.response.*;
 import com.edil.exception.CampaignNotFoundException;
 import com.edil.repository.AccountRepository;
 import com.edil.repository.ActiveCampaignPrizeRepository;
@@ -20,7 +16,6 @@ import com.edil.repository.ArchivedCampaignPrizeRepository;
 import com.edil.repository.CampaignRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.coyote.Response;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -289,8 +284,8 @@ public class CampaignService {
                 .id(campaign.getId())
                 .title(campaign.getTitle())
                 .ticketPrice(campaign.getTicketPrice())
-                .targetEntries(campaign.getTargetEntries())
-                .joinedUsers(campaign.getJoinedUsers())
+                .targetEntries(null)
+                .joinedUsers(null)
                 .status(campaign.getStatus().name())
                 .startDate(campaign.getStartDate())
                 .endDate(campaign.getEndDate())
@@ -322,8 +317,8 @@ public class CampaignService {
                 .id(campaign.getId())
                 .title(campaign.getTitle())
                 .ticketPrice(campaign.getTicketPrice())
-                .targetEntries(campaign.getTargetEntries())
-                .joinedUsers(campaign.getJoinedUsers())
+                .targetEntries(null)
+                .joinedUsers(null)
                 .status(campaign.getStatus().name())
                 .startDate(campaign.getStartDate())
                 .endDate(campaign.getEndDate())
@@ -488,5 +483,16 @@ public class CampaignService {
         );
    }
 
+   public ResponseEntity< GetNumberOfJoinedUsersResponse> getNumberOfJoinedUsers(UUID campaignId, String email){
+       Campaign campaign = campaignRepository.getCampaignsById(campaignId).orElseThrow(()->new CampaignNotFoundException(campaignId.toString()));
+       Account requestAccount = accountRepository.findByEmail(email).orElseThrow(()->new AccountNotFoundException(email));
+
+       if(campaign.getCreator().equals(requestAccount)||requestAccount.getRole().equals(AccountRole.ADMIN)||requestAccount.getRole().equals(AccountRole.ROOT_ADMIN)){
+           return ResponseEntity.status(HttpStatus.OK).body(new GetNumberOfJoinedUsersResponse(campaign.getJoinedUsers()));
+       }
+
+       return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+
+   }
 
 }
