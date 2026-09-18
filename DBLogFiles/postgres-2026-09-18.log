@@ -1,0 +1,45 @@
+2026-09-18 13:08:40.429 UTC [1] LOG:  aborting any active transactions
+2026-09-18 13:08:40.437 UTC [355] FATAL:  terminating connection due to administrator command
+2026-09-18 13:08:40.437 UTC [356] FATAL:  terminating connection due to administrator command
+2026-09-18 13:08:40.437 UTC [358] FATAL:  terminating connection due to administrator command
+2026-09-18 13:08:40.437 UTC [359] FATAL:  terminating connection due to administrator command
+2026-09-18 13:08:40.437 UTC [360] FATAL:  terminating connection due to administrator command
+2026-09-18 13:08:40.437 UTC [364] FATAL:  terminating connection due to administrator command
+2026-09-18 13:08:40.437 UTC [365] FATAL:  terminating connection due to administrator command
+2026-09-18 13:08:40.437 UTC [362] FATAL:  terminating connection due to administrator command
+2026-09-18 13:08:40.438 UTC [363] FATAL:  terminating connection due to administrator command
+2026-09-18 13:08:40.438 UTC [357] FATAL:  terminating connection due to administrator command
+2026-09-18 13:08:40.484 UTC [1] LOG:  background worker "logical replication launcher" (PID 33) exited with exit code 1
+2026-09-18 13:08:40.486 UTC [28] LOG:  shutting down
+2026-09-18 13:08:40.493 UTC [28] LOG:  checkpoint starting: shutdown immediate
+2026-09-18 13:08:40.565 UTC [28] LOG:  checkpoint complete: wrote 3 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.041 s, sync=0.008 s, total=0.077 s; sync files=3, longest=0.004 s, average=0.003 s; distance=0 kB, estimate=41 kB
+2026-09-18 13:08:40.591 UTC [1] LOG:  database system is shut down
+2026-09-18 13:08:43.642 UTC [1] LOG:  starting PostgreSQL 15.15 on x86_64-pc-linux-musl, compiled by gcc (Alpine 14.2.0) 14.2.0, 64-bit
+2026-09-18 13:08:43.645 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+2026-09-18 13:08:43.645 UTC [1] LOG:  listening on IPv6 address "::", port 5432
+2026-09-18 13:08:43.660 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+2026-09-18 13:08:43.676 UTC [30] LOG:  database system was shut down at 2026-09-18 13:08:40 UTC
+2026-09-18 13:08:43.701 UTC [1] LOG:  database system is ready to accept connections
+2026-09-18 13:11:42.297 UTC [1] LOG:  received fast shutdown request
+2026-09-18 13:11:42.301 UTC [1] LOG:  aborting any active transactions
+2026-09-18 13:11:42.301 UTC [42] FATAL:  terminating connection due to administrator command
+2026-09-18 13:11:42.302 UTC [43] FATAL:  terminating connection due to administrator command
+2026-09-18 13:11:42.302 UTC [41] FATAL:  terminating connection due to administrator command
+2026-09-18 13:11:42.302 UTC [40] FATAL:  terminating connection due to administrator command
+2026-09-18 13:11:42.302 UTC [38] FATAL:  terminating connection due to administrator command
+2026-09-18 13:11:42.302 UTC [39] FATAL:  terminating connection due to administrator command
+2026-09-18 13:11:42.302 UTC [36] FATAL:  terminating connection due to administrator command
+2026-09-18 13:11:42.302 UTC [35] FATAL:  terminating connection due to administrator command
+2026-09-18 13:11:42.302 UTC [34] FATAL:  terminating connection due to administrator command
+2026-09-18 13:11:42.302 UTC [37] FATAL:  terminating connection due to administrator command
+2026-09-18 13:11:42.317 UTC [1] LOG:  background worker "logical replication launcher" (PID 33) exited with exit code 1
+2026-09-18 13:11:42.319 UTC [28] LOG:  shutting down
+2026-09-18 13:11:42.327 UTC [28] LOG:  checkpoint starting: shutdown immediate
+2026-09-18 13:11:42.356 UTC [28] LOG:  checkpoint complete: wrote 2 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.008 s, sync=0.004 s, total=0.038 s; sync files=2, longest=0.003 s, average=0.002 s; distance=0 kB, estimate=0 kB
+2026-09-18 13:11:42.369 UTC [1] LOG:  database system is shut down
+2026-09-18 13:12:04.339 UTC [1] LOG:  starting PostgreSQL 15.15 on x86_64-pc-linux-musl, compiled by gcc (Alpine 14.2.0) 14.2.0, 64-bit
+2026-09-18 13:12:04.341 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+2026-09-18 13:12:04.341 UTC [1] LOG:  listening on IPv6 address "::", port 5432
+2026-09-18 13:12:04.366 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+2026-09-18 13:12:04.392 UTC [31] LOG:  database system was shut down at 2026-09-18 13:11:42 UTC
+2026-09-18 13:12:04.415 UTC [1] LOG:  database system is ready to accept connections

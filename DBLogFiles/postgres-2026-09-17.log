@@ -39,3 +39,6 @@
 2026-09-17 19:37:00.884 UTC [28] LOG:  checkpoint complete: wrote 2 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.007 s, sync=0.004 s, total=0.072 s; sync files=2, longest=0.003 s, average=0.002 s; distance=0 kB, estimate=0 kB
 2026-09-17 19:42:15.681 UTC [28] LOG:  checkpoint starting: time
 2026-09-17 19:42:17.774 UTC [28] LOG:  checkpoint complete: wrote 20 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=1.970 s, sync=0.060 s, total=2.093 s; sync files=20, longest=0.047 s, average=0.003 s; distance=44 kB, estimate=44 kB
+2026-09-17 22:16:08.862 UTC [28] LOG:  checkpoint starting: time
+2026-09-17 22:16:11.178 UTC [28] LOG:  checkpoint complete: wrote 20 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=2.185 s, sync=0.059 s, total=2.317 s; sync files=20, longest=0.048 s, average=0.003 s; distance=45 kB, estimate=45 kB
+2026-09-18 13:08:40.423 UTC [1] LOG:  received fast shutdown request

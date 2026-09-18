@@ -126,6 +126,7 @@
     </dependencies>
 
     <build>
+        <finalName>edil</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

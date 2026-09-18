@@ -24,6 +24,19 @@ services:
       - "-c"
       - "log_rotation_size=10MB"
 
+  edil:
+    build:
+      context: .
+      dockerfile: ./Docker_Files/DockerFIle.EdilService
+    container_name: edil-service
+    depends_on:
+      - postgres
+    volumes:
+      - ./receipt_store:/receipt_store
+      - ./pdf_store:/pdf_store
+
+
+
   nginx:
     image: nginx:alpine
     ports:
