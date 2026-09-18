@@ -17,6 +17,7 @@ import com.github.benmanes.caffeine.cache.Cache;
 import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.flywaydb.core.internal.util.OsUtils;
 import org.passay.data.EnglishCharacterData;
 import org.passay.generate.PasswordGenerator;
 import org.passay.rule.CharacterRule;
@@ -61,7 +62,12 @@ public class CampaignParticipantServiceUtil {
         //End
 
         // the real end point :: "https://mb.cbe.com.et/api/v1/transactions/public/transaction-detail/v2-";
-        String cbeJasonPayloadEndPoint = "http://localhost:3005/api/v1/transactions/public/transaction-detail/v2-";
+        String cbeJasonPayloadEndPoint =System.getenv("CBE_FETCH_END_POINT");
+
+        if (cbeJasonPayloadEndPoint.isBlank()){
+            log.info("there was an issue reading an env file");
+            throw new RuntimeException("can't read the env value for CBE_FETCH_END_POINT");
+        }
 
         String patternTobeMatched = "^https://mbreciept\\.cbe\\.com\\.et/v2-([a-zA-Z0-9]+)$";
         Pattern pattern = Pattern.compile(patternTobeMatched);

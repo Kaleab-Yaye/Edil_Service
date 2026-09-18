@@ -32,9 +32,10 @@ services:
     depends_on:
       - postgres
     volumes:
-      - ./receipt_store:/receipt_store
-      - ./pdf_store:/pdf_store
-
+      - ./receipt_store:/app/receipt_store
+      - ./pdf_store:/app/pdf_store
+    environment:
+      - CBE_FETCH_END_POINT=http://localhost:3005/api/v1/transactions/public/transaction-detail/v2-
 
 
   nginx:
