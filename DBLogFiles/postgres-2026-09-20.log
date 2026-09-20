@@ -10,3 +10,30 @@
 2026-09-20 07:56:44.059 UTC [29] LOG:  checkpoint starting: end-of-recovery immediate wait
 2026-09-20 07:56:44.106 UTC [29] LOG:  checkpoint complete: wrote 2 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.019 s, sync=0.006 s, total=0.051 s; sync files=2, longest=0.004 s, average=0.003 s; distance=0 kB, estimate=0 kB
 2026-09-20 07:56:44.125 UTC [1] LOG:  database system is ready to accept connections
+2026-09-20 11:41:25.256 UTC [1] LOG:  starting PostgreSQL 15.15 on x86_64-pc-linux-musl, compiled by gcc (Alpine 14.2.0) 14.2.0, 64-bit
+2026-09-20 11:41:25.257 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+2026-09-20 11:41:25.257 UTC [1] LOG:  listening on IPv6 address "::", port 5432
+2026-09-20 11:41:25.266 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+2026-09-20 11:41:25.279 UTC [30] LOG:  database system was interrupted; last known up at 2026-09-20 07:56:44 UTC
+2026-09-20 11:41:26.156 UTC [30] LOG:  database system was not properly shut down; automatic recovery in progress
+2026-09-20 11:41:26.163 UTC [30] LOG:  redo starts at 0/1FF5148
+2026-09-20 11:41:26.163 UTC [30] LOG:  invalid record length at 0/1FF5180: wanted 24, got 0
+2026-09-20 11:41:26.163 UTC [30] LOG:  redo done at 0/1FF5148 system usage: CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.00 s
+2026-09-20 11:41:26.174 UTC [28] LOG:  checkpoint starting: end-of-recovery immediate wait
+2026-09-20 11:41:26.194 UTC [28] LOG:  checkpoint complete: wrote 2 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.006 s, sync=0.003 s, total=0.023 s; sync files=2, longest=0.002 s, average=0.002 s; distance=0 kB, estimate=0 kB
+2026-09-20 11:41:26.210 UTC [1] LOG:  database system is ready to accept connections
+2026-09-20 18:23:49.193 UTC [1] LOG:  received fast shutdown request
+2026-09-20 18:23:49.199 UTC [1] LOG:  aborting any active transactions
+2026-09-20 18:23:49.213 UTC [1] LOG:  background worker "logical replication launcher" (PID 33) exited with exit code 1
+2026-09-20 18:23:49.216 UTC [28] LOG:  shutting down
+2026-09-20 18:23:49.223 UTC [28] LOG:  checkpoint starting: shutdown immediate
+2026-09-20 18:23:49.279 UTC [28] LOG:  checkpoint complete: wrote 1 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.034 s, sync=0.004 s, total=0.062 s; sync files=1, longest=0.004 s, average=0.004 s; distance=0 kB, estimate=0 kB
+2026-09-20 18:23:49.304 UTC [1] LOG:  database system is shut down
+2026-09-20 18:24:26.484 UTC [1] LOG:  starting PostgreSQL 15.15 on x86_64-pc-linux-musl, compiled by gcc (Alpine 14.2.0) 14.2.0, 64-bit
+2026-09-20 18:24:26.485 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+2026-09-20 18:24:26.485 UTC [1] LOG:  listening on IPv6 address "::", port 5432
+2026-09-20 18:24:26.497 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+2026-09-20 18:24:26.524 UTC [30] LOG:  database system was shut down at 2026-09-20 18:23:49 UTC
+2026-09-20 18:24:26.560 UTC [1] LOG:  database system is ready to accept connections
+2026-09-20 18:29:47.831 UTC [28] LOG:  checkpoint starting: time
+2026-09-20 18:29:47.895 UTC [28] LOG:  checkpoint complete: wrote 2 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.007 s, sync=0.002 s, total=0.065 s; sync files=2, longest=0.002 s, average=0.001 s; distance=0 kB, estimate=0 kB

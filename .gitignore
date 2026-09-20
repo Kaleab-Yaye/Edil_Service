@@ -31,3 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+./receipt_store
+./pdf_store
