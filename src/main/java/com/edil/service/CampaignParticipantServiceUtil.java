@@ -53,7 +53,11 @@ public class CampaignParticipantServiceUtil {
 
     public CbePayload fetchCbePayload(String rawUri) {
 
+
+
+
         //Stat-request header, that will be subject to a lot of change possibley
+        log.info("New: enterd the CBE fetch with the rawURI of");
         final String x_app_id = "d1292e42-7400-49de-a2d3-9731caa4c819";
         final String x_app_version = "0a01980b-9859-1369-8198-59f403820000";
         final String user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36 Edg/152.0.0.0";
@@ -62,7 +66,7 @@ public class CampaignParticipantServiceUtil {
         //End
 
         // the real end point :: "https://mb.cbe.com.et/api/v1/transactions/public/transaction-detail/v2-";
-        String cbeJasonPayloadEndPoint =System.getenv("CBE_FETCH_END_POINT");
+        String cbeJasonPayloadEndPoint =System.getenv("CBE_FETCH_END_POINT");;
 
         if (cbeJasonPayloadEndPoint.isBlank()){
             log.info("there was an issue reading an env file");
@@ -101,35 +105,45 @@ public class CampaignParticipantServiceUtil {
 
 
 
+           try {
+               CbePayload cbePayload = restClient.get()
+                       .uri(requestTobeMadeLink)
+                       .accept(MediaType.APPLICATION_JSON)// Tells server we want JSON
+                       .header("x-app-version", x_app_version)
+                       .header("x-app-id", x_app_id)
+                       .header("user-agent", user_agent
+                       )
+                       .header("Origin", Origin)
+                       .header("Referer", Referer)
+                       .retrieve()
+                       .onStatus(HttpStatusCode::is5xxServerError, (req, res) -> {
+                           log.warn("CBE server crashed! Status: {} ", res.getStatusCode());
+                           throw new CBE5xxServerException(res.getStatusText());
+                       })
 
-            CbePayload  cbePayload = restClient.get()
-                    .uri(requestTobeMadeLink)
-                    .accept(MediaType.APPLICATION_JSON)// Tells server we want JSON
-                    .header("x-app-version", x_app_version)
-                    .header("x-app-id", x_app_id)
-                    .header("user-agent", user_agent
-                    )
-                    .header("Origin", Origin)
-                    .header("Referer", Referer)
-                    .retrieve()
-                    .onStatus(HttpStatusCode::is5xxServerError, (req, res) -> {
-                        log.warn("CBE server crashed! Status: {} ", res.getStatusCode());
-                        throw new CBE5xxServerException(res.getStatusText());
-                    })
+                       .onStatus(HttpStatusCode::is4xxClientError, (req, res) -> {
+                           log.warn("Made unacceptable request to CBE server: {}", res.getStatusCode());
+                           throw new CBE4xxServerException(res.getStatusText());
+                       })
 
-                    .onStatus(HttpStatusCode::is4xxClientError, (req, res)->{
-                        log.warn("Made unacceptable request to CBE server: {}", res.getStatusCode());
-                        throw new CBE4xxServerException(res.getStatusText());
-                    })
+                       .body(CbePayload.class);
 
-                    .body(CbePayload.class);
+               log.info("NEW: Request was made");
 
 
-            if(cbePayload == null){
-                return  null;
-            }
+               if (cbePayload == null) {
+                   return null;
+               }
 
-            return  cbePayload.withv2Key(uniqueIdOnLink);
+               return cbePayload.withv2Key(uniqueIdOnLink);
+
+
+           }
+
+           catch (Exception exception){
+               log.info("The Fetching end point could't be reached");
+               throw exception;
+           }
 
     }
 

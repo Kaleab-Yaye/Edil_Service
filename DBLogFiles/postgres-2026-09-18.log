@@ -56,3 +56,63 @@
 2026-09-18 13:19:17.712 UTC [28] LOG:  checkpoint starting: end-of-recovery immediate wait
 2026-09-18 13:19:17.740 UTC [28] LOG:  checkpoint complete: wrote 2 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.007 s, sync=0.004 s, total=0.035 s; sync files=2, longest=0.002 s, average=0.002 s; distance=0 kB, estimate=0 kB
 2026-09-18 13:19:17.751 UTC [1] LOG:  database system is ready to accept connections
+2026-09-18 13:35:55.704 UTC [1] LOG:  starting PostgreSQL 15.15 on x86_64-pc-linux-musl, compiled by gcc (Alpine 14.2.0) 14.2.0, 64-bit
+2026-09-18 13:35:55.705 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+2026-09-18 13:35:55.705 UTC [1] LOG:  listening on IPv6 address "::", port 5432
+2026-09-18 13:35:55.713 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+2026-09-18 13:35:55.726 UTC [30] LOG:  database system was interrupted; last known up at 2026-09-18 13:19:17 UTC
+2026-09-18 13:35:56.684 UTC [30] LOG:  database system was not properly shut down; automatic recovery in progress
+2026-09-18 13:35:56.692 UTC [30] LOG:  redo starts at 0/1EFF418
+2026-09-18 13:35:56.692 UTC [30] LOG:  invalid record length at 0/1EFF450: wanted 24, got 0
+2026-09-18 13:35:56.692 UTC [30] LOG:  redo done at 0/1EFF418 system usage: CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.00 s
+2026-09-18 13:35:56.705 UTC [28] LOG:  checkpoint starting: end-of-recovery immediate wait
+2026-09-18 13:35:56.730 UTC [28] LOG:  checkpoint complete: wrote 2 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.007 s, sync=0.004 s, total=0.028 s; sync files=2, longest=0.002 s, average=0.002 s; distance=0 kB, estimate=0 kB
+2026-09-18 13:35:56.740 UTC [1] LOG:  database system is ready to accept connections
+2026-09-18 13:46:05.029 UTC [28] LOG:  checkpoint starting: time
+2026-09-18 13:46:07.125 UTC [28] LOG:  checkpoint complete: wrote 20 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=2.020 s, sync=0.040 s, total=2.105 s; sync files=20, longest=0.018 s, average=0.002 s; distance=46 kB, estimate=46 kB
+2026-09-18 19:17:24.168 UTC [1] LOG:  received fast shutdown request
+2026-09-18 19:17:24.174 UTC [1] LOG:  aborting any active transactions
+2026-09-18 19:17:24.180 UTC [239] FATAL:  terminating connection due to administrator command
+2026-09-18 19:17:24.180 UTC [233] FATAL:  terminating connection due to administrator command
+2026-09-18 19:17:24.180 UTC [241] FATAL:  terminating connection due to administrator command
+2026-09-18 19:17:24.180 UTC [231] FATAL:  terminating connection due to administrator command
+2026-09-18 19:17:24.180 UTC [236] FATAL:  terminating connection due to administrator command
+2026-09-18 19:17:24.180 UTC [235] FATAL:  terminating connection due to administrator command
+2026-09-18 19:17:24.180 UTC [237] FATAL:  terminating connection due to administrator command
+2026-09-18 19:17:24.181 UTC [234] FATAL:  terminating connection due to administrator command
+2026-09-18 19:17:24.181 UTC [240] FATAL:  terminating connection due to administrator command
+2026-09-18 19:17:24.194 UTC [232] FATAL:  terminating connection due to administrator command
+2026-09-18 19:17:24.205 UTC [1] LOG:  background worker "logical replication launcher" (PID 33) exited with exit code 1
+2026-09-18 19:17:24.210 UTC [28] LOG:  shutting down
+2026-09-18 19:17:24.216 UTC [28] LOG:  checkpoint starting: shutdown immediate
+2026-09-18 19:17:24.272 UTC [28] LOG:  checkpoint complete: wrote 3 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.030 s, sync=0.005 s, total=0.062 s; sync files=3, longest=0.004 s, average=0.002 s; distance=0 kB, estimate=42 kB
+2026-09-18 19:17:24.302 UTC [1] LOG:  database system is shut down
+2026-09-18 19:18:29.170 UTC [1] LOG:  starting PostgreSQL 15.15 on x86_64-pc-linux-musl, compiled by gcc (Alpine 14.2.0) 14.2.0, 64-bit
+2026-09-18 19:18:29.171 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+2026-09-18 19:18:29.171 UTC [1] LOG:  listening on IPv6 address "::", port 5432
+2026-09-18 19:18:29.180 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+2026-09-18 19:18:29.195 UTC [31] LOG:  database system was shut down at 2026-09-18 19:17:24 UTC
+2026-09-18 19:18:29.235 UTC [1] LOG:  database system is ready to accept connections
+2026-09-18 19:20:28.717 UTC [1] LOG:  received fast shutdown request
+2026-09-18 19:20:28.721 UTC [1] LOG:  aborting any active transactions
+2026-09-18 19:20:28.725 UTC [1] LOG:  background worker "logical replication launcher" (PID 34) exited with exit code 1
+2026-09-18 19:20:28.726 UTC [29] LOG:  shutting down
+2026-09-18 19:20:28.729 UTC [29] LOG:  checkpoint starting: shutdown immediate
+2026-09-18 19:20:28.749 UTC [29] LOG:  checkpoint complete: wrote 2 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.006 s, sync=0.002 s, total=0.023 s; sync files=2, longest=0.002 s, average=0.001 s; distance=0 kB, estimate=0 kB
+2026-09-18 19:20:28.760 UTC [1] LOG:  database system is shut down
+2026-09-18 19:20:33.813 UTC [1] LOG:  starting PostgreSQL 15.15 on x86_64-pc-linux-musl, compiled by gcc (Alpine 14.2.0) 14.2.0, 64-bit
+2026-09-18 19:20:33.813 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+2026-09-18 19:20:33.813 UTC [1] LOG:  listening on IPv6 address "::", port 5432
+2026-09-18 19:20:33.828 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+2026-09-18 19:20:33.840 UTC [30] LOG:  database system was shut down at 2026-09-18 19:20:28 UTC
+2026-09-18 19:20:33.857 UTC [1] LOG:  database system is ready to accept connections
+2026-09-18 19:25:46.427 UTC [28] LOG:  checkpoint starting: time
+2026-09-18 19:25:46.453 UTC [28] LOG:  checkpoint complete: wrote 2 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.009 s, sync=0.002 s, total=0.026 s; sync files=2, longest=0.002 s, average=0.001 s; distance=0 kB, estimate=0 kB
+2026-09-18 19:30:59.277 UTC [28] LOG:  checkpoint starting: time
+2026-09-18 19:31:01.237 UTC [28] LOG:  checkpoint complete: wrote 20 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=1.923 s, sync=0.018 s, total=1.961 s; sync files=20, longest=0.006 s, average=0.001 s; distance=50 kB, estimate=50 kB
+2026-09-18 19:46:37.059 UTC [28] LOG:  checkpoint starting: time
+2026-09-18 19:46:39.202 UTC [28] LOG:  checkpoint complete: wrote 20 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=2.036 s, sync=0.031 s, total=2.166 s; sync files=20, longest=0.016 s, average=0.002 s; distance=50 kB, estimate=50 kB
+2026-09-18 19:57:02.540 UTC [28] LOG:  checkpoint starting: time
+2026-09-18 19:57:09.403 UTC [28] LOG:  checkpoint complete: wrote 68 buffers (0.4%); 0 WAL file(s) added, 0 removed, 0 recycled; write=6.789 s, sync=0.038 s, total=6.866 s; sync files=45, longest=0.004 s, average=0.001 s; distance=465 kB, estimate=465 kB
+2026-09-18 20:02:11.214 UTC [28] LOG:  checkpoint starting: time
+2026-09-18 20:02:15.885 UTC [28] LOG:  checkpoint complete: wrote 47 buffers (0.3%); 0 WAL file(s) added, 0 removed, 0 recycled; write=4.625 s, sync=0.027 s, total=4.672 s; sync files=31, longest=0.007 s, average=0.001 s; distance=369 kB, estimate=456 kB

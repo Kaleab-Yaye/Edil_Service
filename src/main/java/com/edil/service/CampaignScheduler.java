@@ -40,7 +40,6 @@ public class CampaignScheduler {
             return;
         }
 
-        log.info("well archivale started lol");
 
         int availableSlot = OpenSlots.intValue();
         OpenSlots.addAndGet(-1*availableSlot);
@@ -63,7 +62,7 @@ public class CampaignScheduler {
 
         List<Campaign> campaigns = new ArrayList<>(campaignsBeingProcessed);
         campaigns.addAll(endedCampaigns);
-        log.info("we have got a campaign of the number: {}", campaigns.size());
+
 
         for(Campaign campaign: campaigns){
             campaign.setStatus(CampaignStatus.BEING_PROCESSED);
