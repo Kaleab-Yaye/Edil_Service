@@ -553,7 +553,7 @@ public class CampaignParticipantService {
         }
 
 
-        if (!extractedFouLastDigitsFromReceiptAccountNumber.equals(extractedFourLastDigitsFromAccountNumber) || !receiverAccountName.equals(receiverAccountNameFromReceipt)) {
+        if (!extractedFouLastDigitsFromReceiptAccountNumber.equals(extractedFourLastDigitsFromAccountNumber) || !receiverAccountName.equalsIgnoreCase(receiverAccountNameFromReceipt)) {
 
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(AddParticipantFromOpenResponse.getAddParticipantFromOpenResponseWithOnlyMessage("the account you made payment information to does't match the provided account's information"));
 
