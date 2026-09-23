@@ -103,7 +103,7 @@ public class CampaignParticipantServiceUtil {
 //        }
 
 
-
+          log.info("the request to be made is");
 
            try {
                CbePayload cbePayload = restClient.get()

@@ -1,6 +1,7 @@
 services:
   postgres:
     image: postgres:15-alpine
+    container_name: edil-db
     environment:
       - POSTGRES_USER=edildev
       - POSTGRES_PASSWORD=devsecret
@@ -42,6 +43,7 @@ services:
 
   nginx:
     image: nginx:alpine
+    container_name: edil-proxy
     ports:
       - "8081:80"
     volumes:
