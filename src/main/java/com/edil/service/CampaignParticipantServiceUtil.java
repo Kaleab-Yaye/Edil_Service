@@ -242,7 +242,7 @@ public class CampaignParticipantServiceUtil {
                 return addCampaignParticipantWithGeneratedRandomLotteryNumber(campaignParticipants, randomGen);
             }
 
-            campaignParticipants.setEdilCode(randomEdilCode);
+            campaignParticipants.setEdilCode(edil);
             campaignParticipantsRepository.save(campaignParticipants);
 
             return edil;
