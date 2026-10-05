@@ -1,14 +1,8 @@
 package com.edil.controller;
 
 import com.edil.domain.Account;
-import com.edil.dto.request.CreateCampaignRequest;
-import com.edil.dto.request.EndCampaignByCreatorRequest;
-import com.edil.dto.request.GetDownloadPdfKeyRequest;
-import com.edil.dto.request.GetPdfInfoRequest;
-import com.edil.dto.response.CampaignResponse;
-import com.edil.dto.response.EndCampaignByCreatorResponse;
-import com.edil.dto.response.GetDownloadPdfKeyResponse;
-import com.edil.dto.response.GetPdfInfoResponse;
+import com.edil.dto.request.*;
+import com.edil.dto.response.*;
 import com.edil.exception.AccountNotFoundException;
 import com.edil.repository.AccountRepository;
 import com.edil.service.CampaignService;
@@ -75,7 +69,13 @@ public class CreatorCampaignController {
         return creatorsCampaignService.getPdfDownloadKey(new GetDownloadPdfKeyRequest(campaignId), email);
     }
 
+    @PreAuthorize("hasRole('CREATOR')")
+    @PostMapping("/joined/user")
 
+    public ResponseEntity<GetJoinedPlayerInfoWithEdilNumberResponse> getJoinedInfoWithEdilNumberHandler(@Validated @RequestBody GetJoinedPlayerInfoWithEdilNumberRequest getJoinedRequest, @AuthenticationPrincipal String email ){
+
+        return  creatorsCampaignService.getJoinedPlayerWithEdilNumber(getJoinedRequest, email);
+    }
 
 
 

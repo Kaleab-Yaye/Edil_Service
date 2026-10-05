@@ -1,0 +1,31 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/edil_db
+    username: edildev
+    password: devsecret
+    hikari:
+      initialization-fail-timeout: -1
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        temp:
+          use_jdbc_metadata_defaults: false
+    hibernate:
+      ddl-auto: none
+  flyway:
+    enabled: false
+  cache:
+    type: caffeine
+    cache-names:
+      - user_email_to_UUID
+    caffeine:
+      spec: expireAfterWrite=60m
+
+jwt:
+  secret: edil-secret-key-change-this-in-production-must-be-at-least-256-bits-long-for-hs256
+  expiration: 86400000
+
+server:
+  port: 8080
