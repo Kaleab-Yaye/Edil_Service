@@ -641,12 +641,16 @@ public class CampaignParticipantService {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(AddParticipantFromOpenResponse.getAddParticipantFromOpenResponseWithOnlyMessage("the uploaded receipt image doesn't exit or is not in a format that can be processed"));
 
         }
-        if(paymentLink==null){
+        if(paymentLink.isEmpty()){
+            receiptService.DeleteUploadedReceipt(addRequest.receiptKey().toString());
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(AddParticipantFromOpenResponse.getAddParticipantFromOpenResponseWithOnlyMessage("the receipt Image contains no scannable qr code, please upload a better quality image"));
+
         }
 
 
         log.info("teh link extracted is {}", paymentLink);
+
+        receiptService.DeleteUploadedReceipt(addRequest.receiptKey().toString());
 
 
         return  addCampaignParticipantFromPublic(AddParticipantToCampaignFromOpenWithLinkRequest.returnMeFromImageReceiptRequest(addRequest, paymentLink));

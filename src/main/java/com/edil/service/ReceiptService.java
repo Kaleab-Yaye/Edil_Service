@@ -10,16 +10,17 @@ import com.edil.util.QrCodeUtil;
 import com.github.benmanes.caffeine.cache.Cache;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.ssl.SslProperties;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.imageio.IIOException;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.awt.image.ImagingOpException;
-import java.io.BufferedInputStream;
+import java.nio.file.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -141,13 +142,20 @@ public class ReceiptService {
     public ReadReceiptDTO extractURLFromUploadedReceipt(String uploadedReceiptName){
 
         // has to be env latter on
-        String receiptImageStorePath =  "./receipt_store/";
+        String receiptImageStorePath = System.getenv("RECEIPT_STORE_PATH");
+
+        if (receiptImageStorePath==null || receiptImageStorePath.equals("")){
+            log.warn("there was an isseu readin a file path that waas specified");
+            throw new RuntimeException("can't read the recipt storea path from the enviroment");
+        }
+
+
         String receiptImageFilePath = receiptImageStorePath+uploadedReceiptName;
         File receiptImageFile = new File(receiptImageFilePath);
         try {
             BufferedImage bufferedImage = ImageIO.read(receiptImageFile);
             if (bufferedImage ==null){
-                return  new ReadReceiptDTO(null, false);
+                return  new ReadReceiptDTO("", false);
             }
 
             return new ReadReceiptDTO(qrCodeUtil.scanQrCodeFromImage(bufferedImage), true);
@@ -155,8 +163,35 @@ public class ReceiptService {
 
         }
          catch (IOException e) {
-             return  new ReadReceiptDTO(null, false);
+             return  new ReadReceiptDTO("", false);
         }
+
+
+    }
+
+    @Async
+    public void DeleteUploadedReceipt(String uploadReceiptName) {
+        String receiptImageStorePath = System.getenv("RECEIPT_STORE_PATH");
+
+        if (receiptImageStorePath==null || receiptImageStorePath.equals("")){
+            log.warn("there was an isseu readin a file path that was specified in the enviromental variable");
+            throw new RuntimeException("can't read the recipt storea path from the enviroment");
+        }
+
+        Path receiptImageFilePath  =Paths.get( receiptImageStorePath+uploadReceiptName);
+        try {
+            if (Files.deleteIfExists(receiptImageFilePath)) {
+                log.info("Deleted A Receipt with path ");
+                return;
+
+            }
+            log.warn("couldn't delete the recipt image with the path {}", uploadReceiptName);
+        }
+
+        catch (Exception exception){
+            log.warn("couldn't delete the recipt image with the path {}, it threw and exception", uploadReceiptName,exception);
+        }
+
 
 
     }
