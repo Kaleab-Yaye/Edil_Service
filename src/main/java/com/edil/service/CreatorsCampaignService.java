@@ -1,17 +1,19 @@
 package com.edil.service;
 
 
-import com.edil.domain.Account;
-import com.edil.domain.Campaign;
-import com.edil.domain.CampaignParticipantsPdf;
+import com.edil.domain.*;
 import com.edil.domain.enums.CampaignStatus;
 import com.edil.dto.request.EndCampaignByCreatorRequest;
 import com.edil.dto.request.GetDownloadPdfKeyRequest;
+import com.edil.dto.request.GetJoinedPlayerInfoWithEdilNumberRequest;
 import com.edil.dto.request.GetPdfInfoRequest;
 import com.edil.dto.response.EndCampaignByCreatorResponse;
 import com.edil.dto.response.GetDownloadPdfKeyResponse;
+import com.edil.dto.response.GetJoinedPlayerInfoWithEdilNumberResponse;
 import com.edil.dto.response.GetPdfInfoResponse;
 import com.edil.exception.CampaignNotFoundException;
+import com.edil.repository.ArchivedCampaignParticipantsRepository;
+import com.edil.repository.CampaignParticipantsRepository;
 import com.edil.repository.CampaignRepository;
 import com.github.benmanes.caffeine.cache.Cache;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +22,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
@@ -30,6 +33,9 @@ public class CreatorsCampaignService {
     private final CampaignRepository campaignRepository;
     private final UserService userService;
     private final Cache<UUID,String> uploadPdfKeyToPdfNameCache;
+    private final CampaignParticipantsRepository campaignParticipantRepo;
+    private final ArchivedCampaignParticipantsRepository archivedCampaignParticipantsRepo;
+
 
 
 
@@ -119,8 +125,62 @@ public class CreatorsCampaignService {
         if (cachedPdfName!=null){
             return cachedPdfName.equals(pdfName);
         }
-
         return false;
 
     }
+
+    public ResponseEntity<GetJoinedPlayerInfoWithEdilNumberResponse> getJoinedPlayerWithEdilNumber(GetJoinedPlayerInfoWithEdilNumberRequest getPlayerRequest, String email){
+     Optional<Campaign> campaignOptional = campaignRepository.findById(getPlayerRequest.campaignId());
+
+     if (campaignOptional.isEmpty()){
+         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+     }
+
+     if (!campaignOptional.get().getCreator().getEmail().equals(email)){
+         return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+     }
+
+     Campaign campaign = campaignOptional.get();
+
+     switch (campaign.getStatus()){
+         case  CampaignStatus.APPROVED, CampaignStatus.ENDED_BY_CREATOR, CampaignStatus.ENDED_BY_CREATOR_PROCESSED, CampaignStatus.ENDED->{
+             if(campaign.getStatus().equals(CampaignStatus.APPROVED)){
+                 Optional<CampaignParticipant> optionalCampaignParticipant = campaignParticipantRepo.findCampaignParticipantsByEdilCodeAndCampaignId(getPlayerRequest.edilNumber(), campaign.getId());
+                 if (optionalCampaignParticipant.isEmpty()){
+                     return ResponseEntity.status(HttpStatus.OK).body(new GetJoinedPlayerInfoWithEdilNumberResponse(false, "", ""));
+                 }
+
+                 CampaignParticipant campaignParticipant = optionalCampaignParticipant.get();
+                 return ResponseEntity.status(HttpStatus.OK).body(new GetJoinedPlayerInfoWithEdilNumberResponse(true, campaignParticipant.getAccount().getUserProfile().getFullName(), campaignParticipant.getAccount().getUserProfile().getPhoneNumber()));
+
+             }
+
+             Optional<ArchivedCampaignParticipants> optionalArchivedCampaignParticipant = archivedCampaignParticipantsRepo.findArchivedCampaignParticipantsByEdilCodeAndCampaignId(getPlayerRequest.edilNumber(), campaign.getId());
+             if (optionalArchivedCampaignParticipant.isEmpty()){
+                 return ResponseEntity.status(HttpStatus.OK).body(new GetJoinedPlayerInfoWithEdilNumberResponse(false, "", ""));
+             }
+
+             ArchivedCampaignParticipants archivedCampaignParticipant = optionalArchivedCampaignParticipant.get();
+             return ResponseEntity.status(HttpStatus.OK).body(new GetJoinedPlayerInfoWithEdilNumberResponse(true, archivedCampaignParticipant.getAccount().getUserProfile().getFullName(), archivedCampaignParticipant.getAccount().getUserProfile().getPhoneNumber()));
+
+         }
+
+     }
+
+     return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build();
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
 }

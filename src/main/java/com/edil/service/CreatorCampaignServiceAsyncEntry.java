@@ -24,10 +24,6 @@ public class CreatorCampaignServiceAsyncEntry
     public void endCampaignANdGenPdfEntry(UUID campaignId, AtomicInteger atomicInteger){
         log.info("calling the transactional entry");
         creatorCampaignServiceTransactionalEntry.handleCampaignEndAndPdfGen(campaignId, atomicInteger);
-
-
-
-
     }
 }
 

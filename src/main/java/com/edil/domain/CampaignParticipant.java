@@ -19,7 +19,7 @@ public class CampaignParticipant {
     private UUID id;
 
     @ManyToOne
-    @JoinColumn(name = "account_id" )
+    @JoinColumn(name = "account_id")
     @Getter @Setter
     private Account account;
 
