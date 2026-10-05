@@ -44,6 +44,7 @@ services:
   nginx:
     image: nginx:alpine
     container_name: edil-proxy
+    restart: always
     ports:
       - "8081:80"
     volumes:
@@ -54,6 +55,7 @@ services:
       - ./dist:/var/www/edil/dist
     depends_on:
       - postgres
+      - edil
 
 volumes:
   pgdata:
