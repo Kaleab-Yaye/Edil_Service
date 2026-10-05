@@ -57,7 +57,7 @@ public class CampaignParticipantServiceUtil {
 
 
         //Stat-request header, that will be subject to a lot of change possibley
-        log.info("New: enterd the CBE fetch with the rawURI of");
+        log.info("New: enterd the CBE fetch with the rawURI of {}", rawUri);
         final String x_app_id = "d1292e42-7400-49de-a2d3-9731caa4c819";
         final String x_app_version = "0a01980b-9859-1369-8198-59f403820000";
         final String user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36 Edg/152.0.0.0";

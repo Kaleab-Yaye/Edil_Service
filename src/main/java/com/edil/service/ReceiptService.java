@@ -10,20 +10,16 @@ import com.edil.util.QrCodeUtil;
 import com.github.benmanes.caffeine.cache.Cache;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.ssl.SslProperties;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import javax.imageio.IIOException;
 import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.nio.file.*;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Map;
 import java.util.UUID;
 import java.util.regex.Matcher;
@@ -144,7 +140,7 @@ public class ReceiptService {
         // has to be env latter on
         String receiptImageStorePath = System.getenv("RECEIPT_STORE_PATH");
 
-        if (receiptImageStorePath==null || receiptImageStorePath.equals("")){
+        if (receiptImageStorePath==null || receiptImageStorePath.isEmpty()){
             log.warn("there was an isseu readin a file path that waas specified");
             throw new RuntimeException("can't read the recipt storea path from the enviroment");
         }
@@ -170,7 +166,7 @@ public class ReceiptService {
     }
 
     @Async
-    public void DeleteUploadedReceipt(String uploadReceiptName) {
+    public void deleteUploadedReceipt(String uploadReceiptName) {
         String receiptImageStorePath = System.getenv("RECEIPT_STORE_PATH");
 
         if (receiptImageStorePath==null || receiptImageStorePath.equals("")){
@@ -181,7 +177,7 @@ public class ReceiptService {
         Path receiptImageFilePath  =Paths.get( receiptImageStorePath+uploadReceiptName);
         try {
             if (Files.deleteIfExists(receiptImageFilePath)) {
-                log.info("Deleted A Receipt with path ");
+                log.info("Deleted A Receipt with path {}", uploadReceiptName);
                 return;
 
             }

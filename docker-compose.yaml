@@ -36,9 +36,10 @@ services:
       - ./receipt_store:/app/receipt_store
       - ./pdf_store:/app/pdf_store
     environment:
-     # - CBE_FETCH_END_POINT=http://host.docker.internal:3005/api/v1/transactions/public/transaction-detail/v2-
+      - RECEIPT_STORE_PATH=./receipt_store/
+      - CBE_FETCH_END_POINT=http://host.docker.internal:3005/api/v1/transactions/public/transaction-detail/v2-
         #should be the real end point on production
-      - CBE_FETCH_END_POINT=https://mb.cbe.com.et/api/v1/transactions/public/transaction-detail/v2-
+     # - CBE_FETCH_END_POINT=https://mb.cbe.com.et/api/v1/transactions/public/transaction-detail/v2-
 
 
   nginx:

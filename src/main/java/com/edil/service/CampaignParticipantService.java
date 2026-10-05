@@ -6,7 +6,6 @@ import com.edil.config.util.StoreCampaignToSlotHashMap;
 import com.edil.domain.*;
 import com.edil.domain.enums.CampaignStatus;
 import com.edil.dto.internal.CbePayload;
-import com.edil.dto.internal.ReadReceiptDTO;
 import com.edil.dto.internal.SlotKeyToCampaignAndUserIdDto;
 import com.edil.dto.request.*;
 import com.edil.dto.response.*;
@@ -642,7 +641,7 @@ public class CampaignParticipantService {
 
         }
         if(paymentLink.isEmpty()){
-            receiptService.DeleteUploadedReceipt(addRequest.receiptKey().toString());
+            receiptService.deleteUploadedReceipt(addRequest.receiptKey().toString());
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(AddParticipantFromOpenResponse.getAddParticipantFromOpenResponseWithOnlyMessage("the receipt Image contains no scannable qr code, please upload a better quality image"));
 
         }
@@ -650,7 +649,7 @@ public class CampaignParticipantService {
 
         log.info("teh link extracted is {}", paymentLink);
 
-        receiptService.DeleteUploadedReceipt(addRequest.receiptKey().toString());
+        receiptService.deleteUploadedReceipt(addRequest.receiptKey().toString());
 
 
         return  addCampaignParticipantFromPublic(AddParticipantToCampaignFromOpenWithLinkRequest.returnMeFromImageReceiptRequest(addRequest, paymentLink));
